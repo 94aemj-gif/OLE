@@ -3,7 +3,7 @@ import { openModal } from './modal.js';
 import { createButton } from './button.js';
 
 /**
- * @param {{title:string, body:string, confirmKeyword:string, confirmLabel?:string, onConfirm:()=>void|Promise<void>}} cfg
+ * @param {{title:string, body:string, confirmKeyword:string, confirmLabel?:string, onConfirm:()=>any}} cfg
  */
 export function destructiveConfirm(cfg) {
   const body = document.createElement('div');
