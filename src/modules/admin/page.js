@@ -12,9 +12,7 @@ import { renderResumen } from './resumen.js';
 import { renderSaludPanel } from './salud-panel.js';
 import { renderDeadLetterView } from './dead-letter-view.js';
 import { destructiveConfirm } from '../ui/destructive-confirm.js';
-import { plantDayRange } from '../time/plant-day.js';
-import { buildAuditEntry } from '../audit/writer.js';
-import { localStore } from '../storage/local-store.js';
+import { triggerDayReset } from '../reset/sequence.js';
 
 applyTranslations();
 document.getElementById('langToggle')?.addEventListener('click', () => {
@@ -158,29 +156,8 @@ function openResetFlow({ client, getManager, timezone }) {
     onConfirm: async () => {
       const manager = getManager();
       if (!manager) return showToast('Sesión requerida');
-      const { startIso, endIso } = plantDayRange(new Date(), timezone);
       try {
-        await client.deleteCapturesForDay({ startIso, endIso });
-        const event = await client.insertEvent({
-          kind: 'day_reset',
-          payload: { plant_day_start: startIso, plant_day_end: endIso },
-          issued_by: manager.id
-        });
-        const eventId = Array.isArray(event.body) ? event.body[0]?.id : event.body?.id;
-        await client.insertAudit(
-          buildAuditEntry({
-            actorType: 'manager',
-            actorId: manager.id,
-            actorName: manager.display_name,
-            action: 'DAY_RESET',
-            entityType: null,
-            entityId: null,
-            detail: { event_id: eventId, startIso, endIso }
-          })
-        );
-        // wipe local shift state too
-        localStore.remove('shift_state');
-        localStore.remove('recent_captures');
+        await triggerDayReset({ client, manager, timezone });
         showToast('Día reiniciado');
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);

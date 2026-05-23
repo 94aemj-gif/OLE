@@ -147,10 +147,16 @@ if (url && key) {
   const client = makeSupabaseClient({ url, anonKey: key });
   const writer = makeAuditWriter(client);
   void writer; // wiring done; capture orchestrator gets writer via context in future
+  const { handleEventLocally } = await import('../reset/apply.js');
   const loop = createSyncLoop({
     client,
-    applyCaptures: () => {},
-    applyEvent: () => {}
+    applyCaptures: () => {
+      refreshState();
+    },
+    applyEvent: (event) => {
+      handleEventLocally(event);
+      refreshState();
+    }
   });
   loop.start();
 }
