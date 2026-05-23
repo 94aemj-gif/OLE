@@ -3,20 +3,92 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OLE — Gráficas</title>
+    <title>OLE — Gráficas / KPI</title>
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/components.css" />
+    <style>
+      .graficas-grid {
+        display: grid;
+        gap: var(--space-4);
+        padding: var(--space-6);
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .graficas-grid > section {
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: var(--shadow-md);
+        display: grid;
+        gap: var(--space-3);
+      }
+      .graficas-grid > section.full {
+        grid-column: 1 / -1;
+      }
+      .chart-host {
+        position: relative;
+        height: 280px;
+      }
+      .kpi-ribbon {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-6);
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .kpi-ribbon .summary-tile .value {
+        font-size: var(--text-xl);
+      }
+    </style>
   </head>
   <body>
     <div class="accent-stripe"></div>
     <header class="page-header">
-      <h1>Gráficas — KPI</h1>
+      <div style="display: flex; gap: var(--space-3); align-items: center">
+        <h1>Gráficas — KPI</h1>
+        <select id="lineSelect" class="btn" style="min-width: 240px"></select>
+      </div>
+      <div style="display: flex; gap: var(--space-3)">
+        <button id="eosBtn" class="btn">Resumen de fin de turno</button>
+        <button id="refreshBtn" class="btn">⟳</button>
+        <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+      </div>
     </header>
-    <main class="panel" style="margin: var(--space-6)">
-      <p>
-        OEE / Availability / Performance / Quality charts — implementation deferred to Phase 5
-        (US3).
-      </p>
+
+    <section class="kpi-ribbon">
+      <div class="summary-tile">
+        <span class="label">OEE</span><span class="value" id="kpiOee">0%</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label">Disponibilidad</span><span class="value" id="kpiAvailability">0%</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label">Rendimiento</span><span class="value" id="kpiPerformance">0%</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label">Calidad</span><span class="value" id="kpiQuality">0%</span>
+      </div>
+    </section>
+
+    <main class="graficas-grid">
+      <section>
+        <h2>Producción por hora vs objetivo</h2>
+        <div class="chart-host"><canvas id="hourlyChart"></canvas></div>
+      </section>
+      <section>
+        <h2>Cumulativo vs objetivo</h2>
+        <div class="chart-host"><canvas id="cumulativeChart"></canvas></div>
+      </section>
+      <section>
+        <h2>Merma por hora</h2>
+        <div class="chart-host"><canvas id="scrapChart"></canvas></div>
+      </section>
+      <section class="full">
+        <h2>Heatmap 14 días × 24 horas</h2>
+        <div id="heatmap"></div>
+      </section>
     </main>
+
+    <script type="module" src="../modules/graficas/page.js"></script>
   </body>
 </html>
