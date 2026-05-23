@@ -12,8 +12,8 @@ export function renderResumen(cfg) {
   let selectedDate = todayIso();
   buildWeekstrip(weekstrip, selectedDate, (iso) => {
     selectedDate = iso;
-    weekstrip.querySelectorAll('button').forEach((b) => b.classList.remove('btn-primary'));
-    weekstrip.querySelector(`button[data-iso="${iso}"]`)?.classList.add('btn-primary');
+    weekstrip.querySelectorAll('button').forEach((b) => b.classList.remove('is-active'));
+    weekstrip.querySelector(`button[data-iso="${iso}"]`)?.classList.add('is-active');
     void refresh();
   });
   cfg.container.append(weekstrip);
@@ -57,7 +57,7 @@ function buildWeekstrip(root, selectedIso, onClick) {
     btn.type = 'button';
     btn.dataset.iso = iso;
     btn.innerHTML = `<span class="dow">${dows[d.getDay()]}</span><span class="day">${String(d.getDate()).padStart(2, '0')}</span>`;
-    if (iso === selectedIso) btn.classList.add('btn-primary');
+    if (iso === selectedIso) btn.classList.add('is-active');
     btn.addEventListener('click', () => onClick(iso));
     root.append(btn);
   }

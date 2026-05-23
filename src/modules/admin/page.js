@@ -113,7 +113,17 @@ function setActiveTab(tab) {
   const catalog = readLocalCatalog();
   const timezone = catalog?.plant?.timezone ?? 'America/Mexico_City';
   tabContent.innerHTML = '';
-  TAB_RENDERERS[safeTab]({ container: tabContent, client, getManager, timezone, manager });
+  try {
+    TAB_RENDERERS[safeTab]({ container: tabContent, client, getManager, timezone, manager });
+  } catch (err) {
+    console.error('admin tab render failed', err);
+    tabContent.innerHTML =
+      '<div class="empty-state" style="margin: 16px">' +
+      '<span class="icon">⚠</span>' +
+      `<strong>Error al cargar ${safeTab}</strong>` +
+      `<span>${err instanceof Error ? err.message : String(err)}</span>` +
+      '</div>';
+  }
 }
 
 function renderDatos({ container, client, getManager, timezone, manager }) {
