@@ -25,13 +25,25 @@
     <header class="app-header">
       <span class="brand">OLE</span>
       <h1>Gráficas · KPI</h1>
-      <select id="lineSelect"></select>
+      <select id="lineSelect" aria-label="Línea seleccionada"></select>
       <div class="right">
-        <button id="eosBtn" class="btn btn-primary" style="min-height: 36px">
+        <button
+          id="eosBtn"
+          class="btn btn-primary"
+          style="min-height: 36px"
+          aria-label="Abrir resumen de fin de turno"
+        >
           Resumen de fin de turno
         </button>
-        <button id="refreshBtn" class="btn-ghost-dark">⟳</button>
-        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
+        <button id="refreshBtn" class="btn-ghost-dark" aria-label="Refrescar KPIs">⟳</button>
+        <button
+          id="langToggle"
+          class="lang"
+          aria-label="Cambiar idioma"
+          data-i18n="language.toggle"
+        >
+          ES | EN
+        </button>
       </div>
     </header>
 

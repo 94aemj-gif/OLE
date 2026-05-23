@@ -81,11 +81,18 @@ function buildCardState({ line, lineCaps, shift, hours, now }) {
   };
 }
 
+let firstRefreshDone = false;
 async function refresh() {
   const now = new Date();
   const shift = findActiveShift(now, catalog.shifts, timezone) ?? catalog.shifts[0];
   const hours = hoursElapsedInShift(now, shift, timezone);
+  if (!firstRefreshDone) {
+    for (const card of cards.values()) card.el.classList.add('is-loading');
+  }
   const captures = await fetchCaptures();
+  for (const card of cards.values()) card.el.classList.remove('is-loading');
+  firstRefreshDone = true;
+  showOrHidePlantEmpty(captures.length === 0);
   const byLine = groupByLine(captures);
   const lineSummaries = [];
   for (const line of catalog.lines) {
@@ -109,6 +116,23 @@ async function refresh() {
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+function showOrHidePlantEmpty(isEmpty) {
+  let banner = document.getElementById('plantEmptyBanner');
+  if (isEmpty) {
+    if (banner) return;
+    banner = document.createElement('div');
+    banner.id = 'plantEmptyBanner';
+    banner.className = 'empty-state';
+    banner.style.margin = 'var(--space-4) var(--space-6) 0';
+    banner.innerHTML =
+      '<span class="icon">📭</span><strong>Sin capturas en las últimas 8 horas</strong>' +
+      '<span>Las líneas aparecerán activas en cuanto las tablets envíen la primera captura.</span>';
+    grid?.parentElement?.insertBefore(banner, grid);
+  } else if (banner) {
+    banner.remove();
+  }
 }
 
 async function fetchCaptures() {

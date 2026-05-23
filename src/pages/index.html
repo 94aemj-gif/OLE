@@ -21,15 +21,31 @@
       <span id="statusPillSlot"></span>
       <div class="right">
         <span class="live-pill">Local · ≤ 30 s</span>
-        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
+        <button
+          id="langToggle"
+          class="lang"
+          aria-label="Cambiar idioma"
+          data-i18n="language.toggle"
+        >
+          ES | EN
+        </button>
       </div>
     </header>
 
-    <main class="operator-grid">
+    <main class="operator-grid" aria-labelledby="lineName">
       <section class="operator-hero">
         <p class="h-label" data-i18n="shift.production">Producción del turno</p>
-        <div id="counterSlot" class="count">0</div>
-        <div class="progress" aria-label="Progreso vs objetivo">
+        <div id="counterSlot" class="count" aria-live="polite" aria-label="Unidades producidas">
+          0
+        </div>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Progreso vs objetivo"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
           <span id="progressBar" style="width: 0%"></span>
         </div>
         <div class="meta-row">
@@ -64,7 +80,11 @@
     </main>
 
     <div class="cta-stripe">
-      <button id="captureBtn" class="btn btn-primary glow">
+      <button
+        id="captureBtn"
+        class="btn btn-primary glow"
+        aria-label="Capturar producción de la hora"
+      >
         + &nbsp;<span data-i18n="capture.cta">CAPTURAR</span>
       </button>
     </div>

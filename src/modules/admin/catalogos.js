@@ -4,90 +4,220 @@ import { createButton } from '../ui/button.js';
 import { showToast } from '../ui/toast.js';
 import { buildAuditEntry } from '../audit/writer.js';
 
+const SECTIONS = [
+  {
+    title: 'Líneas',
+    listKey: 'lines',
+    entityType: 'line',
+    keyField: 'id',
+    fields: [
+      { key: 'id', label: 'ID' },
+      { key: 'display_name', label: 'Nombre' },
+      { key: 'hourly_target', label: 'Meta/hr', type: 'number', align: 'right' }
+    ]
+  },
+  {
+    title: 'Operadores',
+    listKey: 'operators',
+    entityType: 'operator',
+    keyField: 'employee_number',
+    fields: [
+      { key: 'employee_number', label: 'N° (5 dígitos)' },
+      { key: 'display_name', label: 'Nombre' }
+    ]
+  },
+  {
+    title: 'Razones de merma',
+    listKey: 'scrap_reasons',
+    entityType: 'reason',
+    keyField: 'id',
+    fields: [
+      { key: 'id', label: 'ID' },
+      { key: 'name', label: 'Nombre' },
+      { key: 'sort_order', label: 'Orden', type: 'number', align: 'right' }
+    ]
+  },
+  {
+    title: 'Razones de tiempo muerto',
+    listKey: 'downtime_reasons',
+    entityType: 'reason',
+    keyField: 'id',
+    fields: [
+      { key: 'id', label: 'ID' },
+      { key: 'name', label: 'Nombre' },
+      { key: 'sort_order', label: 'Orden', type: 'number', align: 'right' }
+    ]
+  }
+];
+
 /**
- * Render the Catálogos sub-section editor as a single page.
- * Keeps each list editable with add / save buttons; reads from local cache,
- * writes via catalog-store.patchCatalog.
- *
  * @param {{container:HTMLElement, client:any, getManager:()=>{id:string,display_name:string}|null}} cfg
  */
 export function renderCatalogos(cfg) {
   cfg.container.innerHTML = '';
   const catalog = readLocalCatalog();
   if (!catalog) {
-    cfg.container.textContent = 'Catálogo no cargado todavía.';
+    emptyState(cfg.container, 'Catálogo no cargado todavía. Abre la app en una tablet primero.');
     return { refresh() {} };
   }
-
-  cfg.container.append(
-    listEditor({
-      title: 'Líneas',
-      rows: catalog.lines ?? [],
-      fields: [
-        { key: 'id', label: 'ID' },
-        { key: 'display_name', label: 'Nombre' },
-        { key: 'hourly_target', label: 'Meta/hr', type: 'number' }
-      ],
-      onAdd: (row) => upsertList(cfg, 'lines', { ...row, active: true }, 'CATALOG_EDIT', 'line'),
-      onDeactivate: (row) =>
-        upsertList(cfg, 'lines', { id: row.id, active: false }, 'CATALOG_EDIT', 'line')
-    })
-  );
-  cfg.container.append(
-    listEditor({
-      title: 'Operadores',
-      rows: catalog.operators ?? [],
-      fields: [
-        { key: 'employee_number', label: 'N° (5 dígitos)' },
-        { key: 'display_name', label: 'Nombre' }
-      ],
-      onAdd: (row) =>
-        upsertList(cfg, 'operators', { ...row, active: true }, 'CATALOG_EDIT', 'operator'),
-      onDeactivate: (row) =>
-        upsertList(
-          cfg,
-          'operators',
-          { employee_number: row.employee_number, active: false },
-          'CATALOG_EDIT',
-          'operator'
-        )
-    })
-  );
-  cfg.container.append(
-    listEditor({
-      title: 'Razones de merma',
-      rows: catalog.scrap_reasons ?? [],
-      fields: [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Nombre' },
-        { key: 'sort_order', label: 'Orden', type: 'number' }
-      ],
-      onAdd: (row) =>
-        upsertList(cfg, 'scrap_reasons', { ...row, active: true }, 'CATALOG_EDIT', 'reason'),
-      onDeactivate: (row) =>
-        upsertList(cfg, 'scrap_reasons', { id: row.id, active: false }, 'CATALOG_EDIT', 'reason')
-    })
-  );
-  cfg.container.append(
-    listEditor({
-      title: 'Razones de tiempo muerto',
-      rows: catalog.downtime_reasons ?? [],
-      fields: [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Nombre' },
-        { key: 'sort_order', label: 'Orden', type: 'number' }
-      ],
-      onAdd: (row) =>
-        upsertList(cfg, 'downtime_reasons', { ...row, active: true }, 'CATALOG_EDIT', 'reason'),
-      onDeactivate: (row) =>
-        upsertList(cfg, 'downtime_reasons', { id: row.id, active: false }, 'CATALOG_EDIT', 'reason')
-    })
-  );
-
+  const grid = document.createElement('div');
+  grid.style.display = 'grid';
+  grid.style.gap = 'var(--space-4)';
+  for (const section of SECTIONS) {
+    grid.append(renderSection(cfg, section, catalog[section.listKey] ?? []));
+  }
+  cfg.container.append(grid);
   return { refresh() {} };
 }
 
-async function upsertList(cfg, listKey, row, action, entityType) {
+function renderSection(cfg, section, rows) {
+  const wrap = document.createElement('section');
+  wrap.className = 'panel-section';
+
+  const header = document.createElement('header');
+  const h = document.createElement('h2');
+  h.textContent = section.title;
+  const count = document.createElement('span');
+  count.className = 'count';
+  const active = rows.filter((r) => r.active !== false).length;
+  count.textContent = `${active} activos`;
+  header.append(h, count);
+  wrap.append(header);
+
+  const table = document.createElement('table');
+  table.className = 'data';
+  const headRow = document.createElement('tr');
+  for (const f of section.fields) {
+    const th = document.createElement('th');
+    th.textContent = f.label;
+    if (f.align === 'right') th.style.textAlign = 'right';
+    headRow.append(th);
+  }
+  const statusTh = document.createElement('th');
+  statusTh.textContent = 'Estado';
+  headRow.append(statusTh);
+  const actionsTh = document.createElement('th');
+  actionsTh.style.textAlign = 'right';
+  headRow.append(actionsTh);
+  const thead = document.createElement('thead');
+  thead.append(headRow);
+  table.append(thead);
+
+  const body = document.createElement('tbody');
+  if (rows.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="${section.fields.length + 2}" style="color: var(--text-muted); text-align:center; padding: 24px">Sin entradas. Agrega la primera abajo.</td>`;
+    body.append(tr);
+  } else {
+    for (const row of rows) body.append(renderRow(cfg, section, row));
+  }
+  table.append(body);
+  wrap.append(table);
+
+  wrap.append(renderAddForm(cfg, section));
+  return wrap;
+}
+
+function renderRow(cfg, section, row) {
+  const tr = document.createElement('tr');
+  for (const f of section.fields) {
+    const td = document.createElement('td');
+    td.textContent = String(row[f.key] ?? '');
+    if (f.align === 'right') {
+      td.style.textAlign = 'right';
+      td.style.fontVariantNumeric = 'tabular-nums';
+    }
+    tr.append(td);
+  }
+  const statusTd = document.createElement('td');
+  const statusPill = document.createElement('span');
+  statusPill.className = 'status-pill';
+  if (row.active === false) {
+    statusPill.dataset.state = 'inactivo';
+    statusPill.textContent = 'Inactivo';
+  } else {
+    statusPill.dataset.state = 'operacion';
+    statusPill.textContent = 'Activo';
+  }
+  statusTd.append(statusPill);
+  tr.append(statusTd);
+
+  const actionTd = document.createElement('td');
+  actionTd.style.textAlign = 'right';
+  if (row.active !== false) {
+    const btn = createButton({
+      label: 'Desactivar',
+      kind: 'danger',
+      onClick: () =>
+        upsertList(
+          cfg,
+          section.listKey,
+          { [section.keyField]: row[section.keyField], active: false },
+          section.entityType,
+          row[section.keyField]
+        )
+    });
+    btn.style.minHeight = '32px';
+    btn.style.padding = '4px 12px';
+    btn.style.fontSize = 'var(--text-xs)';
+    actionTd.append(btn);
+  }
+  tr.append(actionTd);
+  return tr;
+}
+
+function renderAddForm(cfg, section) {
+  const form = document.createElement('form');
+  form.style.display = 'grid';
+  form.style.gridTemplateColumns = `repeat(${section.fields.length}, 1fr) auto`;
+  form.style.gap = 'var(--space-2)';
+  form.style.padding = 'var(--space-3) var(--space-4)';
+  form.style.background = 'var(--surface-soft)';
+  form.style.borderTop = '1px solid var(--border)';
+
+  const inputs = {};
+  for (const f of section.fields) {
+    const input = document.createElement('input');
+    input.placeholder = f.label;
+    input.type = f.type ?? 'text';
+    input.style.padding = '8px 12px';
+    input.style.border = '1px solid var(--border)';
+    input.style.borderRadius = 'var(--radius-sm)';
+    input.style.fontSize = 'var(--text-sm)';
+    input.style.background = 'var(--surface)';
+    if (f.align === 'right') input.style.textAlign = 'right';
+    inputs[f.key] = input;
+    form.append(input);
+  }
+  const submit = createButton({
+    label: '+ Agregar',
+    kind: 'primary',
+    onClick: (ev) => {
+      ev?.preventDefault?.();
+      const row = { active: true };
+      let allFilled = true;
+      for (const f of section.fields) {
+        const raw = inputs[f.key].value;
+        if (!raw) allFilled = false;
+        row[f.key] = f.type === 'number' ? Number(raw) : raw;
+      }
+      if (!allFilled) {
+        showToast('Completa todos los campos');
+        return;
+      }
+      void upsertList(cfg, section.listKey, row, section.entityType, row[section.keyField]).then(
+        () => {
+          for (const f of section.fields) inputs[f.key].value = '';
+        }
+      );
+    }
+  });
+  submit.style.minHeight = '36px';
+  form.append(submit);
+  return form;
+}
+
+async function upsertList(cfg, listKey, row, entityType, entityId) {
   const manager = cfg.getManager();
   if (!manager) {
     showToast('Sesión requerida');
@@ -103,76 +233,23 @@ async function upsertList(cfg, listKey, row, action, entityType) {
       actorType: 'manager',
       actorId: manager.id,
       actorName: manager.display_name,
-      action,
+      action: 'CATALOG_EDIT',
       entityType,
-      entityId: row.id ?? row.employee_number ?? null,
+      entityId: entityId ?? null,
       detail: { listKey, row }
     })
   );
   showToast('Cambios guardados');
 }
 
-function listEditor({ title, rows, fields, onAdd, onDeactivate }) {
-  const section = document.createElement('section');
-  section.style.marginBottom = 'var(--space-6)';
-  const h = document.createElement('h3');
-  h.textContent = title;
-  section.append(h);
-
-  const table = document.createElement('table');
-  table.style.width = '100%';
-  table.style.borderCollapse = 'collapse';
-  table.style.marginBottom = 'var(--space-3)';
-  const head = document.createElement('thead');
-  head.innerHTML = `<tr>${fields.map((f) => `<th>${f.label}</th>`).join('')}<th>Activo</th><th></th></tr>`;
-  table.append(head);
-  const body = document.createElement('tbody');
-  for (const row of rows) {
-    const tr = document.createElement('tr');
-    tr.innerHTML =
-      fields.map((f) => `<td>${row[f.key] ?? ''}</td>`).join('') +
-      `<td>${row.active === false ? 'No' : 'Sí'}</td>`;
-    const actionCell = document.createElement('td');
-    if (row.active !== false) {
-      actionCell.append(
-        createButton({
-          label: 'Desactivar',
-          kind: 'danger',
-          onClick: () => onDeactivate(row)
-        })
-      );
-    }
-    tr.append(actionCell);
-    body.append(tr);
-  }
-  table.append(body);
-  section.append(table);
-
-  const form = document.createElement('form');
-  form.style.display = 'flex';
-  form.style.gap = 'var(--space-2)';
-  form.style.flexWrap = 'wrap';
-  const inputs = {};
-  for (const f of fields) {
-    const input = document.createElement('input');
-    input.placeholder = f.label;
-    input.type = f.type ?? 'text';
-    inputs[f.key] = input;
-    form.append(input);
-  }
-  const submit = createButton({
-    label: 'Agregar',
-    kind: 'primary',
-    onClick: (ev) => {
-      ev?.preventDefault?.();
-      const row = {};
-      for (const f of fields) {
-        row[f.key] = f.type === 'number' ? Number(inputs[f.key].value) : inputs[f.key].value;
-      }
-      onAdd(row);
-    }
-  });
-  form.append(submit);
-  section.append(form);
-  return section;
+function emptyState(container, msg) {
+  const p = document.createElement('p');
+  p.style.padding = 'var(--space-6)';
+  p.style.color = 'var(--text-muted)';
+  p.style.fontSize = 'var(--text-sm)';
+  p.style.background = 'var(--surface)';
+  p.style.borderRadius = 'var(--radius-md)';
+  p.style.border = '1px solid var(--border)';
+  p.textContent = msg;
+  container.append(p);
 }

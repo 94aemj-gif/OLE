@@ -52,29 +52,62 @@ function setTileText(id, value) {
   if (el) el.textContent = value;
 }
 
+function renderProgress(state) {
+  const progress = document.getElementById('progressBar');
+  if (!progress) return;
+  const pct = Math.min((state.count / targetForShift) * 100, 100);
+  progress.style.width = `${pct}%`;
+  progress.parentElement?.setAttribute('aria-valuenow', String(Math.round(pct)));
+}
+
+function renderLastCapture(state) {
+  const last = document.getElementById('lastCapture');
+  if (!last) return;
+  if (state.last_capture) {
+    const at = new Date(state.last_capture.at);
+    last.textContent = `${at.toLocaleTimeString()} — ${state.last_capture.units}`;
+  } else {
+    last.textContent = '—';
+  }
+}
+
+function renderEmptyHint(state) {
+  const heroEl = document.querySelector('.operator-hero');
+  let hint = document.getElementById('operatorEmptyHint');
+  const shouldShow = heroEl && state.count === 0 && !state.last_capture;
+  if (shouldShow) {
+    if (hint) return;
+    hint = document.createElement('div');
+    hint.id = 'operatorEmptyHint';
+    hint.className = 'empty-state';
+    hint.innerHTML =
+      '<span class="icon">⌛</span><strong>Aún sin capturas en este turno</strong>' +
+      '<span>Toca <strong>CAPTURAR</strong> al cierre de cada hora para registrar la producción.</span>';
+    heroEl.append(hint);
+  } else if (hint) {
+    hint.remove();
+  }
+}
+
+function renderPace(state) {
+  const paceTile = document.getElementById('paceTile');
+  if (!paceTile) return;
+  const hours = hoursElapsedInShift(new Date(), shift, timezone);
+  const { percent } = computePace({
+    actual: state.count,
+    targetPerHour: line.hourly_target,
+    hoursElapsed: hours
+  });
+  paceTile.textContent = `${Math.round(percent)}%`;
+}
+
 function refreshState() {
   const state = readShiftState();
   counter.set(state.count);
-  const progress = document.getElementById('progressBar');
-  if (progress) {
-    const pct = Math.min((state.count / targetForShift) * 100, 100);
-    progress.style.width = `${pct}%`;
-  }
-  const last = document.getElementById('lastCapture');
-  if (last && state.last_capture) {
-    const at = new Date(state.last_capture.at);
-    last.textContent = `${at.toLocaleTimeString()} — ${state.last_capture.units}`;
-  }
-  const paceTile = document.getElementById('paceTile');
-  if (paceTile) {
-    const hours = hoursElapsedInShift(new Date(), shift, timezone);
-    const { percent } = computePace({
-      actual: state.count,
-      targetPerHour: line.hourly_target,
-      hoursElapsed: hours
-    });
-    paceTile.textContent = `${Math.round(percent)}%`;
-  }
+  renderProgress(state);
+  renderLastCapture(state);
+  renderEmptyHint(state);
+  renderPace(state);
   refreshUndoUI();
 }
 

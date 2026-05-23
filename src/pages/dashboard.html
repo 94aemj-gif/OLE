@@ -16,8 +16,22 @@
       <h1 data-i18n="header.title.dashboard">Tablero de Producción</h1>
       <span class="live-pill">Live · 30 s</span>
       <div class="right">
-        <button id="refreshBtn" class="btn-ghost-dark" title="Refrescar">⟳</button>
-        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
+        <button
+          id="refreshBtn"
+          class="btn-ghost-dark"
+          title="Refrescar"
+          aria-label="Refrescar tablero"
+        >
+          ⟳
+        </button>
+        <button
+          id="langToggle"
+          class="lang"
+          aria-label="Cambiar idioma"
+          data-i18n="language.toggle"
+        >
+          ES | EN
+        </button>
       </div>
     </header>
 
@@ -40,7 +54,12 @@
       </div>
     </div>
 
-    <div id="grid" class="dashboard-grid"></div>
+    <main
+      id="grid"
+      class="dashboard-grid"
+      aria-live="polite"
+      aria-label="Líneas de producción"
+    ></main>
     <script type="module" src="../modules/dashboard/page.js"></script>
   </body>
 </html>
