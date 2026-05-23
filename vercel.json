@@ -26,7 +26,13 @@
     { "source": "/mobile-tablero", "destination": "/pages/mobile-tablero.html" },
     { "source": "/mobile-graficas", "destination": "/pages/mobile-graficas.html" },
     { "source": "/mobile-admin", "destination": "/pages/mobile-admin.html" },
-    { "source": "/mobile-capture", "destination": "/pages/mobile-capture.html" }
+    { "source": "/mobile-capture", "destination": "/pages/mobile-capture.html" },
+    { "source": "/nav-mockups", "destination": "/pages/nav-mockups.html" },
+    { "source": "/nav-mockup-1", "destination": "/pages/nav-mockup-1.html" },
+    { "source": "/nav-mockup-2", "destination": "/pages/nav-mockup-2.html" },
+    { "source": "/nav-mockup-3", "destination": "/pages/nav-mockup-3.html" },
+    { "source": "/nav-mockup-4", "destination": "/pages/nav-mockup-4.html" },
+    { "source": "/nav-mockup-5", "destination": "/pages/nav-mockup-5.html" }
   ],
   "headers": [
     {

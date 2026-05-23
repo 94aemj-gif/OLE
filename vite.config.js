@@ -29,7 +29,13 @@ export default defineConfig({
         mobileTablero: resolve(import.meta.dirname, 'src/pages/mobile-tablero.html'),
         mobileGraficas: resolve(import.meta.dirname, 'src/pages/mobile-graficas.html'),
         mobileAdmin: resolve(import.meta.dirname, 'src/pages/mobile-admin.html'),
-        mobileCapture: resolve(import.meta.dirname, 'src/pages/mobile-capture.html')
+        mobileCapture: resolve(import.meta.dirname, 'src/pages/mobile-capture.html'),
+        navMockups: resolve(import.meta.dirname, 'src/pages/nav-mockups.html'),
+        navMockup1: resolve(import.meta.dirname, 'src/pages/nav-mockup-1.html'),
+        navMockup2: resolve(import.meta.dirname, 'src/pages/nav-mockup-2.html'),
+        navMockup3: resolve(import.meta.dirname, 'src/pages/nav-mockup-3.html'),
+        navMockup4: resolve(import.meta.dirname, 'src/pages/nav-mockup-4.html'),
+        navMockup5: resolve(import.meta.dirname, 'src/pages/nav-mockup-5.html')
       }
     }
   },

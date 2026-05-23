@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nav 03 · Inline pill nav</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .hero-card {
+        text-align: center;
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 12px;
+        font-size: var(--t-sm);
+        color: var(--muted);
+      }
+      .meta-row strong {
+        color: var(--text);
+      }
+      .side-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 0 var(--m-3);
+      }
+      .side-tiles .tile {
+        text-align: center;
+      }
+      .side-tiles .tile .l {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .side-tiles .tile .v {
+        font-size: var(--t-lead);
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .cta-stripe {
+        padding: 16px 12px 24px;
+      }
+
+      /* Inline pill nav */
+      .nav-pills {
+        background: var(--header);
+        border-bottom: 1px solid var(--header-divider);
+        padding: 8px 12px;
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+      }
+      .nav-pills a {
+        text-decoration: none;
+        color: var(--header-muted);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 8px 14px;
+        border-radius: var(--r-pill);
+        font-size: var(--t-sm);
+        font-weight: 600;
+        white-space: nowrap;
+        border: 1px solid transparent;
+      }
+      .nav-pills a.on {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/nav-mockups">← nav</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <span class="title">Línea #1 · Jeringa 60ml</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <nav class="nav-pills">
+          <a class="on" href="#">Operador</a>
+          <a href="#">Tablero</a>
+          <a href="#">Gráficas</a>
+          <a href="#">Admin</a>
+        </nav>
+
+        <section class="card hero-card">
+          <span class="label">Producción del turno</span>
+          <div class="num-xl" style="margin: 12px 0">1 845</div>
+          <div class="progress"><span style="width: 92%"></span></div>
+          <div class="meta-row">
+            <span>92 % del objetivo · <strong>2 000</strong></span>
+            <span>Última 14:00 · <strong>240</strong></span>
+          </div>
+        </section>
+
+        <div class="side-tiles">
+          <div class="tile">
+            <div class="l">Pace</div>
+            <div class="v" style="color: var(--ok)">95%</div>
+          </div>
+          <div class="tile">
+            <div class="l">Scrap</div>
+            <div class="v" style="color: var(--crit)">12</div>
+          </div>
+          <div class="tile">
+            <div class="l">Turno</div>
+            <div class="v">M</div>
+          </div>
+        </div>
+
+        <div class="cta-stripe">
+          <button class="btn-cta">+ &nbsp;CAPTURAR</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

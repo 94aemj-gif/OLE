@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nav 05 · Title app-switcher</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .hero-card {
+        text-align: center;
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 12px;
+        font-size: var(--t-sm);
+        color: var(--muted);
+      }
+      .meta-row strong {
+        color: var(--text);
+      }
+      .side-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 0 var(--m-3);
+      }
+      .side-tiles .tile {
+        text-align: center;
+      }
+      .side-tiles .tile .l {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .side-tiles .tile .v {
+        font-size: var(--t-lead);
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .cta-stripe {
+        padding: 16px 12px 24px;
+      }
+
+      /* Title dropdown trigger */
+      .switcher {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--header-text);
+        font-size: var(--t-lead);
+        font-weight: 600;
+        text-align: left;
+        padding: 0;
+        cursor: pointer;
+        font-family: var(--font);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .switcher::after {
+        content: '▾';
+        color: var(--header-muted);
+        font-size: 11px;
+        margin-left: 4px;
+      }
+
+      /* Popover */
+      .popover {
+        position: absolute;
+        top: 60px;
+        left: 12px;
+        right: 12px;
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.35);
+        border: 1px solid var(--border);
+        padding: 6px;
+        z-index: 50;
+      }
+      .popover .lbl {
+        padding: 8px 12px 6px;
+        font-size: 10px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .popover a {
+        text-decoration: none;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: var(--t-base);
+        font-weight: 600;
+        border-radius: var(--r-sm);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .popover a:hover {
+        background: var(--surface-soft);
+      }
+      .popover a.on {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .popover a .ico {
+        font-size: 18px;
+        opacity: 0.7;
+      }
+      .popover a.on .ico {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/nav-mockups">← nav</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <button class="switcher" aria-haspopup="true">Línea #1 · Jeringa 60ml</button>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <!-- Popover shown for demo -->
+        <div class="popover" role="menu">
+          <div class="lbl">Cambiar pantalla</div>
+          <a class="on" href="#"><span class="ico">▦</span>Operador · Línea 1</a>
+          <a href="#"><span class="ico">📊</span>Tablero</a>
+          <a href="#"><span class="ico">📈</span>Gráficas · KPI</a>
+          <a href="#"><span class="ico">⚙</span>Admin</a>
+        </div>
+
+        <section class="card hero-card">
+          <span class="label">Producción del turno</span>
+          <div class="num-xl" style="margin: 12px 0">1 845</div>
+          <div class="progress"><span style="width: 92%"></span></div>
+          <div class="meta-row">
+            <span>92 % del objetivo · <strong>2 000</strong></span>
+            <span>Última 14:00 · <strong>240</strong></span>
+          </div>
+        </section>
+
+        <div class="side-tiles">
+          <div class="tile">
+            <div class="l">Pace</div>
+            <div class="v" style="color: var(--ok)">95%</div>
+          </div>
+          <div class="tile">
+            <div class="l">Scrap</div>
+            <div class="v" style="color: var(--crit)">12</div>
+          </div>
+          <div class="tile">
+            <div class="l">Turno</div>
+            <div class="v">M</div>
+          </div>
+        </div>
+
+        <div class="cta-stripe">
+          <button class="btn-cta">+ &nbsp;CAPTURAR</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

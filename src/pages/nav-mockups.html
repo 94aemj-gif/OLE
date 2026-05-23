@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nav mockups · index</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0f172a;
+        color: #f1f5f9;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        padding: 48px 24px 80px;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      p.sub {
+        color: #94a3b8;
+        margin: 0 0 40px;
+        font-size: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      a.card {
+        text-decoration: none;
+        color: inherit;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 24px;
+        display: grid;
+        gap: 8px;
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease;
+      }
+      a.card:hover {
+        transform: translateY(-3px);
+        border-color: #3b82f6;
+      }
+      .num {
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 0;
+      }
+      .tag {
+        color: #cbd5e1;
+        font-size: 14px;
+        margin: 0;
+      }
+      .trade {
+        color: #94a3b8;
+        font-size: 12px;
+        margin: 4px 0 0;
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 24px;
+        font-size: 12px;
+        color: #cbd5e1;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← all mockups</a>
+    <div class="wrap">
+      <h1>Cross-screen navigation · 5 patterns</h1>
+      <p class="sub">
+        How operators/managers jump between Operador, Tablero, Gráficas, Admin. Each mockup wires
+        the pattern on the operator screen at 390 px. Pick one (or mix) and I apply to real code.
+      </p>
+      <div class="grid">
+        <a class="card" href="/nav-mockup-1">
+          <span class="num">01 · BOTTOM TAB BAR</span>
+          <h2>iOS-style tab bar</h2>
+          <p class="tag">Fixed bottom · 4 icons always visible.</p>
+          <p class="trade">
+            Trade: collides with CAPTURAR sticky CTA → CTA moves inline above tabs.
+          </p>
+        </a>
+        <a class="card" href="/nav-mockup-2">
+          <span class="num">02 · HAMBURGER DRAWER</span>
+          <h2>Slide-out menu</h2>
+          <p class="tag">☰ in header opens left drawer with all destinations.</p>
+          <p class="trade">Trade: hidden by default · one extra tap.</p>
+        </a>
+        <a class="card" href="/nav-mockup-3">
+          <span class="num">03 · INLINE PILL NAV</span>
+          <h2>Second-row pills</h2>
+          <p class="tag">Row of nav pills under header. Active pill filled.</p>
+          <p class="trade">Trade: +40 px header height across all screens.</p>
+        </a>
+        <a class="card" href="/nav-mockup-4">
+          <span class="num">04 · FLOATING QUICK-MENU</span>
+          <h2>FAB · bottom-left</h2>
+          <p class="tag">Round button reveals menu of 3 destinations.</p>
+          <p class="trade">Trade: floats over content · feels app-like, less standard for web.</p>
+        </a>
+        <a class="card" href="/nav-mockup-5">
+          <span class="num">05 · TITLE APP-SWITCHER</span>
+          <h2>Tap title to switch</h2>
+          <p class="tag">Header title becomes a dropdown. Discreet.</p>
+          <p class="trade">Trade: discoverability · users might miss the ▾.</p>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nav 04 · Floating quick-menu</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .hero-card {
+        text-align: center;
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 12px;
+        font-size: var(--t-sm);
+        color: var(--muted);
+      }
+      .meta-row strong {
+        color: var(--text);
+      }
+      .side-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 0 var(--m-3);
+      }
+      .side-tiles .tile {
+        text-align: center;
+      }
+      .side-tiles .tile .l {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .side-tiles .tile .v {
+        font-size: var(--t-lead);
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .cta-stripe {
+        padding: 16px 12px 24px;
+      }
+
+      /* FAB */
+      .fab {
+        position: absolute;
+        bottom: 20px;
+        left: 16px;
+        z-index: 50;
+      }
+      .fab .trigger {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--text);
+        color: white;
+        border: none;
+        font-size: 22px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.4);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-family: var(--font);
+      }
+      .fab .menu {
+        position: absolute;
+        bottom: 60px;
+        left: 0;
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.25);
+        padding: 6px;
+        display: grid;
+        gap: 2px;
+        min-width: 180px;
+        border: 1px solid var(--border);
+      }
+      .fab .menu a {
+        text-decoration: none;
+        color: var(--text);
+        padding: 10px 14px;
+        font-size: var(--t-base);
+        font-weight: 600;
+        border-radius: var(--r-sm);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .fab .menu a:hover {
+        background: var(--surface-soft);
+      }
+      .fab .menu a .ico {
+        opacity: 0.7;
+        font-size: 16px;
+      }
+      .fab .menu a.on {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/nav-mockups">← nav</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <span class="title">Línea #1 · Jeringa 60ml</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <section class="card hero-card">
+          <span class="label">Producción del turno</span>
+          <div class="num-xl" style="margin: 12px 0">1 845</div>
+          <div class="progress"><span style="width: 92%"></span></div>
+          <div class="meta-row">
+            <span>92 % del objetivo · <strong>2 000</strong></span>
+            <span>Última 14:00 · <strong>240</strong></span>
+          </div>
+        </section>
+
+        <div class="side-tiles">
+          <div class="tile">
+            <div class="l">Pace</div>
+            <div class="v" style="color: var(--ok)">95%</div>
+          </div>
+          <div class="tile">
+            <div class="l">Scrap</div>
+            <div class="v" style="color: var(--crit)">12</div>
+          </div>
+          <div class="tile">
+            <div class="l">Turno</div>
+            <div class="v">M</div>
+          </div>
+        </div>
+
+        <div class="cta-stripe">
+          <button class="btn-cta">+ &nbsp;CAPTURAR</button>
+        </div>
+
+        <div class="fab">
+          <div class="menu">
+            <a class="on" href="#"><span class="ico">▦</span>Operador</a>
+            <a href="#"><span class="ico">📊</span>Tablero</a>
+            <a href="#"><span class="ico">📈</span>Gráficas</a>
+            <a href="#"><span class="ico">⚙</span>Admin</a>
+          </div>
+          <button class="trigger" aria-label="Cambiar pantalla">⇆</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
