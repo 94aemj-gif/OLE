@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>OLE — Registro de Producción</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+  </head>
+  <body>
+    <div class="accent-stripe"></div>
+    <header class="page-header">
+      <div style="display: flex; gap: var(--space-4); align-items: center">
+        <h1 id="lineName">Línea</h1>
+        <span id="statusPillSlot"></span>
+      </div>
+      <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+    </header>
+
+    <main class="panel" style="margin: var(--space-6); display: grid; gap: var(--space-4)">
+      <p data-i18n="shift.production">Producción del turno</p>
+      <div
+        id="counterSlot"
+        style="font-size: var(--text-counter); font-weight: 700; text-align: center"
+      >
+        0
+      </div>
+      <div class="progress" aria-label="Progreso vs objetivo">
+        <span id="progressBar" style="width: 0%"></span>
+      </div>
+      <p style="display: flex; justify-content: space-between; color: var(--color-text-muted)">
+        <span
+          ><span data-i18n="capture.last">Última captura</span>:
+          <span id="lastCapture">—</span></span
+        >
+        <span
+          ><span data-i18n="shift.next.alert">Próxima alerta en</span>
+          <span id="nextAlert">—</span></span
+        >
+      </p>
+      <button
+        id="captureBtn"
+        class="btn btn-primary glow"
+        style="
+          font-size: var(--text-lg);
+          padding: var(--space-5) var(--space-8);
+          align-self: center;
+          min-width: 320px;
+        "
+      >
+        <span data-i18n="capture.cta">CAPTURAR</span>
+      </button>
+    </main>
+
+    <script type="module" src="../modules/page/operator-page.js"></script>
+  </body>
+</html>

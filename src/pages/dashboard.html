@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OLE — Tablero de Producción</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+  </head>
+  <body>
+    <div class="accent-stripe"></div>
+    <header class="page-header">
+      <h1 data-i18n="header.title.dashboard">Tablero de Producción</h1>
+      <div style="display: flex; gap: var(--space-3)">
+        <button id="refreshBtn" class="btn">⟳</button>
+        <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+      </div>
+    </header>
+    <div class="summary-strip">
+      <div class="summary-tile">
+        <span class="label" data-i18n="summary.production">Producción total</span>
+        <span class="value" id="summaryProduction">0</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label" data-i18n="summary.scrap">Merma total</span>
+        <span class="value" id="summaryScrap">0</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label" data-i18n="summary.lines">Líneas activas</span>
+        <span class="value" id="summaryLines">0/0</span>
+      </div>
+      <div class="summary-tile">
+        <span class="label" data-i18n="summary.pace">Pace promedio</span>
+        <span class="value" id="summaryPace">0%</span>
+      </div>
+    </div>
+    <div id="grid" class="dashboard-grid"></div>
+    <script type="module" src="../modules/dashboard/page.js"></script>
+  </body>
+</html>
