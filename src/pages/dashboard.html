@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="../styles/components.css" />
   </head>
   <body>
-    <div class="accent-stripe"></div>
-    <header class="page-header">
+    <header class="app-header">
+      <span class="brand">OLE</span>
       <h1 data-i18n="header.title.dashboard">Tablero de Producción</h1>
-      <div style="display: flex; gap: var(--space-3)">
-        <button id="refreshBtn" class="btn">⟳</button>
-        <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+      <span class="live-pill">Live · 30 s</span>
+      <div class="right">
+        <button id="refreshBtn" class="btn-ghost-dark" title="Refrescar">⟳</button>
+        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
       </div>
     </header>
+
     <div class="summary-strip">
       <div class="summary-tile">
         <span class="label" data-i18n="summary.production">Producción total</span>
@@ -34,6 +36,7 @@
         <span class="value" id="summaryPace">0%</span>
       </div>
     </div>
+
     <div id="grid" class="dashboard-grid"></div>
     <script type="module" src="../modules/dashboard/page.js"></script>
   </body>

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mockup 03 — Industrial Console</title>
+    <style>
+      :root {
+        --bg: #0a0e14;
+        --surface: #111827;
+        --border: #1f2937;
+        --text: #f8fafc;
+        --muted: #64748b;
+        --ok: #22c55e;
+        --warn: #f59e0b;
+        --crit: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(circle at top, #1f2937 0%, var(--bg) 60%);
+        color: var(--text);
+        font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+        min-height: 100vh;
+      }
+      .topbar {
+        padding: 22px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+      }
+      .topbar .id {
+        letter-spacing: 0.2em;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .topbar .id b {
+        color: var(--text);
+        margin-left: 8px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        color: var(--ok);
+        padding: 4px 14px;
+        border: 1px solid var(--ok);
+        border-radius: 0;
+        text-transform: uppercase;
+        background: rgba(34, 197, 94, 0.08);
+      }
+      .pill::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: var(--ok);
+        border-radius: 50%;
+        animation: pulse 1.4s ease-in-out infinite;
+        box-shadow: 0 0 10px var(--ok);
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .clock {
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+      }
+      main {
+        padding: 56px 32px;
+        text-align: center;
+      }
+      .label {
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 24px;
+      }
+      .counter {
+        font-size: 220px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.06em;
+        color: var(--ok);
+        text-shadow: 0 0 40px rgba(34, 197, 94, 0.45);
+        font-family: inherit;
+      }
+      .row {
+        display: flex;
+        justify-content: center;
+        gap: 64px;
+        margin-top: 48px;
+      }
+      .metric .l {
+        font-size: 11px;
+        letter-spacing: 0.24em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .metric .v {
+        font-size: 36px;
+        font-weight: 700;
+      }
+      .metric.warn .v {
+        color: var(--warn);
+      }
+      .bars {
+        max-width: 720px;
+        margin: 36px auto;
+        display: flex;
+        gap: 6px;
+        height: 32px;
+      }
+      .bars span {
+        flex: 1;
+        background: var(--ok);
+        opacity: 0.85;
+      }
+      .bars span.off {
+        background: var(--border);
+      }
+      .cta-row {
+        margin-top: 56px;
+        display: flex;
+        justify-content: center;
+      }
+      .cta {
+        font-family: inherit;
+        background: var(--ok);
+        color: var(--bg);
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0.3em;
+        padding: 28px 96px;
+        border: 2px solid var(--ok);
+        border-radius: 0;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0 0 32px rgba(34, 197, 94, 0.4);
+      }
+      .cta:hover {
+        background: transparent;
+        color: var(--ok);
+      }
+      .footer-band {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 14px 32px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.16em;
+      }
+      .back {
+        position: fixed;
+        top: 22px;
+        right: 32px;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-decoration: none;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        padding: 4px 12px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← MOCKUPS</a>
+    <div class="topbar">
+      <div>
+        <span class="id">LINE <b>01</b></span>
+        &nbsp;&nbsp;
+        <span style="color: var(--muted); letter-spacing: 0.16em; font-size: 13px">
+          60 ML · NEOMED
+        </span>
+      </div>
+      <span class="pill">● Running</span>
+      <div class="clock">17:42:08</div>
+    </div>
+    <main>
+      <p class="label">Producción · Turno Matutino</p>
+      <div class="counter">1845</div>
+      <div class="bars">
+        <span></span><span></span><span></span><span></span><span></span><span></span> <span></span
+        ><span></span><span></span><span></span><span></span><span></span> <span></span><span></span
+        ><span></span><span></span><span></span><span></span> <span></span><span class="off"></span>
+      </div>
+      <p style="color: var(--muted); letter-spacing: 0.18em; font-size: 12px; margin: 0">
+        92 % · TARGET 2000
+      </p>
+      <div class="row">
+        <div class="metric">
+          <div class="l">PACE</div>
+          <div class="v">95 %</div>
+        </div>
+        <div class="metric warn">
+          <div class="l">SCRAP</div>
+          <div class="v">12</div>
+        </div>
+        <div class="metric">
+          <div class="l">DOWNTIME</div>
+          <div class="v">5 m</div>
+        </div>
+        <div class="metric">
+          <div class="l">LAST</div>
+          <div class="v">240</div>
+        </div>
+      </div>
+      <div class="cta-row"><button class="cta">▶ Capture</button></div>
+    </main>
+    <div class="footer-band">
+      <span>OPERATOR · ANA LÓPEZ · 12345</span>
+      <span>SHIFT M · 06:00–14:00</span>
+      <span>NEXT ALERT IN 23:14</span>
+    </div>
+  </body>
+</html>

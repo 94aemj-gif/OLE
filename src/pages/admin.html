@@ -7,65 +7,41 @@
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/components.css" />
     <style>
-      #pinGate {
-        display: grid;
-        gap: var(--space-3);
-        max-width: 360px;
-        margin: var(--space-12) auto;
-        padding: var(--space-6);
-        background: var(--color-surface);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-      }
-      #tabbar {
-        display: flex;
-        gap: var(--space-2);
-        padding: var(--space-4) var(--space-6);
-        background: var(--color-surface);
-        border-bottom: 1px solid var(--color-border);
-      }
       #tabContent {
         padding: var(--space-6);
-      }
-      th,
-      td {
-        text-align: left;
-        padding: 6px 12px;
-        border-bottom: 1px solid var(--color-border);
-        font-size: var(--text-sm);
       }
     </style>
   </head>
   <body>
-    <div class="accent-stripe"></div>
-    <header class="page-header">
-      <h1>Admin</h1>
-      <div style="display: flex; gap: var(--space-3)">
-        <button id="logoutBtn" class="btn" style="display: none">Cerrar sesión</button>
-        <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+    <header class="app-header">
+      <span class="brand">OLE</span>
+      <h1>Admin · Configuración</h1>
+      <span class="role-chip">Manager</span>
+      <div class="right">
+        <button id="logoutBtn" class="btn-ghost-dark" style="display: none">Cerrar sesión</button>
+        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
       </div>
     </header>
 
     <section id="pinGate">
-      <h2 style="margin: 0">PIN de manager</h2>
+      <h2>PIN de manager</h2>
       <input
         id="pinInput"
         type="password"
         inputmode="numeric"
         autocomplete="off"
-        class="dest-confirm-input"
-        placeholder="PIN"
+        placeholder="• • • •"
       />
       <button id="pinSubmit" class="btn btn-primary">Entrar</button>
-      <div id="pinError" style="color: var(--color-status-fault)"></div>
+      <div id="pinError"></div>
     </section>
 
     <main id="adminRoot" style="display: none">
-      <nav id="tabbar">
-        <button class="btn" data-tab="resumen">Resumen</button>
-        <button class="btn" data-tab="catalogos">Catálogos</button>
-        <button class="btn" data-tab="configuracion">Configuración</button>
-        <button class="btn" data-tab="datos">Datos</button>
+      <nav id="tabbar" class="tabbar">
+        <button data-tab="resumen">Resumen</button>
+        <button data-tab="catalogos">Catálogos</button>
+        <button data-tab="configuracion">Configuración</button>
+        <button data-tab="datos">Datos</button>
       </nav>
       <section id="tabContent"></section>
     </main>

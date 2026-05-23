@@ -5,65 +5,101 @@ import { createSparkline } from '../ui/sparkline.js';
 import { t } from '../i18n/index.js';
 
 /**
- * Render a single line card. Returns the root element and an `update(state)` function.
+ * Render a single line card (Worximity Dense layout).
  */
 export function createLineCard(line) {
   const root = document.createElement('article');
   root.className = 'line-card';
 
   const header = document.createElement('header');
-  const title = document.createElement('strong');
+  const titleWrap = document.createElement('div');
+  const title = document.createElement('h2');
   title.textContent = line.display_name;
+  const sub = document.createElement('div');
+  sub.className = 'sub';
+  titleWrap.append(title, sub);
   const status = createStatusPill('operacion');
-  header.append(title, status.el);
+  header.append(titleWrap, status.el);
   root.append(header);
-
-  const operatorRow = document.createElement('p');
-  operatorRow.style.color = 'var(--color-text-muted)';
-  operatorRow.style.margin = '0';
-  root.append(operatorRow);
-
-  const shiftRow = document.createElement('p');
-  shiftRow.style.color = 'var(--color-text-muted)';
-  shiftRow.style.margin = '0';
-  root.append(shiftRow);
 
   const count = document.createElement('div');
   count.className = 'count';
   count.textContent = '0';
   root.append(count);
 
-  const pace = createPacePill(0);
-  root.append(pace.el);
+  const progress = document.createElement('div');
+  progress.className = 'progress';
+  progress.style.height = '8px';
+  progress.style.background = 'var(--border)';
+  progress.style.borderRadius = 'var(--radius-pill)';
+  progress.style.overflow = 'hidden';
+  const progressFill = document.createElement('span');
+  progressFill.style.display = 'block';
+  progressFill.style.height = '100%';
+  progressFill.style.background = 'var(--accent)';
+  progressFill.style.width = '0%';
+  progress.append(progressFill);
+  root.append(progress);
 
   const sparkSlot = document.createElement('div');
   root.append(sparkSlot);
 
-  const last = document.createElement('p');
-  last.style.color = 'var(--color-text-muted)';
-  last.style.margin = '0';
-  root.append(last);
+  const meta = document.createElement('div');
+  meta.style.display = 'flex';
+  meta.style.justifyContent = 'space-between';
+  meta.style.color = 'var(--text-muted)';
+  meta.style.fontSize = 'var(--text-sm)';
+  const lastEl = document.createElement('span');
+  const scrapEl = document.createElement('span');
+  meta.append(lastEl, scrapEl);
+  root.append(meta);
 
-  function update(state) {
-    operatorRow.textContent = `${t('card.operator')}: ${state.operatorName ?? '—'}`;
-    shiftRow.textContent = `${t('card.shift')}: ${state.shiftName ?? '—'}`;
-    count.textContent = String(state.count);
-    pace.setPercent(state.pacePercent);
-    status.setState(state.status ?? 'operacion');
-    sparkSlot.innerHTML = '';
-    const svg = createSparkline(state.sparkline, { arialabel: 'tendencia 8h' });
-    sparkSlot.append(svg);
+  const paceRow = document.createElement('div');
+  paceRow.className = 'pace-row';
+  const paceLbl = document.createElement('span');
+  paceLbl.textContent = 'Pace';
+  const pace = createPacePill(0);
+  paceRow.append(paceLbl, pace.el);
+  root.append(paceRow);
+
+  function renderLast(state) {
     if (
       state.lastCaptureAt &&
       state.lastCaptureUnits !== null &&
       state.lastCaptureUnits !== undefined
     ) {
       const at = new Date(state.lastCaptureAt).toLocaleTimeString();
-      last.textContent = `${t('card.last')}: ${at} — ${state.lastCaptureUnits}`;
+      lastEl.innerHTML = `${t('card.last')}: <strong>${at} · ${state.lastCaptureUnits}</strong>`;
     } else {
-      last.textContent = t('card.no.activity');
+      lastEl.textContent = t('card.no.activity');
     }
+  }
+  function renderScrap(state) {
+    if (state.scrap !== null && state.scrap !== undefined) {
+      scrapEl.innerHTML = `Scrap <strong>${state.scrap}</strong>`;
+    } else {
+      scrapEl.textContent = '';
+    }
+  }
+  function update(state) {
+    sub.textContent = `${t('card.operator')}: ${state.operatorName ?? '—'} · ${t('card.shift')} ${state.shiftName ?? '—'}`;
+    count.textContent = formatNumber(state.count);
+    pace.setPercent(state.pacePercent);
+    status.setState(state.status ?? 'operacion');
+    if (state.target && state.target > 0) {
+      const pct = Math.min((state.count / state.target) * 100, 100);
+      progressFill.style.width = `${pct}%`;
+    }
+    sparkSlot.innerHTML = '';
+    sparkSlot.append(createSparkline(state.sparkline, { arialabel: 'tendencia 8h' }));
+    renderLast(state);
+    renderScrap(state);
   }
 
   return { el: root, update };
+}
+
+function formatNumber(n) {
+  const num = Math.round(n);
+  return num.toLocaleString('es-MX').replace(/,/g, ' ');
 }

@@ -7,6 +7,7 @@ import { rolling } from './sparkline-data.js';
 import { makeSupabaseClient } from '../supabase/client.js';
 import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
 import { localStore } from '../storage/local-store.js';
+import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
 
 applyTranslations();
 document.getElementById('langToggle')?.addEventListener('click', () => {
@@ -14,21 +15,7 @@ document.getElementById('langToggle')?.addEventListener('click', () => {
   location.reload();
 });
 
-const CATALOG_KEY = 'catalog';
-const fallbackCatalog = {
-  plant: { timezone: 'America/Mexico_City' },
-  lines: [
-    { id: 'L-01', display_name: 'Línea #1 — Jeringa Neomed 60ml', hourly_target: 250 },
-    { id: 'L-02', display_name: 'Línea #2 — Jeringa Neomed 35ml', hourly_target: 300 }
-  ],
-  shifts: [
-    { id: 'M', name: 'Matutino', start: '06:00', end: '14:00', breaks: [] },
-    { id: 'E', name: 'Vespertino', start: '14:00', end: '22:00', breaks: [] },
-    { id: 'N', name: 'Nocturno', start: '22:00', end: '06:00', breaks: [] }
-  ],
-  operators: []
-};
-const catalog = localStore.get(CATALOG_KEY, fallbackCatalog);
+const catalog = loadOrSeedCatalog();
 const timezone = catalog.plant.timezone;
 
 const cards = new Map();
@@ -82,6 +69,8 @@ function buildCardState({ line, lineCaps, shift, hours, now }) {
       operatorName: operator?.display_name ?? last?.operator_number,
       shiftName: shift.name ?? shift.id,
       count,
+      scrap,
+      target: line.hourly_target * 8,
       pacePercent: percent,
       status: stale ? 'inactivo' : 'operacion',
       sparkline: rolling(lineCaps, now, 8),

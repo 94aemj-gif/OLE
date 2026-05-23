@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mockup 05 — Modular Grid</title>
+    <style>
+      :root {
+        --bg: #f9fafb;
+        --surface: #ffffff;
+        --border: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #0ea5e9;
+        --warn: #f59e0b;
+        --ok: #16a34a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        min-height: 100vh;
+      }
+      .top {
+        padding: 22px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .top .line {
+        font-size: 15px;
+      }
+      .top .line b {
+        font-weight: 600;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #dcfce7;
+        color: var(--ok);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 12px;
+      }
+      .pill::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        background: var(--ok);
+        border-radius: 50%;
+      }
+      main {
+        padding: 16px 24px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 110px;
+        grid-template-areas:
+          'counter counter counter counter oee oee'
+          'counter counter counter counter pace pace'
+          'hourly hourly hourly hourly scrap scrap'
+          'tiles tiles tiles tiles tiles tiles';
+      }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+      }
+      .tile h3 {
+        margin: 0;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .counter-tile {
+        grid-area: counter;
+        background:
+          radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.08), transparent 40%), var(--surface);
+      }
+      .counter-val {
+        font-size: 132px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+      .progress {
+        height: 8px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 16px;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        width: 92%;
+        background: var(--accent);
+      }
+      .progress-row {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .progress-row strong {
+        color: var(--text);
+      }
+      .oee {
+        grid-area: oee;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .oee-val {
+        font-size: 48px;
+        font-weight: 800;
+      }
+      .oee .kpis {
+        display: flex;
+        gap: 6px;
+      }
+      .oee .kpis div {
+        flex: 1;
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 5px 6px;
+        text-align: center;
+        font-size: 11px;
+      }
+      .oee .kpis div b {
+        display: block;
+        font-size: 14px;
+      }
+      .pace {
+        grid-area: pace;
+        background:
+          radial-gradient(at 0% 100%, rgba(14, 165, 233, 0.08), transparent 60%), var(--surface);
+      }
+      .bar-pace {
+        display: flex;
+        gap: 3px;
+      }
+      .bar-pace span {
+        flex: 1;
+        height: 12px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+      .bar-pace span.off {
+        background: var(--border);
+      }
+      .hourly {
+        grid-area: hourly;
+      }
+      .bars {
+        display: flex;
+        gap: 4px;
+        align-items: flex-end;
+        height: 56px;
+      }
+      .bars span {
+        flex: 1;
+        background: var(--accent);
+        opacity: 0.85;
+        border-radius: 4px 4px 0 0;
+      }
+      .bars span.under {
+        background: var(--warn);
+      }
+      .scrap {
+        grid-area: scrap;
+      }
+      .scrap-val {
+        font-size: 40px;
+        font-weight: 800;
+        color: var(--warn);
+      }
+      .tiles {
+        grid-area: tiles;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .tiles .t {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 16px;
+      }
+      .tiles .t .l {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .tiles .t .v {
+        font-weight: 700;
+        font-size: 18px;
+      }
+      footer {
+        padding: 0 24px 24px;
+      }
+      .cta {
+        width: 100%;
+        background: linear-gradient(90deg, var(--accent), #2563eb);
+        color: white;
+        border: none;
+        padding: 22px;
+        border-radius: 16px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        box-shadow: 0 12px 28px rgba(14, 165, 233, 0.3);
+      }
+      .back {
+        position: fixed;
+        top: 22px;
+        right: 28px;
+        font-size: 12px;
+        text-decoration: none;
+        color: var(--muted);
+        background: white;
+        border: 1px solid var(--border);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← mockups</a>
+    <div class="top">
+      <div>
+        <span class="line">Línea <b>#1</b> · Jeringa Neomed 60 ml</span>
+        <span class="pill">Running</span>
+      </div>
+      <div style="font-size: 13px; color: var(--muted)">ES | EN · ⋯</div>
+    </div>
+    <main>
+      <section class="tile counter-tile">
+        <h3>Producción del turno</h3>
+        <div>
+          <div class="counter-val">1 845</div>
+          <div class="progress"><span></span></div>
+          <div class="progress-row">
+            <span>92 % del objetivo</span>
+            <span>Target <strong>2 000</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile oee">
+        <h3>OEE</h3>
+        <div>
+          <div class="oee-val">83 %</div>
+          <div class="kpis">
+            <div>A<b>88</b></div>
+            <div>P<b>95</b></div>
+            <div>Q<b>99</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile pace">
+        <h3>Pace · 95 %</h3>
+        <div class="bar-pace">
+          <span></span><span></span><span></span><span></span><span></span> <span></span
+          ><span></span><span></span><span></span><span class="off"></span>
+        </div>
+      </section>
+
+      <section class="tile hourly">
+        <h3>Hourly · vs target</h3>
+        <div class="bars">
+          <span style="height: 50%"></span>
+          <span class="under" style="height: 40%"></span>
+          <span style="height: 72%"></span>
+          <span style="height: 100%"></span>
+          <span style="height: 80%"></span>
+          <span style="height: 90%"></span>
+          <span style="height: 100%"></span>
+          <span style="height: 92%"></span>
+        </div>
+      </section>
+
+      <section class="tile scrap">
+        <h3>Scrap · turno</h3>
+        <div class="scrap-val">12 pcs</div>
+      </section>
+
+      <section class="tiles">
+        <div class="t">
+          <div class="l">Operador</div>
+          <div class="v">Ana López</div>
+        </div>
+        <div class="t">
+          <div class="l">Turno</div>
+          <div class="v">M · 06–14</div>
+        </div>
+        <div class="t">
+          <div class="l">Última</div>
+          <div class="v">14:00 · 240</div>
+        </div>
+        <div class="t">
+          <div class="l">Downtime</div>
+          <div class="v">5 min</div>
+        </div>
+        <div class="t">
+          <div class="l">Próx. alerta</div>
+          <div class="v">23:14</div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <button class="cta">+ &nbsp;Capturar producción</button>
+    </footer>
+  </body>
+</html>

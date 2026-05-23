@@ -13,6 +13,12 @@ import { renderSaludPanel } from './salud-panel.js';
 import { renderDeadLetterView } from './dead-letter-view.js';
 import { destructiveConfirm } from '../ui/destructive-confirm.js';
 import { triggerDayReset } from '../reset/sequence.js';
+import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
+
+// Ensure the in-memory fallback catalog (including a seeded manager with
+// PIN 1234) is persisted to localStorage so the PIN gate works without
+// Supabase env vars.
+loadOrSeedCatalog();
 
 applyTranslations();
 document.getElementById('langToggle')?.addEventListener('click', () => {

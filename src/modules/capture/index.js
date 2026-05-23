@@ -1,7 +1,7 @@
 // @ts-check
-import { openCaptureModal } from './modal.js';
+import { openCaptureModalWithSubmit } from './modal.js';
 import { buildCapturePayload } from './payload.js';
-import { persistCaptureLocally } from './local.js';
+import { persistCaptureLocally, readShiftState } from './local.js';
 import { openUndoWindow } from './undo.js';
 import { showToast } from '../ui/toast.js';
 import { t } from '../i18n/index.js';
@@ -20,8 +20,20 @@ import { celebrateEndOfShift } from './end-of-shift.js';
  * @param {(state:any)=>void} ctx.onState
  */
 export function openCapture(ctx) {
-  return openCaptureModal({
+  const line = ctx.catalog.lines.find((l) => l.id === ctx.line_id) ?? ctx.catalog.lines[0];
+  const shift = ctx.catalog.shifts.find((s) => s.id === ctx.shift_id) ?? ctx.catalog.shifts[0];
+  const accumEl = () => document.getElementById('ctxAccum');
+  const setAccum = () => {
+    const el = accumEl();
+    if (!el) return;
+    const state = readShiftState();
+    el.innerHTML = `<div class="l">Acumulado del turno</div><div class="v">${state.count} <small>/ ${ctx.target}</small></div>`;
+  };
+
+  const modal = openCaptureModalWithSubmit({
     catalog: ctx.catalog,
+    line,
+    shift,
     onSubmit: async (input) => {
       const payload = await buildCapturePayload({
         line_id: ctx.line_id,
@@ -60,4 +72,7 @@ export function openCapture(ctx) {
       }
     }
   });
+
+  setAccum();
+  return modal;
 }

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node ./node_modules/vite/bin/vite.js build",
+  "outputDirectory": "dist",
+  "framework": null,
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/pages/index.html" },
+    { "source": "/dashboard", "destination": "/pages/dashboard.html" },
+    { "source": "/admin", "destination": "/pages/admin.html" },
+    { "source": "/graficas", "destination": "/pages/graficas.html" },
+    { "source": "/mockups", "destination": "/pages/mockups.html" },
+    { "source": "/mockup-1", "destination": "/pages/mockup-1.html" },
+    { "source": "/mockup-2", "destination": "/pages/mockup-2.html" },
+    { "source": "/mockup-3", "destination": "/pages/mockup-3.html" },
+    { "source": "/mockup-4", "destination": "/pages/mockup-4.html" },
+    { "source": "/mockup-5", "destination": "/pages/mockup-5.html" },
+    { "source": "/mockup-2-tablero", "destination": "/pages/mockup-2-tablero.html" },
+    { "source": "/mockup-2-admin", "destination": "/pages/mockup-2-admin.html" },
+    { "source": "/mockup-2-graficas", "destination": "/pages/mockup-2-graficas.html" },
+    { "source": "/mockup-2-capture", "destination": "/pages/mockup-2-capture.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}

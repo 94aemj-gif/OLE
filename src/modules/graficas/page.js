@@ -13,7 +13,6 @@ import { findActiveShift } from '../time/shift.js';
 import { makeSupabaseClient } from '../supabase/client.js';
 import { localStore } from '../storage/local-store.js';
 import { openEosPopup } from './eos-popup.js';
-import { createButton } from '../ui/button.js';
 
 applyTranslations();
 document.getElementById('langToggle')?.addEventListener('click', () => {
@@ -21,20 +20,8 @@ document.getElementById('langToggle')?.addEventListener('click', () => {
   location.reload();
 });
 
-const fallbackCatalog = {
-  plant: { timezone: 'America/Mexico_City' },
-  lines: [
-    { id: 'L-01', display_name: 'Línea #1 — Jeringa Neomed 60ml', hourly_target: 250 },
-    { id: 'L-02', display_name: 'Línea #2 — Jeringa Neomed 35ml', hourly_target: 300 }
-  ],
-  shifts: [
-    { id: 'S-MORNING', name: 'Matutino', start: '06:00', end: '14:00', breaks: [] },
-    { id: 'S-EVENING', name: 'Vespertino', start: '14:00', end: '22:00', breaks: [] },
-    { id: 'S-NIGHT', name: 'Nocturno', start: '22:00', end: '06:00', breaks: [] }
-  ]
-};
-
-const catalog = localStore.get('catalog', fallbackCatalog);
+import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
+const catalog = loadOrSeedCatalog();
 const timezone = catalog.plant.timezone;
 
 const lineSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById('lineSelect'));
@@ -48,16 +35,7 @@ if (lineSelect) {
   lineSelect.value = catalog.lines[0]?.id ?? '';
 }
 
-const eosBtn = document.getElementById('eosBtn');
-if (eosBtn) {
-  const btn = createButton({
-    label: 'Resumen de fin de turno',
-    kind: 'primary',
-    onClick: () => render({ openEos: true })
-  });
-  eosBtn.replaceWith(btn);
-  btn.id = 'eosBtn';
-}
+document.getElementById('eosBtn')?.addEventListener('click', () => void render({ openEos: true }));
 
 lineSelect?.addEventListener('change', () => void render());
 document.getElementById('refreshBtn')?.addEventListener('click', () => void render());
@@ -159,10 +137,13 @@ async function render(opts = {}) {
       })
   );
 
-  setText('kpiOee', `${(snapshot.oee * 100).toFixed(1)}%`);
-  setText('kpiAvailability', `${(snapshot.availability * 100).toFixed(1)}%`);
-  setText('kpiPerformance', `${(snapshot.performance * 100).toFixed(1)}%`);
-  setText('kpiQuality', `${(snapshot.quality * 100).toFixed(1)}%`);
+  setKpi('Oee', 'oeeGauge', snapshot.oee);
+  setKpi('Availability', 'availGauge', snapshot.availability);
+  setKpi('Performance', 'perfGauge', snapshot.performance);
+  setKpi('Quality', 'qualGauge', snapshot.quality);
+  setText('availSub', `${Math.round(snapshot.runMinutes)}/${snapshot.plannedMinutes} min`);
+  setText('perfSub', `${snapshot.unitsProduced} / ${Math.round(snapshot.theoreticalUnits)}`);
+  setText('qualSub', `${snapshot.goodUnits} / ${snapshot.unitsProduced}`);
 
   const data = buildDataSets({ todayCaps, lineCaps, startIso: ctx.startIso, line: ctx.line });
   await paintCharts(data, ctx.line);
@@ -176,6 +157,16 @@ async function render(opts = {}) {
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+function setKpi(labelId, gaugeId, ratio) {
+  const pct = Math.max(0, Math.min(ratio, 1)) * 100;
+  setText(`kpi${labelId}`, `${pct.toFixed(1)}%`);
+  const gauge = document.getElementById(gaugeId);
+  if (gauge) {
+    const c = 2 * Math.PI * 35;
+    gauge.setAttribute('stroke-dasharray', `${(pct / 100) * c} ${c}`);
+  }
 }
 
 function destroyExisting(canvas) {

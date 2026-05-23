@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mockup 02 — Worximity Dense</title>
+    <style>
+      :root {
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --header: #0f172a;
+        --accent: #3b82f6;
+        --ok: #16a34a;
+        --warn: #f59e0b;
+        --crit: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        min-height: 100vh;
+      }
+      .header {
+        background: var(--header);
+        color: white;
+        padding: 16px 28px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .header .brand {
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        font-size: 13px;
+        color: #94a3b8;
+      }
+      .header .line {
+        font-size: 16px;
+      }
+      .header .line b {
+        font-weight: 600;
+      }
+      .header .oee-mini {
+        margin-left: auto;
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        font-size: 13px;
+      }
+      .header .oee-mini strong {
+        font-size: 20px;
+        margin-left: 4px;
+      }
+      .header .lang {
+        opacity: 0.6;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      main {
+        padding: 24px 28px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 280px 1fr 360px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .card h3 {
+        margin: 0 0 12px;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .donut {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 12px;
+        position: relative;
+      }
+      .donut svg {
+        transform: rotate(-90deg);
+      }
+      .donut .center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        font-weight: 700;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        text-align: center;
+        margin-top: 8px;
+      }
+      .kpis .k {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 8px 4px;
+      }
+      .kpis .k .l {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+      }
+      .kpis .k .v {
+        font-weight: 600;
+        font-size: 18px;
+      }
+      .center-card {
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+      .counter {
+        font-size: 132px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .counter-label {
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .progress {
+        width: 100%;
+        height: 8px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 18px 0 6px;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        width: 92%;
+        background: var(--accent);
+      }
+      .progress-row {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 13px;
+        width: 100%;
+      }
+      .progress-row strong {
+        color: var(--text);
+      }
+      .chart-bars {
+        display: flex;
+        gap: 4px;
+        align-items: flex-end;
+        height: 88px;
+        margin: 8px 0 12px;
+        padding-top: 4px;
+      }
+      .chart-bars .bar {
+        flex: 1;
+        background: var(--accent);
+        border-radius: 4px 4px 0 0;
+        opacity: 0.85;
+      }
+      .chart-bars .bar.under {
+        background: var(--warn);
+      }
+      .chart-bars .bar.over {
+        background: var(--ok);
+      }
+      .stats-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .stats-row strong {
+        color: var(--text);
+      }
+      .info-card {
+        margin-top: 16px;
+      }
+      .info-card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .info-card li {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+      .info-card li:last-child {
+        border-bottom: none;
+      }
+      .info-card .lbl {
+        color: var(--muted);
+      }
+      .info-card .val {
+        font-weight: 600;
+      }
+      footer {
+        padding: 16px 28px 32px;
+      }
+      .cta {
+        width: 100%;
+        padding: 24px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.28);
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 28px;
+        font-size: 12px;
+        color: white;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← mockups</a>
+    <div class="header">
+      <div class="brand">OLE • LINE 1</div>
+      <div class="line">Jeringa Neomed <b>60 ml</b></div>
+      <div class="oee-mini">
+        <div>OEE <strong>83 %</strong></div>
+        <div>Pace <strong>95 %</strong></div>
+        <div>17:42</div>
+        <div class="lang">ES | EN</div>
+      </div>
+    </div>
+    <main>
+      <section class="card">
+        <h3>OEE — Turno actual</h3>
+        <div class="donut">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="78" stroke="#e2e8f0" stroke-width="14" fill="none" />
+            <circle
+              cx="90"
+              cy="90"
+              r="78"
+              stroke="#3b82f6"
+              stroke-width="14"
+              fill="none"
+              stroke-dasharray="406 489"
+              stroke-linecap="round"
+            />
+          </svg>
+          <div class="center">83%</div>
+        </div>
+        <div class="kpis">
+          <div class="k">
+            <div class="l">AVAIL</div>
+            <div class="v">88%</div>
+          </div>
+          <div class="k">
+            <div class="l">PERF</div>
+            <div class="v">95%</div>
+          </div>
+          <div class="k">
+            <div class="l">QUAL</div>
+            <div class="v">99%</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <ul>
+            <li><span class="lbl">Operador</span><span class="val">Ana López</span></li>
+            <li><span class="lbl">Turno</span><span class="val">Matutino</span></li>
+            <li>
+              <span class="lbl">Estado</span
+              ><span class="val" style="color: var(--ok)">● Running</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card center-card">
+        <p class="counter-label">Producción del turno</p>
+        <div class="counter">1 845</div>
+        <div class="progress"><span></span></div>
+        <div class="progress-row">
+          <span>92 % del objetivo</span>
+          <span>Target <strong>2 000</strong></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Hourly · vs target</h3>
+        <div class="chart-bars">
+          <div class="bar" style="height: 60%"></div>
+          <div class="bar under" style="height: 50%"></div>
+          <div class="bar" style="height: 72%"></div>
+          <div class="bar over" style="height: 100%"></div>
+          <div class="bar" style="height: 80%"></div>
+          <div class="bar" style="height: 90%"></div>
+          <div class="bar over" style="height: 100%"></div>
+          <div class="bar" style="height: 92%"></div>
+        </div>
+        <div class="stats-row">
+          <span>Best <strong>290</strong></span>
+          <span>Avg <strong>240</strong></span>
+        </div>
+        <div class="info-card">
+          <ul>
+            <li><span class="lbl">Scrap</span><span class="val">12 pcs</span></li>
+            <li><span class="lbl">Downtime</span><span class="val">5 min</span></li>
+            <li><span class="lbl">Última captura</span><span class="val">14:00 · 240</span></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <footer><button class="cta">▶ &nbsp; CAPTURE</button></footer>
+  </body>
+</html>

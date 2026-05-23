@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OLE — Design Mockups</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        background: #0f172a;
+        color: #f1f5f9;
+        min-height: 100vh;
+        padding: 48px 24px;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 32px;
+        margin: 0 0 8px;
+      }
+      p.sub {
+        color: #94a3b8;
+        margin: 0 0 40px;
+        font-size: 18px;
+      }
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      a.card {
+        text-decoration: none;
+        color: inherit;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 24px;
+        display: grid;
+        gap: 12px;
+        transition:
+          transform 160ms ease-out,
+          border-color 160ms ease-out;
+      }
+      a.card:hover {
+        transform: translateY(-3px);
+        border-color: #3b82f6;
+      }
+      .num {
+        font-size: 12px;
+        letter-spacing: 0.15em;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 22px;
+        margin: 0;
+      }
+      .tagline {
+        color: #cbd5e1;
+        font-size: 14px;
+        margin: 0;
+      }
+      .tokens {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .preview {
+        height: 140px;
+        border-radius: 10px;
+        background: #0f172a;
+        border: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #64748b;
+      }
+      footer {
+        margin-top: 56px;
+        color: #64748b;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>OLE · Design Mockups</h1>
+      <p class="sub">
+        Five takes on the operator tablet, inspired by Evocon + Worximity. Click any card to view
+        the full mockup. Pick one and the rest of the system will inherit its style.
+      </p>
+
+      <div
+        style="
+          background: linear-gradient(140deg, #1e293b, #0f172a);
+          border: 1px solid #334155;
+          border-radius: 18px;
+          padding: 28px;
+          margin-bottom: 40px;
+        "
+      >
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px">
+          <span
+            style="
+              background: #3b82f6;
+              color: white;
+              padding: 4px 10px;
+              border-radius: 999px;
+              font-size: 11px;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              font-weight: 700;
+            "
+            >SELECCIONADO</span
+          >
+          <h2 style="margin: 0">Worximity Dense — sistema completo</h2>
+        </div>
+        <p style="color: #94a3b8; margin: 0 0 20px">
+          Diseño aplicado a las cuatro pantallas + modal de captura. Click para revisar antes de
+          tocar código.
+        </p>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        >
+          <a
+            href="/mockup-2"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              padding: 16px;
+              border-radius: 12px;
+              text-decoration: none;
+              color: inherit;
+            "
+          >
+            <div style="font-size: 11px; color: #64748b; letter-spacing: 0.16em">01 · OPERATOR</div>
+            <div style="font-weight: 600; margin-top: 6px">Tablet</div>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 4px">
+              Counter + OEE donut + hourly chart
+            </div>
+          </a>
+          <a
+            href="/mockup-2-capture"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              padding: 16px;
+              border-radius: 12px;
+              text-decoration: none;
+              color: inherit;
+            "
+          >
+            <div style="font-size: 11px; color: #64748b; letter-spacing: 0.16em">02 · MODAL</div>
+            <div style="font-weight: 600; margin-top: 6px">Captura · 3 secciones</div>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 4px">
+              ID+units / downtime / scrap
+            </div>
+          </a>
+          <a
+            href="/mockup-2-tablero"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              padding: 16px;
+              border-radius: 12px;
+              text-decoration: none;
+              color: inherit;
+            "
+          >
+            <div style="font-size: 11px; color: #64748b; letter-spacing: 0.16em">
+              03 · LINE LEADER
+            </div>
+            <div style="font-weight: 600; margin-top: 6px">Tablero</div>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 4px">
+              Per-line cards + plant summary
+            </div>
+          </a>
+          <a
+            href="/mockup-2-graficas"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              padding: 16px;
+              border-radius: 12px;
+              text-decoration: none;
+              color: inherit;
+            "
+          >
+            <div style="font-size: 11px; color: #64748b; letter-spacing: 0.16em">
+              04 · PLANT MANAGER
+            </div>
+            <div style="font-weight: 600; margin-top: 6px">Gráficas / KPI</div>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 4px">
+              4 gauges + 4 charts + heatmap
+            </div>
+          </a>
+          <a
+            href="/mockup-2-admin"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              padding: 16px;
+              border-radius: 12px;
+              text-decoration: none;
+              color: inherit;
+            "
+          >
+            <div style="font-size: 11px; color: #64748b; letter-spacing: 0.16em">05 · ADMIN</div>
+            <div style="font-weight: 600; margin-top: 6px">Resumen</div>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 4px">
+              Weekstrip + sessions + audit
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <h3 style="margin: 0 0 16px; color: #94a3b8; font-size: 13px; letter-spacing: 0.14em">
+        OTRAS OPCIONES DE DISEÑO
+      </h3>
+      <div class="grid">
+        <a class="card" href="/mockup-1">
+          <span class="num">01</span>
+          <h2>Evocon Lite</h2>
+          <p class="tagline">
+            Minimal light theme. Big counter, soft pastel pills, generous whitespace.
+          </p>
+          <div class="tokens">
+            <span class="swatch" style="background: #fafbfc"></span>
+            <span class="swatch" style="background: #2563eb"></span>
+            <span class="swatch" style="background: #16a34a"></span>
+          </div>
+          <div class="preview">tablet · light · single card</div>
+        </a>
+        <a class="card" href="/mockup-2">
+          <span class="num">02</span>
+          <h2>Worximity Dense</h2>
+          <p class="tagline">
+            Data-dense console. OEE donut + counter + hourly chart side-by-side.
+          </p>
+          <div class="tokens">
+            <span class="swatch" style="background: #0f172a"></span>
+            <span class="swatch" style="background: #3b82f6"></span>
+            <span class="swatch" style="background: #f1f5f9"></span>
+          </div>
+          <div class="preview">tablet · light + dark band · 3-pane</div>
+        </a>
+        <a class="card" href="/mockup-3">
+          <span class="num">03</span>
+          <h2>Industrial Console</h2>
+          <p class="tagline">
+            Dark mode for harsh shop floor lighting. Neon status. Visible at 3 m.
+          </p>
+          <div class="tokens">
+            <span class="swatch" style="background: #0a0e14"></span>
+            <span class="swatch" style="background: #22c55e"></span>
+            <span class="swatch" style="background: #ef4444"></span>
+          </div>
+          <div class="preview">tablet · dark · high-contrast</div>
+        </a>
+        <a class="card" href="/mockup-4">
+          <span class="num">04</span>
+          <h2>Glass Cards</h2>
+          <p class="tagline">
+            Frosted-glass tiles, tinted gradient bg, sticky bottom CTA. Premium feel.
+          </p>
+          <div class="tokens">
+            <span class="swatch" style="background: #eef2ff"></span>
+            <span class="swatch" style="background: #fdf4ff"></span>
+            <span class="swatch" style="background: #6366f1"></span>
+          </div>
+          <div class="preview">tablet · gradient · backdrop blur</div>
+        </a>
+        <a class="card" href="/mockup-5">
+          <span class="num">05</span>
+          <h2>Modular Grid</h2>
+          <p class="tagline">Bento mosaic. Each metric is its own tile, sized by importance.</p>
+          <div class="tokens">
+            <span class="swatch" style="background: #f9fafb"></span>
+            <span class="swatch" style="background: #0ea5e9"></span>
+            <span class="swatch" style="background: #f59e0b"></span>
+          </div>
+          <div class="preview">tablet · bento · grid-template-areas</div>
+        </a>
+      </div>
+
+      <footer>
+        These mockups are static HTML — no capture flow, no Supabase. Visit
+        <a href="/" style="color: #60a5fa">/</a> for the live operator app.
+      </footer>
+    </div>
+  </body>
+</html>

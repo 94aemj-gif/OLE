@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mockup 02 · Tablero — Worximity Dense</title>
+    <style>
+      :root {
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --header: #0f172a;
+        --accent: #3b82f6;
+        --accent-soft: #dbeafe;
+        --ok: #16a34a;
+        --warn: #f59e0b;
+        --crit: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        min-height: 100vh;
+      }
+      .header {
+        background: var(--header);
+        color: #f1f5f9;
+        padding: 16px 28px;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .header .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #cbd5e1;
+        padding: 4px 12px;
+        border: 1px solid #334155;
+        border-radius: 999px;
+      }
+      .header .live-pill::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: var(--ok);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--ok);
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .header .right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        font-size: 13px;
+      }
+      .header .oee-mini strong {
+        font-size: 20px;
+        margin-left: 4px;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 18px 28px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 18px;
+        display: grid;
+        gap: 4px;
+      }
+      .tile .l {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .tile .v {
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .tile .delta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .tile .delta.up {
+        color: var(--ok);
+      }
+      .tile .delta.dn {
+        color: var(--crit);
+      }
+      main {
+        padding: 24px 28px;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .line-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        display: grid;
+        gap: 16px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .line-card header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .line-card h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .line-card .sub {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 2px;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-pill.ok {
+        color: var(--ok);
+        background: #dcfce7;
+      }
+      .status-pill.warn {
+        color: var(--warn);
+        background: #fef3c7;
+      }
+      .status-pill::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        background: currentColor;
+        border-radius: 50%;
+      }
+      .line-body {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 140px 1fr 1fr;
+      }
+      .donut {
+        width: 140px;
+        height: 140px;
+        position: relative;
+      }
+      .donut .center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .donut svg {
+        transform: rotate(-90deg);
+      }
+      .kpis-mini {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        font-size: 11px;
+      }
+      .kpis-mini .k {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 6px 4px;
+        text-align: center;
+      }
+      .kpis-mini .k .l {
+        color: var(--muted);
+        letter-spacing: 0.1em;
+      }
+      .kpis-mini .k .v {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .counter-pane {
+        display: grid;
+        gap: 8px;
+        align-content: center;
+      }
+      .counter-big {
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+      .counter-sub {
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .progress {
+        height: 6px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+      }
+      .progress-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .progress-row strong {
+        color: var(--text);
+      }
+      .right-pane {
+        display: grid;
+        gap: 10px;
+      }
+      .bars {
+        display: flex;
+        gap: 3px;
+        align-items: flex-end;
+        height: 64px;
+      }
+      .bars span {
+        flex: 1;
+        background: var(--accent);
+        opacity: 0.85;
+        border-radius: 3px 3px 0 0;
+      }
+      .bars span.under {
+        background: var(--warn);
+      }
+      .bars span.over {
+        background: var(--ok);
+      }
+      .meta {
+        display: grid;
+        gap: 4px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .meta div {
+        display: flex;
+        justify-content: space-between;
+      }
+      .meta strong {
+        color: var(--text);
+      }
+      .pace-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+      .pace-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .pace-pill.warn {
+        color: var(--warn);
+        background: #fef3c7;
+      }
+      .pace-pill.ok {
+        color: var(--ok);
+        background: #dcfce7;
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 28px;
+        font-size: 11px;
+        color: #cbd5e1;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← mockups</a>
+    <header class="header">
+      <div class="brand">OLE</div>
+      <h1>Tablero · Producción</h1>
+      <span class="live-pill">Live · 30 s</span>
+      <div class="right">
+        <span class="oee-mini">OEE Planta <strong>85 %</strong></span>
+        <span>17:42:08</span>
+        <span style="opacity: 0.6">ES | EN</span>
+      </div>
+    </header>
+
+    <section class="summary">
+      <div class="tile">
+        <span class="l">Producción total</span>
+        <span class="v">3 690</span>
+        <span class="delta up">+12 % vs ayer</span>
+      </div>
+      <div class="tile">
+        <span class="l">Merma total</span>
+        <span class="v">24</span>
+        <span class="delta dn">+4 vs ayer</span>
+      </div>
+      <div class="tile">
+        <span class="l">Líneas activas</span>
+        <span class="v">2 / 2</span>
+        <span class="delta">100 % uptime</span>
+      </div>
+      <div class="tile">
+        <span class="l">Pace promedio</span>
+        <span class="v">93 %</span>
+        <span class="delta up">+2 % vs turno previo</span>
+      </div>
+    </section>
+
+    <main>
+      <article class="line-card">
+        <header>
+          <div>
+            <h2>Línea #1 · Jeringa Neomed 60 ml</h2>
+            <p class="sub">Operadora · Ana López · Turno Matutino</p>
+          </div>
+          <span class="status-pill ok">Running</span>
+        </header>
+        <div class="line-body">
+          <div class="donut">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="58" stroke="#e2e8f0" stroke-width="12" fill="none" />
+              <circle
+                cx="70"
+                cy="70"
+                r="58"
+                stroke="#3b82f6"
+                stroke-width="12"
+                fill="none"
+                stroke-dasharray="302 364"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="center">83%</div>
+          </div>
+          <div class="counter-pane">
+            <span class="counter-sub">Producción del turno</span>
+            <span class="counter-big">1 845</span>
+            <div class="progress"><span style="width: 92%"></span></div>
+            <div class="progress-row">
+              <span>92 % del objetivo</span>
+              <span>Target <strong>2 000</strong></span>
+            </div>
+          </div>
+          <div class="right-pane">
+            <div class="bars">
+              <span style="height: 60%"></span>
+              <span class="under" style="height: 50%"></span>
+              <span style="height: 72%"></span>
+              <span class="over" style="height: 100%"></span>
+              <span style="height: 80%"></span>
+              <span style="height: 90%"></span>
+              <span class="over" style="height: 100%"></span>
+              <span style="height: 92%"></span>
+            </div>
+            <div class="kpis-mini">
+              <div class="k">
+                <div class="l">AVAIL</div>
+                <div class="v">88</div>
+              </div>
+              <div class="k">
+                <div class="l">PERF</div>
+                <div class="v">95</div>
+              </div>
+              <div class="k">
+                <div class="l">QUAL</div>
+                <div class="v">99</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><span>Scrap</span><strong>12 pcs</strong></div>
+              <div><span>Downtime</span><strong>5 min</strong></div>
+              <div><span>Última</span><strong>14:00 · 240</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="pace-row">
+          <span
+            style="
+              font-size: 12px;
+              color: var(--muted);
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+            "
+            >Pace</span
+          >
+          <span class="pace-pill ok">95 %</span>
+        </div>
+      </article>
+
+      <article class="line-card">
+        <header>
+          <div>
+            <h2>Línea #2 · Jeringa Neomed 35 ml</h2>
+            <p class="sub">Operador · Luis Torres · Turno Matutino</p>
+          </div>
+          <span class="status-pill warn">Mantenimiento</span>
+        </header>
+        <div class="line-body">
+          <div class="donut">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="58" stroke="#e2e8f0" stroke-width="12" fill="none" />
+              <circle
+                cx="70"
+                cy="70"
+                r="58"
+                stroke="#f59e0b"
+                stroke-width="12"
+                fill="none"
+                stroke-dasharray="248 364"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="center">68%</div>
+          </div>
+          <div class="counter-pane">
+            <span class="counter-sub">Producción del turno</span>
+            <span class="counter-big">1 845</span>
+            <div class="progress"><span style="width: 77%; background: var(--warn)"></span></div>
+            <div class="progress-row">
+              <span>77 % del objetivo</span>
+              <span>Target <strong>2 400</strong></span>
+            </div>
+          </div>
+          <div class="right-pane">
+            <div class="bars">
+              <span style="height: 90%"></span>
+              <span style="height: 88%"></span>
+              <span class="under" style="height: 30%"></span>
+              <span class="under" style="height: 0%"></span>
+              <span class="under" style="height: 30%"></span>
+              <span style="height: 70%"></span>
+              <span style="height: 78%"></span>
+              <span style="height: 82%"></span>
+            </div>
+            <div class="kpis-mini">
+              <div class="k">
+                <div class="l">AVAIL</div>
+                <div class="v">72</div>
+              </div>
+              <div class="k">
+                <div class="l">PERF</div>
+                <div class="v">96</div>
+              </div>
+              <div class="k">
+                <div class="l">QUAL</div>
+                <div class="v">98</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><span>Scrap</span><strong>12 pcs</strong></div>
+              <div><span>Downtime</span><strong>42 min</strong></div>
+              <div><span>Última</span><strong>13:50 · 195</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="pace-row">
+          <span
+            style="
+              font-size: 12px;
+              color: var(--muted);
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+            "
+            >Pace</span
+          >
+          <span class="pace-pill warn">82 %</span>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

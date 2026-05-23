@@ -8,49 +8,62 @@
     <link rel="stylesheet" href="../styles/components.css" />
   </head>
   <body>
-    <div class="accent-stripe"></div>
-    <header class="page-header">
-      <div style="display: flex; gap: var(--space-4); align-items: center">
+    <header class="app-header">
+      <span class="brand">OLE</span>
+      <div>
         <h1 id="lineName">Línea</h1>
-        <span id="statusPillSlot"></span>
+        <div class="sub" id="lineSub">Producción · turno actual</div>
       </div>
-      <button id="langToggle" class="btn" data-i18n="language.toggle">ES | EN</button>
+      <span id="statusPillSlot"></span>
+      <div class="right">
+        <span class="live-pill">Local · ≤ 30 s</span>
+        <button id="langToggle" class="lang" data-i18n="language.toggle">ES | EN</button>
+      </div>
     </header>
 
-    <main class="panel" style="margin: var(--space-6); display: grid; gap: var(--space-4)">
-      <p data-i18n="shift.production">Producción del turno</p>
-      <div
-        id="counterSlot"
-        style="font-size: var(--text-counter); font-weight: 700; text-align: center"
-      >
-        0
-      </div>
-      <div class="progress" aria-label="Progreso vs objetivo">
-        <span id="progressBar" style="width: 0%"></span>
-      </div>
-      <p style="display: flex; justify-content: space-between; color: var(--color-text-muted)">
-        <span
-          ><span data-i18n="capture.last">Última captura</span>:
-          <span id="lastCapture">—</span></span
-        >
-        <span
-          ><span data-i18n="shift.next.alert">Próxima alerta en</span>
-          <span id="nextAlert">—</span></span
-        >
-      </p>
-      <button
-        id="captureBtn"
-        class="btn btn-primary glow"
-        style="
-          font-size: var(--text-lg);
-          padding: var(--space-5) var(--space-8);
-          align-self: center;
-          min-width: 320px;
-        "
-      >
-        <span data-i18n="capture.cta">CAPTURAR</span>
-      </button>
+    <main class="operator-grid">
+      <section class="operator-hero">
+        <p class="h-label" data-i18n="shift.production">Producción del turno</p>
+        <div id="counterSlot" class="count">0</div>
+        <div class="progress" aria-label="Progreso vs objetivo">
+          <span id="progressBar" style="width: 0%"></span>
+        </div>
+        <div class="meta-row">
+          <span>
+            <span data-i18n="capture.last">Última captura</span>:
+            <strong id="lastCapture">—</strong>
+          </span>
+          <span>
+            <span data-i18n="shift.next.alert">Próxima alerta en</span>
+            <strong id="nextAlert">—</strong>
+          </span>
+        </div>
+      </section>
+
+      <aside class="operator-side">
+        <div class="side-tile">
+          <span class="l">Objetivo</span>
+          <span class="v" id="targetTile">—</span>
+          <span class="sub" id="targetTileSub">por turno</span>
+        </div>
+        <div class="side-tile">
+          <span class="l">Pace estimado</span>
+          <span class="v" id="paceTile">—</span>
+          <span class="sub">vs objetivo × horas transcurridas</span>
+        </div>
+        <div class="side-tile">
+          <span class="l">Turno</span>
+          <span class="v" id="shiftTile">—</span>
+          <span class="sub" id="shiftTileSub">—</span>
+        </div>
+      </aside>
     </main>
+
+    <div class="cta-stripe">
+      <button id="captureBtn" class="btn btn-primary glow">
+        + &nbsp;<span data-i18n="capture.cta">CAPTURAR</span>
+      </button>
+    </div>
 
     <script type="module" src="../modules/page/operator-page.js"></script>
   </body>

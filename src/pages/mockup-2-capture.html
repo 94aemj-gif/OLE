@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mockup 02 · Capture Modal v2 — Worximity Dense</title>
+    <style>
+      :root {
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --header: #0f172a;
+        --accent: #3b82f6;
+        --accent-soft: #dbeafe;
+        --ok: #16a34a;
+        --warn: #f59e0b;
+        --crit: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #1e293b, #0f172a);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        min-height: 100vh;
+        padding: 24px 0;
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 28px;
+        font-size: 11px;
+        color: #cbd5e1;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+      .stage-label {
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+      main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .modal {
+        background: var(--surface);
+        border-radius: 22px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+      }
+      /* header */
+      .modal-head {
+        background: var(--header);
+        color: #f1f5f9;
+        padding: 22px 28px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .modal-head .badge {
+        background: rgba(59, 130, 246, 0.18);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: #93c5fd;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .modal-head h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .modal-head .sub {
+        color: #94a3b8;
+        font-size: 13px;
+        margin-top: 2px;
+      }
+      .modal-head .close {
+        margin-left: auto;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid #334155;
+        color: #cbd5e1;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+      /* context strip */
+      .context {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0;
+        padding: 0;
+        border-bottom: 1px solid var(--border);
+        background: #f8fafc;
+      }
+      .context .item {
+        padding: 14px 22px;
+        border-right: 1px solid var(--border);
+      }
+      .context .item:last-child {
+        border-right: none;
+      }
+      .context .item .l {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .context .item .v {
+        font-size: 17px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .context .item .v small {
+        font-weight: 500;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .context .item.identity .v {
+        color: var(--accent);
+      }
+      /* body */
+      .body {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 0;
+      }
+      /* left hero */
+      .hero {
+        padding: 28px;
+        background:
+          radial-gradient(at top right, rgba(59, 130, 246, 0.06), transparent 50%), var(--surface);
+        border-right: 1px solid var(--border);
+        display: grid;
+        gap: 18px;
+      }
+      .hero .label {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0;
+      }
+      .units-display {
+        background: linear-gradient(140deg, var(--header), #1e293b);
+        color: white;
+        border-radius: 18px;
+        padding: 28px 32px;
+        text-align: right;
+        font-size: 84px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
+        box-shadow: 0 10px 32px rgba(15, 23, 42, 0.25);
+        position: relative;
+      }
+      .units-display::before {
+        content: 'UNIDADES';
+        position: absolute;
+        top: 16px;
+        left: 24px;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: #64748b;
+        font-weight: 600;
+      }
+      .units-display::after {
+        content: '✓';
+        position: absolute;
+        top: 14px;
+        right: 22px;
+        width: 26px;
+        height: 26px;
+        background: var(--ok);
+        border-radius: 999px;
+        font-size: 14px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+      .numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .numpad button {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 0;
+        font-size: 22px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 120ms ease;
+        color: var(--text);
+      }
+      .numpad button:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+      }
+      .numpad button.fn {
+        color: var(--muted);
+        font-size: 18px;
+      }
+      .impact {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 16px;
+        align-items: center;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 20px;
+      }
+      .impact .donut {
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .impact .donut svg {
+        transform: rotate(-90deg);
+      }
+      .impact .donut .val {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 18px;
+      }
+      .impact .info .l {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .impact .info .v {
+        font-size: 22px;
+        font-weight: 800;
+      }
+      .impact .info .sub {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .impact .info .sub strong {
+        color: var(--ok);
+      }
+      /* right rail */
+      .rail {
+        padding: 28px;
+        display: grid;
+        gap: 22px;
+        background: #fbfcfd;
+      }
+      .rail-section .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .rail-section .head h3 {
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .rail-section .head .total {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .rail-section .head .total.warn {
+        background: #fef3c7;
+        color: var(--warn);
+        border-color: #fde68a;
+      }
+      .rail-section .head .total.crit {
+        background: #fee2e2;
+        color: var(--crit);
+        border-color: #fecaca;
+      }
+      .event-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        display: grid;
+        grid-template-columns: 1fr 70px 28px;
+        gap: 10px;
+        align-items: center;
+      }
+      .event-row select,
+      .event-row input {
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        padding: 0;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .event-row select {
+        width: 100%;
+      }
+      .event-row input {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        font-size: 16px;
+      }
+      .event-row input::after {
+        content: ' min';
+      }
+      .event-row .unit {
+        font-size: 11px;
+        color: var(--muted);
+        margin-right: 4px;
+      }
+      .event-row .rm {
+        background: transparent;
+        border: none;
+        color: var(--crit);
+        font-size: 18px;
+        cursor: pointer;
+        opacity: 0.6;
+      }
+      .event-row .rm:hover {
+        opacity: 1;
+      }
+      .add-event {
+        width: 100%;
+        background: transparent;
+        border: 1.5px dashed var(--border);
+        color: var(--accent);
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+      }
+      .add-event:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .event-row .bar {
+        grid-column: 1 / -1;
+        height: 3px;
+        background: var(--border);
+        border-radius: 999px;
+        margin-top: 6px;
+        position: relative;
+      }
+      .event-row .bar > span {
+        position: absolute;
+        inset: 0;
+        background: var(--warn);
+        border-radius: 999px;
+      }
+      /* preview chart */
+      .preview {
+        background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+        border-top: 1px solid var(--border);
+        padding: 18px 28px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 24px;
+        align-items: center;
+      }
+      .preview .lbl {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .preview .lbl strong {
+        display: block;
+        color: var(--text);
+        font-size: 13px;
+        margin-top: 2px;
+      }
+      .preview-bars {
+        display: flex;
+        gap: 4px;
+        align-items: flex-end;
+        height: 60px;
+        position: relative;
+      }
+      .preview-bars span {
+        flex: 1;
+        background: var(--accent);
+        opacity: 0.85;
+        border-radius: 4px 4px 0 0;
+      }
+      .preview-bars span.under {
+        background: var(--warn);
+      }
+      .preview-bars span.new {
+        background: linear-gradient(180deg, #22c55e, var(--ok));
+        box-shadow:
+          0 0 0 2px #dcfce7,
+          0 0 16px rgba(34, 197, 94, 0.5);
+        opacity: 1;
+        position: relative;
+      }
+      .preview-bars span.new::before {
+        content: 'NEW';
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        color: var(--ok);
+        font-weight: 700;
+        background: white;
+        padding: 1px 6px;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+      .target-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 18%;
+        border-top: 1.5px dashed var(--crit);
+      }
+      /* footer */
+      .footer {
+        padding: 18px 28px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .footer .helper {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .footer .helper strong {
+        color: var(--text);
+      }
+      .footer .buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        padding: 14px 26px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        letter-spacing: 0.04em;
+      }
+      .btn:hover {
+        background: #f8fafc;
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+        box-shadow: 0 12px 24px rgba(59, 130, 246, 0.28);
+      }
+      .btn.primary:hover {
+        background: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← mockups</a>
+    <p class="stage-label">Mockup 02 · Capturar producción · v2</p>
+    <main>
+      <div class="modal">
+        <header class="modal-head">
+          <span class="badge">Captura</span>
+          <div>
+            <h2>Cerrando hora 14:00 — 15:00</h2>
+            <div class="sub">Línea #1 · Jeringa Neomed 60 ml</div>
+          </div>
+          <button class="close">×</button>
+        </header>
+
+        <section class="context">
+          <div class="item identity">
+            <div class="l">Operadora</div>
+            <div class="v">Ana López <small>· 12345</small></div>
+          </div>
+          <div class="item">
+            <div class="l">Turno</div>
+            <div class="v">Matutino <small>06:00–14:00</small></div>
+          </div>
+          <div class="item">
+            <div class="l">Acumulado del turno</div>
+            <div class="v">1 605 <small>/ 2 000</small></div>
+          </div>
+          <div class="item">
+            <div class="l">Última captura</div>
+            <div class="v">13:00 · 230</div>
+          </div>
+        </section>
+
+        <section class="body">
+          <div class="hero">
+            <p class="label">Unidades producidas en esta hora</p>
+            <div class="units-display">240</div>
+            <div class="numpad">
+              <button>1</button><button>2</button><button>3</button> <button>4</button
+              ><button>5</button><button>6</button> <button>7</button><button>8</button
+              ><button>9</button> <button class="fn">C</button><button>0</button
+              ><button class="fn">⌫</button>
+            </div>
+            <div class="impact">
+              <div class="donut">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="32" stroke="#e2e8f0" stroke-width="8" fill="none" />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="32"
+                    stroke="#16a34a"
+                    stroke-width="8"
+                    fill="none"
+                    stroke-dasharray="185 201"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <div class="val">92%</div>
+              </div>
+              <div class="info">
+                <div class="l">Acumulado tras guardar</div>
+                <div class="v">
+                  1 845 <span style="color: var(--muted); font-weight: 500">/ 2 000</span>
+                </div>
+                <div class="sub">Pace <strong>↑ 4 % vs hora previa</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="rail">
+            <section class="rail-section">
+              <div class="head">
+                <h3>Tiempo muerto · opcional</h3>
+                <span class="total warn">5 min</span>
+              </div>
+              <div class="event-row">
+                <select>
+                  <option>Junta de producción</option>
+                  <option>Capacitación</option>
+                  <option>Cambio de material</option>
+                </select>
+                <input type="text" value="5 min" />
+                <button class="rm">×</button>
+                <div class="bar"><span style="width: 18%"></span></div>
+              </div>
+              <button class="add-event">+ Agregar evento</button>
+            </section>
+
+            <section class="rail-section">
+              <div class="head">
+                <h3>Merma · opcional</h3>
+                <span class="total crit">4 pcs</span>
+              </div>
+              <div class="event-row">
+                <select>
+                  <option>Pistón roto</option>
+                  <option>Empaque defectuoso</option>
+                  <option>Calidad fuera de spec</option>
+                </select>
+                <input type="text" value="3 pcs" />
+                <button class="rm">×</button>
+                <div class="bar"><span style="width: 8%; background: var(--crit)"></span></div>
+              </div>
+              <div class="event-row">
+                <select>
+                  <option>Empaque defectuoso</option>
+                  <option>Pistón roto</option>
+                  <option>Calidad fuera de spec</option>
+                </select>
+                <input type="text" value="1 pcs" />
+                <button class="rm">×</button>
+                <div class="bar"><span style="width: 3%; background: var(--crit)"></span></div>
+              </div>
+              <button class="add-event">+ Agregar evento</button>
+            </section>
+          </aside>
+        </section>
+
+        <section class="preview">
+          <div class="lbl">Vista previa<strong>Producción · hora a hora</strong></div>
+          <div class="preview-bars">
+            <div class="target-line"></div>
+            <span style="height: 50%"></span>
+            <span class="under" style="height: 38%"></span>
+            <span style="height: 72%"></span>
+            <span style="height: 88%"></span>
+            <span style="height: 80%"></span>
+            <span style="height: 92%"></span>
+            <span style="height: 88%"></span>
+            <span class="new" style="height: 96%"></span>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div class="helper">
+            La captura se guardará localmente y se sincronizará en <strong>≤ 30 s</strong>. Tienes
+            <strong>10 segundos</strong> para deshacer.
+          </div>
+          <div class="buttons">
+            <button class="btn">Cancelar</button>
+            <button class="btn primary">Guardar captura →</button>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
