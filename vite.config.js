@@ -35,7 +35,13 @@ export default defineConfig({
         navMockup2: resolve(import.meta.dirname, 'src/pages/nav-mockup-2.html'),
         navMockup3: resolve(import.meta.dirname, 'src/pages/nav-mockup-3.html'),
         navMockup4: resolve(import.meta.dirname, 'src/pages/nav-mockup-4.html'),
-        navMockup5: resolve(import.meta.dirname, 'src/pages/nav-mockup-5.html')
+        navMockup5: resolve(import.meta.dirname, 'src/pages/nav-mockup-5.html'),
+        kpiMockups: resolve(import.meta.dirname, 'src/pages/kpi-mockups.html'),
+        kpiMockup1: resolve(import.meta.dirname, 'src/pages/kpi-mockup-1.html'),
+        kpiMockup2: resolve(import.meta.dirname, 'src/pages/kpi-mockup-2.html'),
+        kpiMockup3: resolve(import.meta.dirname, 'src/pages/kpi-mockup-3.html'),
+        kpiMockup4: resolve(import.meta.dirname, 'src/pages/kpi-mockup-4.html'),
+        kpiMockup5: resolve(import.meta.dirname, 'src/pages/kpi-mockup-5.html')
       }
     }
   },

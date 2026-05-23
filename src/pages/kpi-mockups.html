@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KPI ribbon · mockups</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0f172a;
+        color: #f1f5f9;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        padding: 48px 24px 80px;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      p.sub {
+        color: #94a3b8;
+        margin: 0 0 40px;
+        font-size: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      a.card {
+        text-decoration: none;
+        color: inherit;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 24px;
+        display: grid;
+        gap: 8px;
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease;
+      }
+      a.card:hover {
+        transform: translateY(-3px);
+        border-color: #3b82f6;
+      }
+      .num {
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 0;
+      }
+      .tag {
+        color: #cbd5e1;
+        font-size: 14px;
+        margin: 0;
+      }
+      .trade {
+        color: #94a3b8;
+        font-size: 12px;
+        margin: 4px 0 0;
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 24px;
+        font-size: 12px;
+        color: #cbd5e1;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← all mockups</a>
+    <div class="wrap">
+      <h1>KPI ribbon · mobile redesign</h1>
+      <p class="sub">
+        Current issue: 4 KPIs stacked 1-per-row on phone, donuts overflow with "100.0%". Pick which
+        fixes it.
+      </p>
+      <div class="grid">
+        <a class="card" href="/kpi-mockup-1">
+          <span class="num">01 · 2×2 COMPACT</span>
+          <h2>Grid of 4 small gauges</h2>
+          <p class="tag">48 px donut + label/sub. 4 cells in 2 rows. Donuts smaller so % fits.</p>
+          <p class="trade">Trade: 48 px gauge feels small.</p>
+        </a>
+        <a class="card" href="/kpi-mockup-2">
+          <span class="num">02 · HORIZONTAL SCROLL</span>
+          <h2>Swipeable row</h2>
+          <p class="tag">All 4 in one snap-scroll row · dots paginate.</p>
+          <p class="trade">Trade: only 1–2 visible at once · swipe gesture required.</p>
+        </a>
+        <a class="card" href="/kpi-mockup-3">
+          <span class="num">03 · BAR PROGRESS</span>
+          <h2>No gauges · stacked bars</h2>
+          <p class="tag">Each KPI: label + big %, slim progress bar below. Densest.</p>
+          <p class="trade">Trade: loses gauge "at-a-glance" feel.</p>
+        </a>
+        <a class="card" href="/kpi-mockup-4">
+          <span class="num">04 · HERO OEE + CHIPS</span>
+          <h2>Big OEE, 3 small KPIs</h2>
+          <p class="tag">
+            OEE donut prominent (110 px) · A/P/Q as bottom chips. Storytelling layout.
+          </p>
+          <p class="trade">Trade: only OEE has gauge.</p>
+        </a>
+        <a class="card" href="/kpi-mockup-5">
+          <span class="num">05 · STAT TILES</span>
+          <h2>2×2 stat tiles · no gauges</h2>
+          <p class="tag">Big numbers, color accent stripe on the side. Cleanest.</p>
+          <p class="trade">Trade: no visual ring at all.</p>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

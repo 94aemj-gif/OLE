@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KPI 02 · Horizontal scroll</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .header-stub {
+        background: var(--header);
+        padding: 12px 16px;
+        color: #f1f5f9;
+        font-weight: 600;
+        font-size: 14px;
+        border-bottom: 1px solid var(--header-divider);
+      }
+      .subband-stub {
+        background: var(--header);
+        padding: 8px 12px;
+        color: #f1f5f9;
+        font-size: 13px;
+        border-bottom: 1px solid var(--header-divider);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .scroll {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+      }
+      .scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .kpi-tile {
+        flex: 0 0 200px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        scroll-snap-align: start;
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+      .kpi-tile .gauge {
+        width: 56px;
+        height: 56px;
+        position: relative;
+      }
+      .kpi-tile .gauge svg {
+        transform: rotate(-90deg);
+      }
+      .kpi-tile .gauge .val {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .kpi-tile .l {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .kpi-tile .sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .dots {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        padding: 4px 0 12px;
+      }
+      .dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--border);
+      }
+      .dots span.on {
+        background: var(--accent);
+        width: 18px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/kpi-mockups">← back</a>
+    <div class="phone">
+      <div class="screen">
+        <div class="header-stub">Gráficas · KPI</div>
+        <div class="subband-stub">Línea #1 — Jeringa Neomed 60ml<span>▾</span></div>
+        <div class="scroll">
+          <div class="kpi-tile">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#3b82f6"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="37 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="val">27%</div>
+            </div>
+            <div>
+              <div class="l">OEE</div>
+              <div class="sub">global del turno</div>
+            </div>
+          </div>
+          <div class="kpi-tile">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#16a34a"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="138 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="val">100%</div>
+            </div>
+            <div>
+              <div class="l">Disponib.</div>
+              <div class="sub">450/450 min</div>
+            </div>
+          </div>
+          <div class="kpi-tile">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#f59e0b"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="37 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="val">27%</div>
+            </div>
+            <div>
+              <div class="l">Rendim.</div>
+              <div class="sub">500 / 1 875</div>
+            </div>
+          </div>
+          <div class="kpi-tile">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#0ea5e9"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="138 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="val">100%</div>
+            </div>
+            <div>
+              <div class="l">Calidad</div>
+              <div class="sub">500 / 500</div>
+            </div>
+          </div>
+        </div>
+        <div class="dots"><span class="on"></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </body>
+</html>
