@@ -1064,6 +1064,302 @@ table.data th {
   border-radius: var(--radius-sm);
 }
 
+/* ---------- Table scroll wrapper ---------- */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================
+   Responsive · tablet (1024) → small tablet (720) → phone (480)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .kpi-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .graficas-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-panels {
+    grid-template-columns: 1fr;
+  }
+  .capture-context {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    row-gap: var(--space-2);
+  }
+  .app-header .brand {
+    font-size: 10px;
+  }
+  .app-header h1 {
+    font-size: var(--text-base);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .app-header .sub {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .app-header > div:has(h1) {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .app-header > div:has(h1) + #statusPillSlot,
+  .app-header #statusPillSlot {
+    flex: 0 0 auto;
+  }
+  .app-header .right {
+    flex: 1 1 100%;
+    margin-left: 0;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .status-pill {
+    white-space: nowrap;
+  }
+  .live-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  .summary-strip {
+    grid-template-columns: repeat(2, 1fr);
+    padding: var(--space-3);
+  }
+  .summary-tile .value {
+    font-size: var(--text-lg);
+  }
+
+  .operator-grid {
+    padding: var(--space-3);
+    gap: var(--space-3);
+    padding-bottom: 96px; /* leave room for sticky CTA */
+  }
+  .operator-hero {
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .operator-hero .count {
+    font-size: 96px;
+    text-align: center;
+  }
+  .operator-hero .meta-row {
+    flex-direction: column;
+    gap: var(--space-1);
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+  }
+  .operator-side {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+  .side-tile {
+    padding: var(--space-3);
+    text-align: center;
+  }
+  .side-tile .v {
+    font-size: var(--text-base);
+  }
+  .side-tile .sub {
+    display: none;
+  }
+  .cta-stripe {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: var(--space-3);
+    background: linear-gradient(180deg, transparent, var(--bg) 30%);
+    z-index: 40;
+  }
+  .cta-stripe .btn-primary {
+    font-size: var(--text-base);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .dashboard-grid {
+    padding: var(--space-3);
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .line-body {
+    grid-template-columns: 1fr;
+  }
+  .line-card .donut-slot {
+    margin: 0 auto;
+  }
+  .line-card .count {
+    font-size: 44px;
+    text-align: center;
+  }
+  .line-card header h2 {
+    font-size: var(--text-base);
+  }
+
+  .capture-context {
+    grid-template-columns: 1fr 1fr;
+  }
+  .capture-context .item {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+  }
+  .capture-context .item .v {
+    font-size: var(--text-base);
+  }
+  .capture-head {
+    padding: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .capture-head h2 {
+    font-size: var(--text-base);
+  }
+  .capture-hero,
+  .capture-rail {
+    padding: var(--space-4);
+    border-right: none;
+  }
+  .capture-rail {
+    border-top: 1px solid var(--border);
+  }
+  .units-display {
+    font-size: 56px;
+    padding: 20px;
+    min-height: 100px;
+  }
+  .numpad button {
+    padding: 16px 0;
+    font-size: 20px;
+    min-height: 56px;
+  }
+  .capture-footer {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .capture-footer .helper {
+    text-align: center;
+    font-size: 12px;
+  }
+  .capture-footer .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .capture-footer .buttons .btn {
+    width: 100%;
+  }
+
+  .tabbar {
+    padding: 0 var(--space-3);
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .tabbar button {
+    padding: 12px 14px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  table.data {
+    font-size: 12px;
+  }
+  table.data th,
+  table.data td {
+    padding: 8px 10px;
+  }
+
+  .weekstrip {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .weekstrip button {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+  }
+
+  #heatmap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .undo-chip {
+    bottom: 110px; /* clear sticky CTA */
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: var(--text-sm);
+  }
+  .kpi-ribbon {
+    grid-template-columns: 1fr;
+  }
+  .kpi {
+    grid-template-columns: 64px 1fr;
+    padding: var(--space-3);
+  }
+  .kpi .gauge {
+    width: 64px;
+    height: 64px;
+  }
+  .kpi .gauge svg {
+    width: 64px;
+    height: 64px;
+  }
+  .kpi .gauge .val {
+    font-size: 16px;
+  }
+  .summary-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
+  .summary-tile {
+    padding: var(--space-2) var(--space-3);
+  }
+  .summary-tile .value {
+    font-size: var(--text-base);
+  }
+  .operator-hero .count {
+    font-size: 80px;
+  }
+  .operator-side {
+    grid-template-columns: 1fr 1fr;
+  }
+  .operator-side .side-tile:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  .units-display {
+    font-size: 48px;
+    padding: 18px;
+  }
+  .numpad button {
+    font-size: 18px;
+    padding: 14px 0;
+    min-height: 52px;
+  }
+  table.data {
+    font-size: 11px;
+  }
+}
+
 /* ---------- Accent stripe (legacy compatibility) ---------- */
 .accent-stripe {
   height: 0;

@@ -131,7 +131,10 @@ function renderSessionTable(slot, rows, countEl) {
     body.append(tr);
   }
   table.append(body);
-  slot.append(table);
+  const scroll = document.createElement('div');
+  scroll.className = 'table-scroll';
+  scroll.append(table);
+  slot.append(scroll);
 }
 
 const ACTION_STYLE = {

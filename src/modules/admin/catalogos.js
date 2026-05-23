@@ -112,7 +112,10 @@ function renderSection(cfg, section, rows) {
     for (const row of rows) body.append(renderRow(cfg, section, row));
   }
   table.append(body);
-  wrap.append(table);
+  const scroll = document.createElement('div');
+  scroll.className = 'table-scroll';
+  scroll.append(table);
+  wrap.append(scroll);
 
   wrap.append(renderAddForm(cfg, section));
   return wrap;
@@ -169,7 +172,7 @@ function renderRow(cfg, section, row) {
 function renderAddForm(cfg, section) {
   const form = document.createElement('form');
   form.style.display = 'grid';
-  form.style.gridTemplateColumns = `repeat(${section.fields.length}, 1fr) auto`;
+  form.style.gridTemplateColumns = `repeat(auto-fit, minmax(140px, 1fr))`;
   form.style.gap = 'var(--space-2)';
   form.style.padding = 'var(--space-3) var(--space-4)';
   form.style.background = 'var(--surface-soft)';

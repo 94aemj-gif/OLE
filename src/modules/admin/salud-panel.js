@@ -30,7 +30,10 @@ export function renderSaludPanel(cfg) {
   </tr></thead>`;
   const body = document.createElement('tbody');
   table.append(body);
-  wrap.append(table);
+  const scroll = document.createElement('div');
+  scroll.className = 'table-scroll';
+  scroll.append(table);
+  wrap.append(scroll);
   cfg.container.append(wrap);
 
   async function refresh() {
