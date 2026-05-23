@@ -101,7 +101,7 @@ function setActiveTab(tab) {
   const safeTab = TABS.includes(tab) ? tab : 'resumen';
   location.hash = `#${safeTab}`;
   document.querySelectorAll('[data-tab]').forEach((el) => {
-    el.classList.toggle('btn-primary', el.getAttribute('data-tab') === safeTab);
+    el.classList.toggle('is-active', el.getAttribute('data-tab') === safeTab);
   });
   if (!tabContent) return;
   if (!client) {
@@ -118,29 +118,44 @@ function setActiveTab(tab) {
 
 function renderDatos({ container, client, getManager, timezone, manager }) {
   container.innerHTML = '';
+
+  // Reset Día Actual
   const resetSection = document.createElement('section');
-  resetSection.innerHTML = '<h3>Reset Día Actual</h3>';
-  resetSection.append(
+  resetSection.className = 'panel-section';
+  const resetHead = document.createElement('header');
+  resetHead.innerHTML =
+    '<h2>Reset Día Actual</h2><span class="count" style="background: var(--crit-soft); color: var(--crit)">Destructivo</span>';
+  resetSection.append(resetHead);
+  const resetBody = document.createElement('div');
+  resetBody.style.padding = 'var(--space-4) var(--space-5)';
+  resetBody.style.display = 'grid';
+  resetBody.style.gap = 'var(--space-3)';
+  const resetHelp = document.createElement('p');
+  resetHelp.style.margin = '0';
+  resetHelp.style.color = 'var(--text-muted)';
+  resetHelp.style.fontSize = 'var(--text-sm)';
+  resetHelp.textContent =
+    'Elimina todas las capturas de hoy en todos los dispositivos y envía un broadcast para limpiar el estado local.';
+  resetBody.append(
+    resetHelp,
     createButton({
       label: 'Reset Día Actual',
       kind: 'danger',
       onClick: () => openResetFlow({ client, getManager, timezone })
     })
   );
+  resetSection.append(resetBody);
 
-  const dlSection = document.createElement('section');
-  dlSection.style.marginTop = 'var(--space-6)';
-  dlSection.innerHTML = '<h3>Capturas Pendientes (dead-letter)</h3>';
+  // Dead-letter slot (the view internally wraps in its own .panel-section)
   const dlSlot = document.createElement('div');
-  dlSection.append(dlSlot);
-
-  const saludSection = document.createElement('section');
-  saludSection.style.marginTop = 'var(--space-6)';
-  saludSection.innerHTML = '<h3>Salud del Sistema</h3>';
+  // Salud slot (the view internally wraps in its own .panel-section)
   const saludSlot = document.createElement('div');
-  saludSection.append(saludSlot);
 
-  container.append(resetSection, dlSection, saludSection);
+  const stack = document.createElement('div');
+  stack.style.display = 'grid';
+  stack.style.gap = 'var(--space-4)';
+  stack.append(resetSection, dlSlot, saludSlot);
+  container.append(stack);
   renderDeadLetterView({ container: dlSlot, client, getManager });
   const catalog = readLocalCatalog();
   const thresholds = catalog?.health_thresholds ?? {
