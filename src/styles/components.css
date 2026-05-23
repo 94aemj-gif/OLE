@@ -1504,6 +1504,54 @@ table.data th {
     font-size: var(--text-sm);
     margin-top: 4px;
   }
+  /* Chips: drop gauges, show label + big % + sub stacked */
+  .kpi:not(:first-child) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 14px 10px;
+    gap: 4px;
+  }
+  .kpi:not(:first-child) .gauge {
+    width: auto;
+    height: auto;
+    order: 2;
+    margin: 0;
+  }
+  .kpi:not(:first-child) .gauge svg {
+    display: none;
+  }
+  .kpi:not(:first-child) .gauge .val {
+    position: static;
+    inset: auto;
+    font-size: 24px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .kpi:not(:first-child) > div:not(.gauge) {
+    display: contents;
+  }
+  .kpi:not(:first-child) .l {
+    order: 1;
+    font-size: 10px;
+  }
+  .kpi:not(:first-child) .sub {
+    order: 3;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 0;
+  }
+  .kpi:nth-child(2) .gauge .val {
+    color: var(--ok);
+  }
+  .kpi:nth-child(3) .gauge .val {
+    color: var(--warn);
+  }
+  .kpi:nth-child(4) .gauge .val {
+    color: #0ea5e9;
+  }
   .summary-strip {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-2);
