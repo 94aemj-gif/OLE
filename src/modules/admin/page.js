@@ -3,6 +3,7 @@ import { applyTranslations, getLang, setLang } from '../i18n/index.js';
 import { verifyPin } from '../auth/pin.js';
 import { openSession, readSession, closeSession } from '../auth/session.js';
 import { makeSupabaseClient } from '../supabase/client.js';
+import { makeLocalClient } from '../supabase/local-client.js';
 import { readLocalCatalog } from './catalog-store.js';
 import { showToast } from '../ui/toast.js';
 import { createButton } from '../ui/button.js';
@@ -29,7 +30,7 @@ document.getElementById('langToggle')?.addEventListener('click', () => {
 const TABS = ['resumen', 'catalogos', 'configuracion', 'datos'];
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const client = url && key ? makeSupabaseClient({ url, anonKey: key }) : null;
+const client = url && key ? makeSupabaseClient({ url, anonKey: key }) : makeLocalClient();
 
 const root = document.getElementById('adminRoot');
 const gate = document.getElementById('pinGate');
