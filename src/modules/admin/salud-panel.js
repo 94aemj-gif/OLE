@@ -12,20 +12,26 @@ import { evaluateRow } from '../health/metrics.js';
  */
 export function renderSaludPanel(cfg) {
   cfg.container.innerHTML = '';
+  const wrap = document.createElement('section');
+  wrap.className = 'panel-section';
+  const header = document.createElement('header');
+  header.innerHTML = '<h2>Salud por tablet</h2><span class="count" id="saludCount">—</span>';
+  wrap.append(header);
+
   const table = document.createElement('table');
-  table.style.width = '100%';
-  table.style.borderCollapse = 'collapse';
-  const head = document.createElement('thead');
-  head.innerHTML = `
-    <tr>
-      <th>Tablet</th><th>Línea</th><th>Heartbeat</th>
-      <th>Cola</th><th>Dead-letter 24h</th><th>Último sync</th>
-      <th>Δ local/srv</th><th>Versión</th>
-    </tr>`;
-  table.append(head);
+  table.className = 'data';
+  table.innerHTML = `<thead><tr>
+    <th>Tablet</th><th>Línea</th><th>Heartbeat</th>
+    <th style="text-align:right">Cola</th>
+    <th style="text-align:right">Dead-letter 24h</th>
+    <th>Último sync</th>
+    <th style="text-align:right">Δ local/srv</th>
+    <th>Versión</th>
+  </tr></thead>`;
   const body = document.createElement('tbody');
   table.append(body);
-  cfg.container.append(table);
+  wrap.append(table);
+  cfg.container.append(wrap);
 
   async function refresh() {
     body.innerHTML = '';
@@ -36,18 +42,28 @@ export function renderSaludPanel(cfg) {
     } catch (err) {
       console.warn('salud fetch failed', err);
     }
+    const countEl = document.getElementById('saludCount');
+    if (countEl) countEl.textContent = `${rows.length} tablets`;
+    if (rows.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td colspan="8" style="color: var(--text-muted); text-align: center; padding: 24px">` +
+        `Sin tablets reportando — verifica que la app esté abierta en cada línea.</td>`;
+      body.append(tr);
+      return;
+    }
     const now = new Date();
     for (const row of rows) {
       const tr = document.createElement('tr');
       const flags = evaluateRow(row, cfg.thresholds, now);
       tr.append(
-        td(row.tablet_id),
+        td(row.tablet_id, false, true),
         td(row.assigned_line_id ?? '—'),
         td(formatTime(row.last_heartbeat), flags.heartbeatStale),
-        td(String(row.push_queue_depth), flags.queueHigh),
-        td(String(row.dead_letter_24h), flags.deadLetterPresent),
+        td(String(row.push_queue_depth), flags.queueHigh, false, true),
+        td(String(row.dead_letter_24h), flags.deadLetterPresent, false, true),
         td(row.last_successful_sync ? formatTime(row.last_successful_sync) : '—'),
-        td(String(row.local_vs_server_delta), flags.deltaHigh),
+        td(String(row.local_vs_server_delta), flags.deltaHigh, false, true),
         td(row.app_version)
       );
       body.append(tr);
@@ -59,15 +75,19 @@ export function renderSaludPanel(cfg) {
   return { refresh, stop: () => clearInterval(interval) };
 }
 
-function td(text, warn = false) {
+function td(text, warn = false, mono = false, alignRight = false) {
   const cell = document.createElement('td');
   cell.textContent = text;
-  cell.style.padding = '8px 12px';
-  cell.style.borderBottom = '1px solid var(--color-border)';
-  if (warn) cell.style.background = '#fee2e2';
+  if (warn) {
+    cell.style.background = 'var(--crit-soft)';
+    cell.style.color = 'var(--crit)';
+    cell.style.fontWeight = '700';
+  }
+  if (mono) cell.style.fontVariantNumeric = 'tabular-nums';
+  if (alignRight) cell.style.textAlign = 'right';
   return cell;
 }
 
 function formatTime(iso) {
-  return new Date(iso).toLocaleString();
+  return new Date(iso).toLocaleTimeString();
 }

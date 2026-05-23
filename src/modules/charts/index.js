@@ -116,8 +116,8 @@ function makeCell(text, header) {
   el.textContent = text;
   el.style.padding = '4px 6px';
   el.style.textAlign = 'center';
-  el.style.background = header ? 'var(--color-bg)' : 'var(--color-surface)';
+  el.style.background = header ? 'var(--bg)' : 'var(--surface)';
   el.style.borderRadius = 'var(--radius-sm)';
-  if (header) el.style.color = 'var(--color-text-muted)';
+  if (header) el.style.color = 'var(--text-muted)';
   return el;
 }

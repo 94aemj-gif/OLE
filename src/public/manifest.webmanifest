@@ -1,0 +1,26 @@
+{
+  "name": "OLE Production Logger",
+  "short_name": "OLE",
+  "description": "Tablet-friendly, local-first production logging for the plant floor",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "es",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Tablero", "url": "/dashboard" },
+    { "name": "Admin", "url": "/admin" },
+    { "name": "Gráficas", "url": "/graficas" }
+  ]
+}

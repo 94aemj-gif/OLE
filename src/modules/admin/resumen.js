@@ -1,47 +1,30 @@
 // @ts-check
 /**
- * Render Resumen tab — weekstrip + session history + audit log.
+ * Render Resumen tab — weekstrip + session history + audit log (Worximity Dense).
  *
  * @param {{container: HTMLElement, client:any, timezone:string}} cfg
  */
 export function renderResumen(cfg) {
   cfg.container.innerHTML = '';
-  const weekstrip = document.createElement('div');
-  weekstrip.style.display = 'flex';
-  weekstrip.style.gap = 'var(--space-2)';
-  weekstrip.style.marginBottom = 'var(--space-4)';
-  let selectedDate = todayIso(cfg.timezone);
 
-  for (let i = 6; i >= 0; i -= 1) {
-    const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-    const iso = d.toISOString().slice(0, 10);
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn';
-    btn.textContent = d.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' });
-    if (iso === selectedDate) btn.classList.add('btn-primary');
-    btn.addEventListener('click', () => {
-      selectedDate = iso;
-      // re-render selection state
-      weekstrip.querySelectorAll('button').forEach((b) => b.classList.remove('btn-primary'));
-      btn.classList.add('btn-primary');
-      void refresh();
-    });
-    weekstrip.append(btn);
-  }
+  const weekstrip = document.createElement('div');
+  weekstrip.className = 'weekstrip';
+  let selectedDate = todayIso();
+  buildWeekstrip(weekstrip, selectedDate, (iso) => {
+    selectedDate = iso;
+    weekstrip.querySelectorAll('button').forEach((b) => b.classList.remove('btn-primary'));
+    weekstrip.querySelector(`button[data-iso="${iso}"]`)?.classList.add('btn-primary');
+    void refresh();
+  });
   cfg.container.append(weekstrip);
 
-  const sessions = document.createElement('section');
-  sessions.innerHTML = '<h3>Historial de Sesiones</h3>';
-  const sessionTable = document.createElement('div');
-  sessions.append(sessionTable);
+  const panels = document.createElement('div');
+  panels.className = 'admin-panels';
 
-  const audit = document.createElement('section');
-  audit.innerHTML = '<h3>Bitácora de Movimientos</h3>';
-  const auditTable = document.createElement('div');
-  audit.append(auditTable);
-
-  cfg.container.append(sessions, audit);
+  const sessions = makePanel('Historial de Sesiones', 'sessionsCount');
+  const audit = makePanel('Bitácora de Movimientos', 'auditCount');
+  panels.append(sessions.wrap, audit.wrap);
+  cfg.container.append(panels);
 
   async function refresh() {
     const startIso = `${selectedDate}T00:00:00.000Z`;
@@ -54,30 +37,81 @@ export function renderResumen(cfg) {
         body: []
       }
     ]);
-    renderSessionTable(
-      sessionTable,
-      (captures.body ?? []).filter((c) => c.hour_bucket >= startIso && c.hour_bucket <= endIso)
+    const filtered = (captures.body ?? []).filter(
+      (c) => c.hour_bucket >= startIso && c.hour_bucket <= endIso
     );
-    renderAuditTable(auditTable, auditLog.body ?? []);
+    renderSessionTable(sessions.slot, filtered, sessions.count);
+    renderAuditList(audit.slot, auditLog.body ?? [], audit.count);
   }
 
   void refresh();
   return { refresh };
 }
 
-function todayIso(_timezone) {
+function buildWeekstrip(root, selectedIso, onClick) {
+  const dows = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+  for (let i = 6; i >= 0; i -= 1) {
+    const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+    const iso = d.toISOString().slice(0, 10);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.iso = iso;
+    btn.innerHTML = `<span class="dow">${dows[d.getDay()]}</span><span class="day">${String(d.getDate()).padStart(2, '0')}</span>`;
+    if (iso === selectedIso) btn.classList.add('btn-primary');
+    btn.addEventListener('click', () => onClick(iso));
+    root.append(btn);
+  }
+}
+
+function makePanel(title, countId) {
+  const wrap = document.createElement('section');
+  wrap.className = 'panel-section';
+  const head = document.createElement('header');
+  const h = document.createElement('h2');
+  h.textContent = title;
+  const count = document.createElement('span');
+  count.className = 'count';
+  count.id = countId;
+  count.textContent = '—';
+  head.append(h, count);
+  wrap.append(head);
+  const slot = document.createElement('div');
+  wrap.append(slot);
+  return { wrap, slot, count };
+}
+
+function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function renderSessionTable(slot, rows) {
+function emptyState(slot, msg) {
   slot.innerHTML = '';
+  const p = document.createElement('p');
+  p.style.padding = 'var(--space-5)';
+  p.style.color = 'var(--text-muted)';
+  p.style.fontSize = 'var(--text-sm)';
+  p.style.margin = '0';
+  p.textContent = msg;
+  slot.append(p);
+}
+
+function renderSessionTable(slot, rows, countEl) {
   if (rows.length === 0) {
-    slot.textContent = 'Sin capturas en esta fecha.';
+    countEl.textContent = '0';
+    emptyState(slot, 'Sin capturas en esta fecha.');
     return;
   }
   const sessions = groupBy(rows, (c) => `${c.line_id}|${c.shift_id}|${c.operator_number}`);
+  countEl.textContent = `${sessions.size} sesiones`;
+  slot.innerHTML = '';
   const table = document.createElement('table');
-  table.innerHTML = `<thead><tr><th>Línea</th><th>Turno</th><th>Operador</th><th>Capturas</th><th>Unidades</th><th>Merma</th></tr></thead>`;
+  table.className = 'data';
+  table.innerHTML = `<thead><tr>
+    <th>Línea</th><th>Turno</th><th>Operador</th>
+    <th style="text-align:right">Capturas</th>
+    <th style="text-align:right">Unidades</th>
+    <th style="text-align:right">Merma</th>
+  </tr></thead>`;
   const body = document.createElement('tbody');
   for (const [key, caps] of sessions) {
     const [line_id, shift_id, operator_number] = key.split('|');
@@ -87,28 +121,60 @@ function renderSessionTable(slot, rows) {
       0
     );
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${line_id}</td><td>${shift_id}</td><td>${operator_number}</td><td>${caps.length}</td><td>${units}</td><td>${scrap}</td>`;
+    tr.innerHTML =
+      `<td><strong>${line_id}</strong></td>` +
+      `<td>${shift_id}</td>` +
+      `<td>${operator_number}</td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums">${caps.length}</td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums"><strong>${units}</strong></td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums; color: var(--crit)">${scrap}</td>`;
     body.append(tr);
   }
   table.append(body);
-  table.style.width = '100%';
-  table.style.borderCollapse = 'collapse';
   slot.append(table);
 }
 
-function renderAuditTable(slot, rows) {
-  slot.innerHTML = '';
+const ACTION_STYLE = {
+  CAPTURE_CREATE: { cls: 'create', bg: 'var(--ok-soft)', fg: 'var(--ok)' },
+  CAPTURE_UNDO: { cls: 'undo', bg: 'var(--warn-soft)', fg: 'var(--warn)' },
+  CATALOG_EDIT: { cls: 'edit', bg: 'var(--accent-soft)', fg: 'var(--accent)' },
+  DAY_RESET: { cls: 'reset', bg: 'var(--crit-soft)', fg: 'var(--crit)' },
+  DEAD_LETTER_REPLAY: { cls: 'edit', bg: 'var(--accent-soft)', fg: 'var(--accent)' },
+  DEAD_LETTER_DISCARD: { cls: 'reset', bg: 'var(--crit-soft)', fg: 'var(--crit)' },
+  DEAD_LETTER_CREATE: { cls: 'undo', bg: 'var(--warn-soft)', fg: 'var(--warn)' },
+  MANAGER_PIN_ROTATE: { cls: 'edit', bg: 'var(--accent-soft)', fg: 'var(--accent)' },
+  MANAGER_DEACTIVATE: { cls: 'reset', bg: 'var(--crit-soft)', fg: 'var(--crit)' }
+};
+
+function renderAuditList(slot, rows, countEl) {
   if (rows.length === 0) {
-    slot.textContent = 'Sin movimientos.';
+    countEl.textContent = '0';
+    emptyState(slot, 'Sin movimientos en esta fecha.');
     return;
   }
-  const list = document.createElement('ul');
-  list.style.padding = '0';
-  list.style.listStyle = 'none';
+  countEl.textContent = `${rows.length}`;
+  slot.innerHTML = '';
+  const list = document.createElement('div');
+  list.style.padding = '6px 0';
+  list.style.maxHeight = '480px';
+  list.style.overflowY = 'auto';
   for (const row of rows) {
-    const li = document.createElement('li');
-    li.style.padding = '4px 0';
-    li.textContent = `[${new Date(row.occurred_at).toLocaleString()}] ${row.actor_name} · ${row.action}`;
+    const style = ACTION_STYLE[row.action] ?? {
+      bg: 'var(--surface-soft)',
+      fg: 'var(--text-muted)'
+    };
+    const li = document.createElement('div');
+    li.style.padding = '10px 18px';
+    li.style.fontSize = 'var(--text-sm)';
+    li.style.borderBottom = '1px solid var(--border)';
+    li.innerHTML =
+      `<div style="color: var(--text-muted); font-size: 11px; letter-spacing: 0.1em">` +
+      `${new Date(row.occurred_at).toLocaleString()}</div>` +
+      `<div style="margin-top: 4px">` +
+      `<span style="background: ${style.bg}; color: ${style.fg}; padding: 2px 8px; ` +
+      `border-radius: 4px; font-weight: 700; font-size: 11px; letter-spacing: 0.12em; margin-right: 8px">` +
+      `${row.action}</span>${row.entity_id ?? ''}</div>` +
+      `<div style="color: var(--text-muted); margin-top: 2px">${row.actor_name}</div>`;
     list.append(li);
   }
   slot.append(list);

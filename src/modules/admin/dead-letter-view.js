@@ -9,8 +9,16 @@ import { createButton } from '../ui/button.js';
  */
 export function renderDeadLetterView(cfg) {
   cfg.container.innerHTML = '';
+
+  const wrap = document.createElement('section');
+  wrap.className = 'panel-section';
+  const header = document.createElement('header');
+  header.innerHTML = '<h2>Capturas Pendientes</h2><span class="count" id="dlCount">—</span>';
+  wrap.append(header);
   const list = document.createElement('div');
-  cfg.container.append(list);
+  list.style.padding = 'var(--space-3) var(--space-4)';
+  wrap.append(list);
+  cfg.container.append(wrap);
 
   async function refresh() {
     list.innerHTML = '';
@@ -21,10 +29,17 @@ export function renderDeadLetterView(cfg) {
     } catch (err) {
       console.warn('dead-letter fetch failed', err);
     }
+    const countEl = document.getElementById('dlCount');
+    if (countEl) countEl.textContent = `${rows.length}`;
     if (rows.length === 0) {
       const empty = document.createElement('p');
-      empty.textContent = 'Sin capturas pendientes.';
-      empty.style.color = 'var(--color-text-muted)';
+      empty.textContent = '✓ Sin capturas pendientes. Todo sincronizado.';
+      empty.style.color = 'var(--ok)';
+      empty.style.fontSize = 'var(--text-sm)';
+      empty.style.margin = 'var(--space-3) 0';
+      empty.style.padding = 'var(--space-3) var(--space-4)';
+      empty.style.background = 'var(--ok-soft)';
+      empty.style.borderRadius = 'var(--radius-md)';
       list.append(empty);
       return;
     }
@@ -33,31 +48,34 @@ export function renderDeadLetterView(cfg) {
 
   function renderRow(row) {
     const card = document.createElement('div');
-    card.className = 'panel';
+    card.style.background = 'var(--surface)';
+    card.style.border = '1px solid var(--border)';
+    card.style.borderLeft = '4px solid var(--crit)';
+    card.style.borderRadius = 'var(--radius-md)';
+    card.style.padding = 'var(--space-4)';
     card.style.marginBottom = 'var(--space-3)';
-    const head = document.createElement('div');
-    head.style.display = 'flex';
-    head.style.justifyContent = 'space-between';
-    head.style.gap = 'var(--space-3)';
+    card.style.display = 'grid';
+    card.style.gridTemplateColumns = '1fr auto';
+    card.style.gap = 'var(--space-3)';
+    card.style.alignItems = 'center';
+
     const summary = document.createElement('div');
     summary.innerHTML =
-      `<strong>${row.line_id}</strong> · op ${row.operator_number ?? '?'} · ` +
-      `${new Date(row.client_timestamp).toLocaleString()}<br/>` +
-      `<small style="color:var(--color-text-muted)">${row.reject_reason}</small>`;
+      `<div style="display: flex; gap: var(--space-3); align-items: baseline">` +
+      `<strong style="font-size: var(--text-base)">${row.line_id}</strong>` +
+      `<span style="color: var(--text-muted); font-size: var(--text-sm)">` +
+      `op ${row.operator_number ?? '?'} · ${new Date(row.client_timestamp).toLocaleString()}` +
+      `</span></div>` +
+      `<div style="margin-top: 6px; color: var(--crit); font-size: var(--text-sm)">` +
+      `<strong>Razón:</strong> ${row.reject_reason}</div>`;
     const actions = document.createElement('div');
     actions.style.display = 'flex';
     actions.style.gap = 'var(--space-2)';
-
     actions.append(
-      createButton({
-        label: 'Reintentar',
-        kind: 'primary',
-        onClick: () => onReplay(row)
-      }),
+      createButton({ label: 'Reintentar', kind: 'primary', onClick: () => onReplay(row) }),
       createButton({ label: 'Descartar', kind: 'danger', onClick: () => onDiscard(row) })
     );
-    head.append(summary, actions);
-    card.append(head);
+    card.append(summary, actions);
     return card;
   }
 
