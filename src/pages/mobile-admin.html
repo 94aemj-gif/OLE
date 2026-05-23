@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile · Admin</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .session {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        font-size: var(--t-sm);
+      }
+      .session:last-child {
+        border-bottom: none;
+      }
+      .session .who strong {
+        font-size: var(--t-base);
+      }
+      .session .who .sub {
+        font-size: var(--t-label);
+        color: var(--muted);
+        display: block;
+      }
+      .session .vals {
+        text-align: right;
+      }
+      .session .vals .units {
+        font-size: var(--t-h2);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+      .session .vals .scrap {
+        font-size: var(--t-xs);
+        color: var(--crit);
+      }
+      .audit-item {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: var(--t-sm);
+      }
+      .audit-item:last-child {
+        border-bottom: none;
+      }
+      .audit-item .time {
+        font-size: var(--t-label);
+        color: var(--muted);
+        letter-spacing: var(--ls-tight);
+      }
+      .audit-item .action {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: var(--t-label);
+        letter-spacing: var(--ls-tight);
+        margin-right: 6px;
+      }
+      .audit-item .action.create {
+        background: var(--ok-soft);
+        color: var(--ok);
+      }
+      .audit-item .action.edit {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .audit-item .action.reset {
+        background: var(--crit-soft);
+        color: var(--crit);
+      }
+      .audit-item .who {
+        color: var(--muted);
+        font-size: var(--t-xs);
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/mobile-mockups">← mobile</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="role-chip">Mgr</span>
+          <span class="title">Admin · Configuración</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <nav class="tabbar">
+          <button class="on">Resumen</button>
+          <button>Catálogos</button>
+          <button>Configuración</button>
+          <button>Datos</button>
+        </nav>
+
+        <div class="weekstrip">
+          <button><span class="dow">Sáb</span><span class="day">16</span></button>
+          <button><span class="dow">Dom</span><span class="day">17</span></button>
+          <button><span class="dow">Lun</span><span class="day">18</span></button>
+          <button><span class="dow">Mar</span><span class="day">19</span></button>
+          <button><span class="dow">Mié</span><span class="day">20</span></button>
+          <button><span class="dow">Jue</span><span class="day">21</span></button>
+          <button class="today"><span class="dow">Vie</span><span class="day">22</span></button>
+        </div>
+
+        <section class="panel">
+          <header>
+            <h2>Sesiones · 22 May</h2>
+            <span class="count">6</span>
+          </header>
+          <div class="session">
+            <div class="who">
+              <strong>L-01 · Ana López</strong>
+              <span class="sub">Matutino · 8 capturas</span>
+            </div>
+            <div class="vals">
+              <div class="units">1 845</div>
+              <div class="scrap">12 scrap · 83% OEE</div>
+            </div>
+          </div>
+          <div class="session">
+            <div class="who">
+              <strong>L-02 · Luis Torres</strong>
+              <span class="sub">Matutino · 7 capturas</span>
+            </div>
+            <div class="vals">
+              <div class="units">1 845</div>
+              <div class="scrap">12 scrap · 68% OEE</div>
+            </div>
+          </div>
+          <div class="session">
+            <div class="who">
+              <strong>L-01 · Marta García</strong>
+              <span class="sub">Vespertino · 8 capturas</span>
+            </div>
+            <div class="vals">
+              <div class="units">2 020</div>
+              <div class="scrap">8 scrap · 91% OEE</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <header>
+            <h2>Bitácora</h2>
+            <span class="count">42</span>
+          </header>
+          <div class="audit-item">
+            <div class="time">14:32:08</div>
+            <div style="margin-top: 4px">
+              <span class="action create">CAPTURE_CREATE</span>240 unidades · L-01
+            </div>
+            <div class="who">Ana López · 12345</div>
+          </div>
+          <div class="audit-item">
+            <div class="time">13:48:11</div>
+            <div style="margin-top: 4px">
+              <span class="action edit">CATALOG_EDIT</span>Razón merma actualizada
+            </div>
+            <div class="who">Laura Méndez</div>
+          </div>
+          <div class="audit-item">
+            <div class="time">11:00:00</div>
+            <div style="margin-top: 4px">
+              <span class="action reset">DAY_RESET</span>Reset Día Actual
+            </div>
+            <div class="who">Laura Méndez</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

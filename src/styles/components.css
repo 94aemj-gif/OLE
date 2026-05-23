@@ -135,6 +135,63 @@
   border-color: var(--crit);
 }
 
+.btn-cta {
+  background: var(--accent);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3);
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+.btn-cta.glow {
+  animation: glow-pulse 1.6s ease-in-out infinite;
+}
+
+/* Subband — dark band under header for contextual selectors */
+.subband {
+  background: var(--header);
+  border-bottom: 1px solid var(--header-divider);
+  padding: var(--space-2) var(--space-3);
+}
+.subband select,
+.subband .select-like {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--header-text);
+  border: 1px solid var(--header-divider);
+  border-radius: var(--radius-md);
+  padding: 10px 36px 10px 14px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  width: 100%;
+  font-family: inherit;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--header-muted) 50%),
+    linear-gradient(135deg, var(--header-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 13px) 50%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+.subband select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 @keyframes glow-pulse {
   0%,
   100% {
@@ -716,6 +773,42 @@ table.data th {
   font-weight: 500;
   color: var(--text-muted);
   font-size: var(--text-sm);
+}
+
+/* Compact inline context strip — collapses on phones */
+@media (max-width: 720px) {
+  .capture-context {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 12px;
+    font-size: var(--text-sm);
+    align-items: center;
+  }
+  .capture-context .item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 0;
+    border-right: none;
+  }
+  .capture-context .item .l {
+    font-size: 9px;
+    margin: 0;
+  }
+  .capture-context .item .v {
+    font-size: var(--text-sm);
+    margin: 0;
+    font-weight: 700;
+  }
+  .capture-context .item .v small {
+    font-size: var(--text-xs);
+  }
+  .capture-context .item + .item::before {
+    content: '·';
+    color: var(--border);
+    margin-right: 6px;
+  }
 }
 .capture-context .item.identity .v {
   color: var(--accent);

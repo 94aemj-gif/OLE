@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile mockups · index</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0f172a;
+        color: #f1f5f9;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        padding: 48px 24px 80px;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      p.sub {
+        color: #94a3b8;
+        margin: 0 0 40px;
+        font-size: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      a.card {
+        text-decoration: none;
+        color: inherit;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 24px;
+        display: grid;
+        gap: 8px;
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease;
+      }
+      a.card:hover {
+        transform: translateY(-3px);
+        border-color: #3b82f6;
+      }
+      .num {
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 0;
+      }
+      .tag {
+        color: #cbd5e1;
+        font-size: 14px;
+        margin: 0;
+      }
+      .preview {
+        margin-top: 12px;
+        height: 100px;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #0f172a 0%, #0f172a 36px, #f1f5f9 36px);
+        position: relative;
+        overflow: hidden;
+      }
+      .preview::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 6px #22c55e;
+      }
+      .preview::after {
+        content: 'Línea #1 · Jeringa 60ml';
+        position: absolute;
+        top: 12px;
+        left: 36px;
+        font-size: 12px;
+        color: #f1f5f9;
+        font-weight: 600;
+      }
+      .back {
+        position: fixed;
+        top: 18px;
+        right: 24px;
+        font-size: 12px;
+        color: #cbd5e1;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back" href="/mockups">← all mockups</a>
+    <div class="wrap">
+      <h1>Mobile mockups · single tight row header</h1>
+      <p class="sub">
+        All 5 screens rendered at 390px. Single-tight-row header applied. Click any card to view.
+      </p>
+
+      <div class="grid">
+        <a class="card" href="/mobile-operator">
+          <span class="num">01 · Operator</span>
+          <h2>Capture tablet</h2>
+          <p class="tag">Big counter, 3 side tiles, sticky CTA at bottom.</p>
+          <div class="preview"></div>
+        </a>
+        <a class="card" href="/mobile-tablero">
+          <span class="num">02 · Line leader</span>
+          <h2>Tablero</h2>
+          <p class="tag">Summary tiles + per-line cards with donut + bars + pace pill.</p>
+          <div class="preview"></div>
+        </a>
+        <a class="card" href="/mobile-graficas">
+          <span class="num">03 · Plant manager</span>
+          <h2>Gráficas / KPI</h2>
+          <p class="tag">4 gauges in 2×2, hourly chart, 7-day heatmap, EOS button.</p>
+          <div class="preview"></div>
+        </a>
+        <a class="card" href="/mobile-admin">
+          <span class="num">04 · Manager</span>
+          <h2>Admin</h2>
+          <p class="tag">Tab bar, weekstrip, sessions list, audit feed.</p>
+          <div class="preview"></div>
+        </a>
+        <a class="card" href="/mobile-capture">
+          <span class="num">05 · Modal</span>
+          <h2>Capturar (modal)</h2>
+          <p class="tag">
+            Context strip, employee + numpad hero, downtime/scrap rail, save footer.
+          </p>
+          <div class="preview"></div>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

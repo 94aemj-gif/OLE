@@ -9,23 +9,11 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/components.css" />
-    <style>
-      select#lineSelect {
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--header-text);
-        border: 1px solid var(--header-divider);
-        padding: 8px 14px;
-        border-radius: var(--radius-sm);
-        font-size: var(--text-sm);
-        min-width: 240px;
-      }
-    </style>
   </head>
   <body>
     <header class="app-header">
       <span class="brand">OLE</span>
       <h1>Gráficas · KPI</h1>
-      <select id="lineSelect" aria-label="Línea seleccionada"></select>
       <div class="right">
         <button
           id="eosBtn"
@@ -46,6 +34,10 @@
         </button>
       </div>
     </header>
+
+    <div class="subband">
+      <select id="lineSelect" aria-label="Línea seleccionada"></select>
+    </div>
 
     <section class="kpi-ribbon">
       <div class="kpi">

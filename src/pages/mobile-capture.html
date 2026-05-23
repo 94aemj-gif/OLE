@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile · Capture Modal</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .modal-head {
+        background: var(--header);
+        color: var(--header-text);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .modal-head .badge {
+        background: rgba(59, 130, 246, 0.18);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: #93c5fd;
+        padding: 3px 10px;
+        border-radius: var(--r-pill);
+        font-size: var(--t-label);
+        font-weight: 700;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+      }
+      .modal-head h2 {
+        flex: 1;
+        margin: 0;
+        font-size: var(--t-lead);
+        font-weight: 600;
+      }
+      .modal-head .close {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--header-divider);
+        color: #cbd5e1;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 16px;
+        cursor: pointer;
+        font-family: var(--font);
+      }
+      .ctx {
+        background: var(--surface-soft);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 12px;
+        font-size: var(--t-sm);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .ctx .chip {
+        display: inline-flex;
+        gap: 4px;
+        align-items: baseline;
+      }
+      .ctx .chip .l {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .ctx .chip .v {
+        font-weight: 700;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+      .ctx .chip.identity .v {
+        color: var(--accent);
+      }
+
+      .hero {
+        padding: 14px;
+        background: var(--surface);
+      }
+      .step-label {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+        margin: 0 0 6px;
+      }
+      .emp-input {
+        width: 100%;
+        font-size: var(--t-num-sm);
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.18em;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        font-variant-numeric: tabular-nums;
+        background: var(--surface);
+        font-family: var(--font);
+      }
+      .emp-name {
+        font-size: var(--t-xs);
+        color: var(--ok);
+        font-weight: 600;
+        text-align: center;
+        margin-top: 4px;
+      }
+      .units-display {
+        background: linear-gradient(140deg, var(--header), #1e293b);
+        color: white;
+        border-radius: var(--r-lg);
+        padding: 20px 22px;
+        text-align: right;
+        font-size: var(--t-num-lg);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
+        margin: 12px 0;
+        position: relative;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+      }
+      .units-display::before {
+        content: 'UNIDADES';
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        color: #64748b;
+        font-weight: 700;
+      }
+      .numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+      .numpad button {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 14px 0;
+        font-size: var(--t-h2);
+        font-weight: 700;
+        min-height: 52px;
+        cursor: pointer;
+        font-family: var(--font);
+        color: var(--accent);
+      }
+      .numpad button.fn {
+        color: var(--muted);
+        font-size: var(--t-h3);
+      }
+      .rail {
+        padding: 14px;
+        background: #fbfcfd;
+        border-top: 1px solid var(--border);
+      }
+      .rail-section {
+        margin-bottom: 14px;
+      }
+      .rail-section:last-child {
+        margin-bottom: 0;
+      }
+      .rail-section .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .rail-section h3 {
+        margin: 0;
+        font-size: var(--t-label);
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .event-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 8px 10px;
+        margin-bottom: 6px;
+        display: grid;
+        grid-template-columns: 1fr 72px 24px;
+        gap: 6px;
+        align-items: center;
+      }
+      .event-row select,
+      .event-row input {
+        background: transparent;
+        border: none;
+        font-size: var(--t-sm);
+        font-family: var(--font);
+        color: var(--text);
+      }
+      .event-row input {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        font-size: var(--t-base);
+      }
+      .event-row .rm {
+        background: transparent;
+        border: none;
+        color: var(--crit);
+        font-size: 16px;
+        opacity: 0.6;
+        cursor: pointer;
+        font-family: var(--font);
+      }
+      .add-event {
+        width: 100%;
+        background: transparent;
+        border: 1.5px dashed var(--border);
+        color: var(--accent);
+        padding: 10px;
+        border-radius: var(--r-md);
+        font-weight: 600;
+        font-size: var(--t-xs);
+        cursor: pointer;
+        font-family: var(--font);
+      }
+      .footer {
+        background: var(--surface);
+        padding: 12px 14px;
+        border-top: 1px solid var(--border);
+        display: grid;
+        gap: 8px;
+      }
+      .footer .helper {
+        font-size: var(--t-label);
+        color: var(--muted);
+        text-align: center;
+        letter-spacing: 0.02em;
+      }
+      .footer .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 8px;
+      }
+      .footer .buttons .btn {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/mobile-mockups">← mobile</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="modal-head">
+          <span class="badge">Captura</span>
+          <h2>14:00 – 15:00</h2>
+          <button class="close">×</button>
+        </header>
+
+        <section class="ctx">
+          <span class="chip identity"
+            ><span class="l">OP</span><span class="v">Ana · 12345</span></span
+          >
+          <span class="divider">·</span>
+          <span class="chip"><span class="v">Matutino</span></span>
+          <span class="divider">·</span>
+          <span class="chip"><span class="l">Acum</span><span class="v">1 605 / 2 000</span></span>
+        </section>
+
+        <div class="hero">
+          <p class="step-label">N° empleado</p>
+          <input class="emp-input" value="12345" />
+          <div class="emp-name">✓ Ana López</div>
+
+          <div class="units-display">240</div>
+
+          <div class="numpad">
+            <button>1</button><button>2</button><button>3</button> <button>4</button
+            ><button>5</button><button>6</button> <button>7</button><button>8</button
+            ><button>9</button> <button class="fn">C</button><button>0</button
+            ><button class="fn">⌫</button>
+          </div>
+        </div>
+
+        <aside class="rail">
+          <section class="rail-section">
+            <div class="head">
+              <h3>Tiempo muerto</h3>
+              <span class="pill warn">5 min</span>
+            </div>
+            <div class="event-row">
+              <select class="compact-select">
+                <option>Junta de producción</option>
+              </select>
+              <input value="5 min" />
+              <button class="rm">×</button>
+            </div>
+            <button class="add-event">+ Agregar</button>
+          </section>
+
+          <section class="rail-section">
+            <div class="head">
+              <h3>Merma</h3>
+              <span class="pill crit">4 pcs</span>
+            </div>
+            <div class="event-row">
+              <select class="compact-select">
+                <option>Pistón roto</option>
+              </select>
+              <input value="3 pcs" />
+              <button class="rm">×</button>
+            </div>
+            <div class="event-row">
+              <select class="compact-select">
+                <option>Empaque defectuoso</option>
+              </select>
+              <input value="1 pcs" />
+              <button class="rm">×</button>
+            </div>
+            <button class="add-event">+ Agregar</button>
+          </section>
+        </aside>
+
+        <footer class="footer">
+          <div class="helper">Guarda local + sync ≤ 30s · undo 10 s</div>
+          <div class="buttons">
+            <button class="btn">Cancelar</button>
+            <button class="btn btn-primary">Guardar captura</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

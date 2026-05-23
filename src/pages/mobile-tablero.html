@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile · Tablero</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: var(--m-3);
+      }
+      .summary .tile .l {
+        font-size: var(--t-label);
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .summary .tile .v {
+        font-size: var(--t-num-sm);
+        font-weight: 800;
+        margin-top: 4px;
+        font-variant-numeric: tabular-nums;
+      }
+      .summary .tile .delta {
+        font-size: var(--t-xs);
+        margin-top: 2px;
+      }
+      .delta.up {
+        color: var(--ok);
+      }
+      .delta.dn {
+        color: var(--crit);
+      }
+      .line-card {
+        display: grid;
+        gap: 12px;
+      }
+      .line-card header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .line-card header h2 {
+        margin: 0;
+        font-size: var(--t-h3);
+        font-weight: 700;
+      }
+      .line-card .sub {
+        font-size: var(--t-xs);
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .row-count {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: var(--t-xs);
+      }
+      .meta strong {
+        color: var(--text);
+      }
+      .pace-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+        font-size: var(--t-label);
+        letter-spacing: var(--ls-tight);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/mobile-mockups">← mobile</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <span class="title">Tablero · Producción</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <div class="summary">
+          <div class="tile">
+            <div class="l">Producción</div>
+            <div class="v">3 690</div>
+            <div class="delta up">↑ 12 % vs ayer</div>
+          </div>
+          <div class="tile">
+            <div class="l">Merma</div>
+            <div class="v">24</div>
+            <div class="delta dn">↑ 4 vs ayer</div>
+          </div>
+          <div class="tile">
+            <div class="l">Líneas activas</div>
+            <div class="v">2 / 2</div>
+            <div class="delta" style="color: var(--muted)">100 % uptime</div>
+          </div>
+          <div class="tile">
+            <div class="l">Pace promedio</div>
+            <div class="v">93 %</div>
+            <div class="delta up">↑ 2 %</div>
+          </div>
+        </div>
+
+        <article class="card line-card">
+          <header>
+            <div>
+              <h2>Línea #1 · 60ml</h2>
+              <div class="sub">Ana López · Matutino</div>
+            </div>
+            <span class="pill ok dot">Running</span>
+          </header>
+          <div class="row-count">
+            <div>
+              <div class="num-md">1 845</div>
+              <div class="muted" style="font-size: var(--t-xs)">/ 2 000</div>
+            </div>
+            <div class="donut">
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="30" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="36"
+                  cy="36"
+                  r="30"
+                  stroke="#3b82f6"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="156 188"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">83%</div>
+            </div>
+          </div>
+          <div class="progress"><span style="width: 92%"></span></div>
+          <div class="bars">
+            <span style="height: 60%"></span>
+            <span class="under" style="height: 38%"></span>
+            <span style="height: 72%"></span>
+            <span class="over" style="height: 100%"></span>
+            <span style="height: 80%"></span>
+            <span style="height: 90%"></span>
+            <span class="over" style="height: 100%"></span>
+            <span style="height: 92%"></span>
+          </div>
+          <div class="meta">
+            <span>Scrap <strong>12</strong></span>
+            <span>Down <strong>5 m</strong></span>
+            <span>Última <strong>14:00 · 240</strong></span>
+          </div>
+          <div class="pace-row">
+            <span>Pace</span>
+            <span class="pill ok">95 %</span>
+          </div>
+        </article>
+
+        <article class="card line-card">
+          <header>
+            <div>
+              <h2>Línea #2 · 35ml</h2>
+              <div class="sub">Luis Torres · Matutino</div>
+            </div>
+            <span class="pill warn dot">Mantenimiento</span>
+          </header>
+          <div class="row-count">
+            <div>
+              <div class="num-md">1 845</div>
+              <div class="muted" style="font-size: var(--t-xs)">/ 2 400</div>
+            </div>
+            <div class="donut">
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="30" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="36"
+                  cy="36"
+                  r="30"
+                  stroke="#f59e0b"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="128 188"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">68%</div>
+            </div>
+          </div>
+          <div class="progress"><span style="width: 77%; background: var(--warn)"></span></div>
+          <div class="bars">
+            <span style="height: 90%"></span>
+            <span style="height: 88%"></span>
+            <span class="under" style="height: 30%"></span>
+            <span class="under" style="height: 0%"></span>
+            <span class="under" style="height: 30%"></span>
+            <span style="height: 70%"></span>
+            <span style="height: 78%"></span>
+            <span style="height: 82%"></span>
+          </div>
+          <div class="meta">
+            <span>Scrap <strong>12</strong></span>
+            <span>Down <strong>42 m</strong></span>
+            <span>Última <strong>13:50 · 195</strong></span>
+          </div>
+          <div class="pace-row">
+            <span>Pace</span>
+            <span class="pill warn">82 %</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

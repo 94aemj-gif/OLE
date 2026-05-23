@@ -19,7 +19,14 @@
     { "source": "/mockup-2-tablero", "destination": "/pages/mockup-2-tablero.html" },
     { "source": "/mockup-2-admin", "destination": "/pages/mockup-2-admin.html" },
     { "source": "/mockup-2-graficas", "destination": "/pages/mockup-2-graficas.html" },
-    { "source": "/mockup-2-capture", "destination": "/pages/mockup-2-capture.html" }
+    { "source": "/mockup-2-capture", "destination": "/pages/mockup-2-capture.html" },
+    { "source": "/header-mockups", "destination": "/pages/header-mockups.html" },
+    { "source": "/mobile-mockups", "destination": "/pages/mobile-mockups.html" },
+    { "source": "/mobile-operator", "destination": "/pages/mobile-operator.html" },
+    { "source": "/mobile-tablero", "destination": "/pages/mobile-tablero.html" },
+    { "source": "/mobile-graficas", "destination": "/pages/mobile-graficas.html" },
+    { "source": "/mobile-admin", "destination": "/pages/mobile-admin.html" },
+    { "source": "/mobile-capture", "destination": "/pages/mobile-capture.html" }
   ],
   "headers": [
     {

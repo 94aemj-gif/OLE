@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile · Operator</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .hero-card {
+        text-align: center;
+      }
+      .hero-card .num-xl {
+        margin: 12px 0;
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 12px;
+        font-size: var(--t-sm);
+        color: var(--muted);
+      }
+      .meta-row strong {
+        color: var(--text);
+      }
+      .side-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 0 var(--m-3);
+      }
+      .side-tiles .tile {
+        text-align: center;
+      }
+      .side-tiles .tile .l {
+        font-size: 9px;
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .side-tiles .tile .v {
+        font-size: var(--t-lead);
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .cta-stripe {
+        padding: var(--m-4) var(--m-3) var(--m-6);
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/mobile-mockups">← mobile</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <span class="title">Línea #1 · Jeringa 60ml</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <section class="card hero-card">
+          <span class="label">Producción del turno</span>
+          <div class="num-xl">1 845</div>
+          <div class="progress"><span style="width: 92%"></span></div>
+          <div class="meta-row">
+            <span>92 % del objetivo · <strong>2 000</strong></span>
+            <span>Última 14:00 · <strong>240</strong></span>
+          </div>
+        </section>
+
+        <div class="side-tiles">
+          <div class="tile">
+            <div class="l">Pace</div>
+            <div class="v" style="color: var(--ok)">95%</div>
+          </div>
+          <div class="tile">
+            <div class="l">Scrap</div>
+            <div class="v" style="color: var(--crit)">12</div>
+          </div>
+          <div class="tile">
+            <div class="l">Turno</div>
+            <div class="v">M</div>
+          </div>
+        </div>
+
+        <div class="cta-stripe">
+          <button class="btn-cta">+ &nbsp;CAPTURAR</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

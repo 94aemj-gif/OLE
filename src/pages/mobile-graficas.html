@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile · Gráficas</title>
+    <link rel="stylesheet" href="./mobile-mockup-shared.css" />
+    <style>
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: var(--m-3);
+      }
+      .chart-card h3 {
+        margin: 0 0 var(--m-3);
+        font-size: var(--t-xs);
+        letter-spacing: var(--ls-label);
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .bars-host {
+        display: flex;
+        gap: 4px;
+        align-items: flex-end;
+        height: 100px;
+        position: relative;
+      }
+      .bars-host span {
+        flex: 1;
+        background: var(--accent);
+        opacity: 0.85;
+        border-radius: 3px 3px 0 0;
+      }
+      .bars-host span.under {
+        background: var(--warn);
+      }
+      .target {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 28%;
+        border-top: 2px dashed var(--crit);
+      }
+      .heatmap {
+        display: grid;
+        grid-template-columns: 32px repeat(24, minmax(14px, 1fr));
+        gap: 2px;
+        font-size: 8px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .heatmap .h {
+        text-align: center;
+        color: var(--muted);
+        padding: 2px 0;
+      }
+      .heatmap .cell {
+        border-radius: 2px;
+        min-height: 14px;
+      }
+      .legend {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: var(--t-label);
+        color: var(--muted);
+        margin-top: 8px;
+      }
+      .legend .scale {
+        display: flex;
+        gap: 1px;
+      }
+      .legend .scale span {
+        width: 10px;
+        height: 10px;
+      }
+      .eos-wrap {
+        padding: var(--m-3);
+      }
+      .eos-wrap button {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body class="frame">
+    <a class="back" href="/mobile-mockups">← mobile</a>
+    <div class="phone">
+      <div class="screen">
+        <header class="app-header">
+          <span class="dot"></span>
+          <span class="title">Gráficas · KPI</span>
+          <button class="lang">ES | EN</button>
+        </header>
+
+        <div class="subband">
+          <select aria-label="Línea seleccionada">
+            <option>Línea #1 — Jeringa Neomed 60ml</option>
+            <option>Línea #2 — Jeringa Neomed 35ml</option>
+          </select>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#3b82f6"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="115 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">83%</div>
+            </div>
+            <div class="meta">
+              <div class="l">OEE</div>
+              <div class="sub">↑ 2 %</div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#16a34a"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="122 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">88%</div>
+            </div>
+            <div class="meta">
+              <div class="l">Disponib.</div>
+              <div class="sub">420/480 m</div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#f59e0b"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="131 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">95%</div>
+            </div>
+            <div class="meta">
+              <div class="l">Rendim.</div>
+              <div class="sub">1 845 / 1 940</div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="gauge">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="22"
+                  stroke="#0ea5e9"
+                  stroke-width="6"
+                  fill="none"
+                  stroke-dasharray="137 138"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="v">99%</div>
+            </div>
+            <div class="meta">
+              <div class="l">Calidad</div>
+              <div class="sub">1 833 / 1 845</div>
+            </div>
+          </div>
+        </div>
+
+        <section class="card chart-card">
+          <h3>Producción por hora</h3>
+          <div class="bars-host">
+            <div class="target"></div>
+            <span style="height: 50%"></span>
+            <span class="under" style="height: 38%"></span>
+            <span style="height: 72%"></span>
+            <span style="height: 88%"></span>
+            <span style="height: 92%"></span>
+            <span style="height: 96%"></span>
+            <span style="height: 100%"></span>
+            <span style="height: 92%"></span>
+          </div>
+        </section>
+
+        <section class="card chart-card">
+          <h3>Heatmap · últimos 7 días × 24h</h3>
+          <div class="heatmap" id="hm"></div>
+          <div class="legend">
+            <span>Bajo</span>
+            <div class="scale">
+              <span style="background: rgba(37, 99, 235, 0.1)"></span>
+              <span style="background: rgba(37, 99, 235, 0.4)"></span>
+              <span style="background: rgba(37, 99, 235, 0.7)"></span>
+              <span style="background: rgba(37, 99, 235, 0.95)"></span>
+            </div>
+            <span>Alto</span>
+          </div>
+        </section>
+
+        <div class="eos-wrap">
+          <button class="btn btn-primary">Resumen de fin de turno</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const hm = document.getElementById('hm');
+      const dows = ['Sa', 'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
+      hm.append(make('div', '', 'h cell'));
+      for (let h = 0; h < 24; h++) {
+        if (h % 3 === 0) hm.append(make('div', String(h).padStart(2, '0'), 'h cell'));
+        else hm.append(make('div', '', 'h cell'));
+      }
+      for (let d = 0; d < 7; d++) {
+        hm.append(make('div', dows[d], 'h cell'));
+        for (let h = 0; h < 24; h++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          let v = 0;
+          if (h >= 6 && h < 22) v = 0.2 + Math.random() * 0.75;
+          else v = Math.random() * 0.1;
+          if (d === 6 && h > 14) v = 0;
+          cell.style.background = v > 0 ? `rgba(37,99,235,${v.toFixed(2)})` : '#e2e8f0';
+          hm.append(cell);
+        }
+      }
+      function make(tag, txt, cls) {
+        const el = document.createElement(tag);
+        el.className = cls;
+        el.textContent = txt;
+        return el;
+      }
+    </script>
+  </body>
+</html>

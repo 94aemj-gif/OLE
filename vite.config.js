@@ -22,7 +22,14 @@ export default defineConfig({
         mockup2Tablero: resolve(import.meta.dirname, 'src/pages/mockup-2-tablero.html'),
         mockup2Admin: resolve(import.meta.dirname, 'src/pages/mockup-2-admin.html'),
         mockup2Graficas: resolve(import.meta.dirname, 'src/pages/mockup-2-graficas.html'),
-        mockup2Capture: resolve(import.meta.dirname, 'src/pages/mockup-2-capture.html')
+        mockup2Capture: resolve(import.meta.dirname, 'src/pages/mockup-2-capture.html'),
+        headerMockups: resolve(import.meta.dirname, 'src/pages/header-mockups.html'),
+        mobileMockups: resolve(import.meta.dirname, 'src/pages/mobile-mockups.html'),
+        mobileOperator: resolve(import.meta.dirname, 'src/pages/mobile-operator.html'),
+        mobileTablero: resolve(import.meta.dirname, 'src/pages/mobile-tablero.html'),
+        mobileGraficas: resolve(import.meta.dirname, 'src/pages/mobile-graficas.html'),
+        mobileAdmin: resolve(import.meta.dirname, 'src/pages/mobile-admin.html'),
+        mobileCapture: resolve(import.meta.dirname, 'src/pages/mobile-capture.html')
       }
     }
   },
