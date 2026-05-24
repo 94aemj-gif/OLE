@@ -78,8 +78,8 @@ export const FALLBACK_CATALOG = {
     {
       id: 'MGR-DEV-001',
       display_name: 'Maestro de Pruebas',
-      // SHA-256 of "1234"
-      pin_hash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+      pin_salt: 'ole-dev-mgr-001-salt',
+      pin_hash: '1cb73ed42aeac7a43efb45db1da9d96068ebbb8c9cd30f623de10909c93f64f6',
       active: true,
       created_at: '2026-05-22T00:00:00Z'
     }

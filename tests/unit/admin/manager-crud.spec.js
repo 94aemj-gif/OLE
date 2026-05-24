@@ -26,6 +26,7 @@ describe('manager CRUD', () => {
     expect(saved.display_name).toBe('Laura');
     expect(saved.pin_hash).toHaveLength(64);
     expect(saved.pin_hash).not.toBe('1234'); // not plain
+    expect(saved.pin_salt).toHaveLength(32);
     expect(saved.active).toBe(true);
   });
 

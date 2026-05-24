@@ -3,15 +3,13 @@ import { applyTranslations, setLang, getLang } from '../i18n/index.js';
 import { createStatusPill } from '../ui/status-pill.js';
 import { createCounter } from '../capture/counter.js';
 import { openCapture } from '../capture/index.js';
-import { readShiftState, _internals as localInternals } from '../capture/local.js';
+import { readShiftState } from '../capture/local.js';
 import { readPendingUndo, applyUndo } from '../capture/undo.js';
+import { plantDayRange } from '../time/plant-day.js';
 import { showToast } from '../ui/toast.js';
 import { startHourAlert } from '../capture/hour-alert.js';
 import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
 import { computePace } from '../dashboard/pace.js';
-import { makeSupabaseClient } from '../supabase/client.js';
-import { createSyncLoop } from '../sync/index.js';
-import { makeAuditWriter } from '../audit/writer.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
 
@@ -28,6 +26,8 @@ const line = catalog.lines.find((l) => l.id === LINE_PARAM) ?? catalog.lines[0];
 const timezone = catalog.plant.timezone;
 const shift = findActiveShift(new Date(), catalog.shifts, timezone) ?? catalog.shifts[0];
 const targetForShift = line.hourly_target * 8;
+const plantDayIso = plantDayRange(new Date(), timezone).startIso;
+const lineCtx = { line_id: line.id, shift_id: shift.id, plantDayIso };
 
 const lineNameEl = document.getElementById('lineName');
 if (lineNameEl) lineNameEl.textContent = line.display_name;
@@ -102,7 +102,7 @@ function renderPace(state) {
 }
 
 function refreshState() {
-  const state = readShiftState();
+  const state = readShiftState(lineCtx);
   counter.set(state.count);
   renderProgress(state);
   renderLastCapture(state);
@@ -137,6 +137,7 @@ captureBtn?.addEventListener('click', () => {
     shift_id: shift.id,
     client_id: getTabletId(),
     timezone,
+    plantDayIso,
     target: targetForShift,
     appendAudit: async () => {},
     onState: () => refreshState()
@@ -158,25 +159,3 @@ startHourAlert({
   enabled: () => catalog.plant.hourly_alert_audio !== false,
   onTick: (msg) => showToast(msg)
 });
-
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-if (url && key) {
-  const client = makeSupabaseClient({ url, anonKey: key });
-  const writer = makeAuditWriter(client);
-  void writer;
-  const { handleEventLocally } = await import('../reset/apply.js');
-  const loop = createSyncLoop({
-    client,
-    applyCaptures: () => refreshState(),
-    applyEvent: (event) => {
-      handleEventLocally(event);
-      refreshState();
-    }
-  });
-  loop.start();
-}
-
-if (localInternals.SHIFT_STATE_KEY) {
-  /* keep module reference */
-}

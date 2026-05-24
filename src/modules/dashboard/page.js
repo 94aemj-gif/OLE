@@ -4,7 +4,6 @@ import { createLineCard } from './card.js';
 import { computePace } from './pace.js';
 import { computeSummary } from './summary.js';
 import { rolling } from './sparkline-data.js';
-import { makeSupabaseClient } from '../supabase/client.js';
 import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
@@ -136,22 +135,15 @@ function showOrHidePlantEmpty(isEmpty) {
 }
 
 async function fetchCaptures() {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    return localStore.get('recent_captures', []);
-  }
-  const client = makeSupabaseClient({ url, anonKey: key });
-  const since = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
-  try {
-    const res = await client.listCaptures({ watermarkIso: since });
-    return Array.isArray(res.body) ? res.body : [];
-  } catch (err) {
-    console.warn('dashboard fetch failed; falling back to local cache', err);
-    return localStore.get('recent_captures', []);
-  }
+  return localStore.get('recent_captures', []);
 }
 
 void refresh();
-setInterval(() => void refresh(), 30_000);
+setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  void refresh();
+}, 30_000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') void refresh();
+});
 document.getElementById('refreshBtn')?.addEventListener('click', () => void refresh());

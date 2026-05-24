@@ -2,7 +2,6 @@
 import { applyTranslations, getLang, setLang } from '../i18n/index.js';
 import { verifyPin } from '../auth/pin.js';
 import { openSession, readSession, closeSession } from '../auth/session.js';
-import { makeSupabaseClient } from '../supabase/client.js';
 import { makeLocalClient } from '../supabase/local-client.js';
 import { readLocalCatalog } from './catalog-store.js';
 import { showToast } from '../ui/toast.js';
@@ -16,9 +15,6 @@ import { destructiveConfirm } from '../ui/destructive-confirm.js';
 import { triggerDayReset } from '../reset/sequence.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
 
-// Ensure the in-memory fallback catalog (including a seeded manager with
-// PIN 1234) is persisted to localStorage so the PIN gate works without
-// Supabase env vars.
 loadOrSeedCatalog();
 
 applyTranslations();
@@ -28,9 +24,7 @@ document.getElementById('langToggle')?.addEventListener('click', () => {
 });
 
 const TABS = ['resumen', 'catalogos', 'configuracion', 'datos'];
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const client = url && key ? makeSupabaseClient({ url, anonKey: key }) : makeLocalClient();
+const client = makeLocalClient();
 
 const root = document.getElementById('adminRoot');
 const gate = document.getElementById('pinGate');
@@ -100,7 +94,9 @@ const TAB_RENDERERS = {
 function syncTabState(safeTab) {
   location.hash = `#${safeTab}`;
   document.querySelectorAll('[data-tab]').forEach((el) => {
-    el.classList.toggle('is-active', el.getAttribute('data-tab') === safeTab);
+    const isActive = el.getAttribute('data-tab') === safeTab;
+    el.classList.toggle('is-active', isActive);
+    el.setAttribute('aria-selected', String(isActive));
   });
 }
 
@@ -119,10 +115,6 @@ function setActiveTab(tab) {
   const safeTab = TABS.includes(tab) ? tab : 'resumen';
   syncTabState(safeTab);
   if (!tabContent) return;
-  if (!client) {
-    tabContent.textContent = 'Supabase no configurado — fija VITE_SUPABASE_URL.';
-    return;
-  }
   const manager = readSession()?.manager ?? null;
   const getManager = () => readSession()?.manager ?? null;
   const catalog = readLocalCatalog();

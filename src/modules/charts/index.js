@@ -1,15 +1,64 @@
 // @ts-check
 /**
- * Dynamic chart.js loader. Lazy-imports the runtime so non-graficas pages
- * never pay the bundle cost.
+ * Chart.js loader with explicit controller registration. Lazy-imports
+ * only the controllers/scales/elements we actually use so the bundle
+ * doesn't drag in every chart type. Keeps a module-scoped WeakMap of
+ * canvas→Chart so we can destroy instances on re-render without
+ * relying on globalThis.Chart.
  */
-let chartModulePromise = null;
 
-export async function loadChart() {
-  if (!chartModulePromise) {
-    chartModulePromise = import('chart.js/auto');
+let chartCtorPromise = null;
+const chartByCanvas = new WeakMap();
+
+async function loadChartCtor() {
+  if (!chartCtorPromise) {
+    chartCtorPromise = (async () => {
+      const mod = await import('chart.js');
+      const {
+        Chart,
+        BarController,
+        BarElement,
+        LineController,
+        LineElement,
+        PointElement,
+        LinearScale,
+        CategoryScale,
+        Tooltip,
+        Legend,
+        Filler
+      } = mod;
+      Chart.register(
+        BarController,
+        BarElement,
+        LineController,
+        LineElement,
+        PointElement,
+        LinearScale,
+        CategoryScale,
+        Tooltip,
+        Legend,
+        Filler
+      );
+      return Chart;
+    })();
   }
-  return chartModulePromise;
+  return chartCtorPromise;
+}
+
+function destroyExisting(canvas) {
+  const existing = chartByCanvas.get(canvas);
+  if (existing) {
+    existing.destroy();
+    chartByCanvas.delete(canvas);
+  }
+}
+
+async function mount(canvas, config) {
+  destroyExisting(canvas);
+  const Chart = await loadChartCtor();
+  const instance = new Chart(canvas, config);
+  chartByCanvas.set(canvas, instance);
+  return instance;
 }
 
 /**
@@ -17,8 +66,7 @@ export async function loadChart() {
  * @param {{labels:string[], data:number[], target:number, label:string}} cfg
  */
 export async function renderHourlyVsTarget(canvas, cfg) {
-  const { default: Chart } = await loadChart();
-  return new Chart(canvas, {
+  return mount(canvas, {
     type: 'bar',
     data: {
       labels: cfg.labels,
@@ -44,8 +92,7 @@ export async function renderHourlyVsTarget(canvas, cfg) {
  * @param {{labels:string[], actual:number[], target:number[]}} cfg
  */
 export async function renderCumulativeVsTarget(canvas, cfg) {
-  const { default: Chart } = await loadChart();
-  return new Chart(canvas, {
+  return mount(canvas, {
     type: 'line',
     data: {
       labels: cfg.labels,
@@ -69,8 +116,7 @@ export async function renderCumulativeVsTarget(canvas, cfg) {
  * @param {{labels:string[], data:number[]}} cfg
  */
 export async function renderScrapByHour(canvas, cfg) {
-  const { default: Chart } = await loadChart();
-  return new Chart(canvas, {
+  return mount(canvas, {
     type: 'bar',
     data: {
       labels: cfg.labels,
@@ -93,7 +139,6 @@ export function renderHeatmap(grid, dayLabels) {
   root.style.gridTemplateColumns = `64px repeat(24, 1fr)`;
   root.style.gap = '2px';
   root.style.fontSize = 'var(--text-xs)';
-  // header row
   root.append(makeCell('', true));
   for (let h = 0; h < 24; h += 1) root.append(makeCell(String(h).padStart(2, '0'), true));
   const max = Math.max(1, ...grid.flat());

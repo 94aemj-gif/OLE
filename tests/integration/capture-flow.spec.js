@@ -51,8 +51,9 @@ describe('capture → local → sync', () => {
       downtime_rows: [],
       client_id: 't-1'
     });
-    await persistCaptureLocally(payload);
-    expect(readShiftState().count).toBe(240);
+    const ctx = { line_id: 'L-01', shift_id: 'M', plantDayIso: '2026-05-22T14:00:00.000Z' };
+    await persistCaptureLocally(payload, ctx);
+    expect(readShiftState(ctx).count).toBe(240);
     expect(await queueDepth()).toBe(1);
 
     const client = {

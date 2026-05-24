@@ -10,7 +10,6 @@ import {
 } from '../charts/index.js';
 import { plantDayRange } from '../time/plant-day.js';
 import { findActiveShift } from '../time/shift.js';
-import { makeSupabaseClient } from '../supabase/client.js';
 import { localStore } from '../storage/local-store.js';
 import { openEosPopup } from './eos-popup.js';
 
@@ -40,18 +39,8 @@ document.getElementById('eosBtn')?.addEventListener('click', () => void render({
 lineSelect?.addEventListener('change', () => void render());
 document.getElementById('refreshBtn')?.addEventListener('click', () => void render());
 
-async function fetchCaptures(sinceIso) {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  if (!url || !key) return localStore.get('recent_captures', []);
-  try {
-    const client = makeSupabaseClient({ url, anonKey: key });
-    const res = await client.listCaptures({ watermarkIso: sinceIso });
-    return Array.isArray(res.body) ? res.body : [];
-  } catch (err) {
-    console.warn('graficas fetch failed; falling back to local cache', err);
-    return localStore.get('recent_captures', []);
-  }
+async function fetchCaptures(_sinceIso) {
+  return localStore.get('recent_captures', []);
 }
 
 function selectContext() {
@@ -82,7 +71,6 @@ async function paintCharts(data, line) {
   );
   const scrapCanvas = /** @type {HTMLCanvasElement|null} */ (document.getElementById('scrapChart'));
   if (hourlyCanvas) {
-    destroyExisting(hourlyCanvas);
     await renderHourlyVsTarget(hourlyCanvas, {
       labels: data.hourLabels,
       data: data.hourly,
@@ -91,7 +79,6 @@ async function paintCharts(data, line) {
     });
   }
   if (cumCanvas) {
-    destroyExisting(cumCanvas);
     await renderCumulativeVsTarget(cumCanvas, {
       labels: data.hourLabels,
       actual: data.cum,
@@ -99,7 +86,6 @@ async function paintCharts(data, line) {
     });
   }
   if (scrapCanvas) {
-    destroyExisting(scrapCanvas);
     await renderScrapByHour(scrapCanvas, { labels: data.hourLabels, data: data.scrap });
   }
 }
@@ -169,12 +155,11 @@ function setKpi(labelId, gaugeId, ratio) {
   }
 }
 
-function destroyExisting(canvas) {
-  const Chart = /** @type {any} */ (globalThis).Chart;
-  if (!Chart || !Chart.getChart) return;
-  const existing = Chart.getChart(canvas);
-  if (existing) existing.destroy();
-}
-
 void render();
-setInterval(() => void render(), 30_000);
+setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  void render();
+}, 30_000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') void render();
+});

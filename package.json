@@ -31,7 +31,9 @@
     "chart.js": "^4.4.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",

@@ -1,4 +1,6 @@
 // @ts-check
+import { plantDayRange } from '../time/plant-day.js';
+
 /**
  * Render Resumen tab — weekstrip + session history + audit log (Worximity Dense).
  *
@@ -27,8 +29,8 @@ export function renderResumen(cfg) {
   cfg.container.append(panels);
 
   async function refresh() {
-    const startIso = `${selectedDate}T00:00:00.000Z`;
-    const endIso = `${selectedDate}T23:59:59.999Z`;
+    const noon = new Date(`${selectedDate}T12:00:00`);
+    const { startIso, endIso } = plantDayRange(noon, cfg.timezone);
     const [captures, auditLog] = await Promise.all([
       cfg.client
         .listCaptures({ watermarkIso: startIso, includeUndone: true, limit: 1000 })
@@ -38,7 +40,7 @@ export function renderResumen(cfg) {
       }
     ]);
     const filtered = (captures.body ?? []).filter(
-      (c) => c.hour_bucket >= startIso && c.hour_bucket <= endIso
+      (c) => c.hour_bucket >= startIso && c.hour_bucket < endIso
     );
     renderSessionTable(sessions.slot, filtered, sessions.count);
     renderAuditList(audit.slot, auditLog.body ?? [], audit.count);

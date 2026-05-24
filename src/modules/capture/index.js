@@ -15,6 +15,7 @@ import { celebrateEndOfShift } from './end-of-shift.js';
  * @param {string} ctx.shift_id
  * @param {string} ctx.client_id
  * @param {string} ctx.timezone
+ * @param {string} ctx.plantDayIso
  * @param {number} ctx.target
  * @param {(entry:any)=>Promise<void>|void} ctx.appendAudit
  * @param {(state:any)=>void} ctx.onState
@@ -22,11 +23,12 @@ import { celebrateEndOfShift } from './end-of-shift.js';
 export function openCapture(ctx) {
   const line = ctx.catalog.lines.find((l) => l.id === ctx.line_id) ?? ctx.catalog.lines[0];
   const shift = ctx.catalog.shifts.find((s) => s.id === ctx.shift_id) ?? ctx.catalog.shifts[0];
+  const lineCtx = { line_id: ctx.line_id, shift_id: ctx.shift_id, plantDayIso: ctx.plantDayIso };
   const accumEl = () => document.getElementById('ctxAccum');
   const setAccum = () => {
     const el = accumEl();
     if (!el) return;
-    const state = readShiftState();
+    const state = readShiftState(lineCtx);
     el.innerHTML = `<div class="l">Acumulado del turno</div><div class="v">${state.count} <small>/ ${ctx.target}</small></div>`;
   };
 
@@ -46,8 +48,8 @@ export function openCapture(ctx) {
         downtime_rows: input.downtime_rows,
         client_timestamp: new Date().toISOString()
       });
-      const state = await persistCaptureLocally(payload);
-      openUndoWindow(payload);
+      const { state, capture } = await persistCaptureLocally(payload, lineCtx);
+      openUndoWindow(capture, lineCtx);
       const op = ctx.catalog.operators.find((o) => o.employee_number === input.employee_number);
       await ctx.appendAudit(
         buildAuditEntry({

@@ -1,7 +1,7 @@
 // @ts-check
 const DB_NAME = 'ole';
-const DB_VERSION = 1;
-const STORES = ['push_queue', 'dead_letter_local', 'kpi_cache'];
+const DB_VERSION = 2;
+const STORES = ['push_queue', 'dead_letter_local', 'kpi_cache', 'auth_lockout'];
 
 /** @type {Promise<IDBDatabase> | null} */
 let dbPromise = null;

@@ -1,24 +1,66 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { hashPin, verifyPin, _internals } from '@/modules/auth/pin.js';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+vi.mock('@/modules/storage/idb-store.js', () => {
+  const stores = new Map();
+  const ensure = (n) => (stores.has(n) ? stores.get(n) : stores.set(n, new Map()).get(n));
+  return {
+    idbStore: {
+      async put(s, rec) {
+        ensure(s).set(rec.id, rec);
+        return rec;
+      },
+      async get(s, id) {
+        return ensure(s).get(id) ?? null;
+      },
+      async delete(s, id) {
+        ensure(s).delete(id);
+      },
+      async all(s) {
+        return [...ensure(s).values()];
+      },
+      async count(s) {
+        return ensure(s).size;
+      },
+      _reset() {
+        stores.clear();
+      }
+    }
+  };
+});
+
+const { hashPin, newSalt, verifyPin, _internals } = await import('@/modules/auth/pin.js');
+const { idbStore } = await import('@/modules/storage/idb-store.js');
 
 const MANAGERS = [
-  { id: 'mgr-1', display_name: 'Laura', pin_hash: null, active: true },
-  { id: 'mgr-2', display_name: 'Carlos', pin_hash: null, active: false }
+  { id: 'mgr-1', display_name: 'Laura', pin_salt: '', pin_hash: '', active: true },
+  { id: 'mgr-2', display_name: 'Carlos', pin_salt: '', pin_hash: '', active: false }
 ];
 
 beforeEach(async () => {
-  globalThis.localStorage.clear();
-  MANAGERS[0].pin_hash = await hashPin('1234');
-  MANAGERS[1].pin_hash = await hashPin('9999');
+  idbStore._reset();
+  MANAGERS[0].pin_salt = newSalt();
+  MANAGERS[0].pin_hash = await hashPin('1234', MANAGERS[0].pin_salt);
+  MANAGERS[1].pin_salt = newSalt();
+  MANAGERS[1].pin_hash = await hashPin('9999', MANAGERS[1].pin_salt);
 });
 
-describe('hashPin', () => {
-  it('returns deterministic SHA-256 hex', async () => {
-    const a = await hashPin('1234');
-    const b = await hashPin('1234');
+describe('hashPin (PBKDF2)', () => {
+  it('returns deterministic hex digest for same pin+salt', async () => {
+    const salt = newSalt();
+    const a = await hashPin('1234', salt);
+    const b = await hashPin('1234', salt);
     expect(a).toBe(b);
     expect(a).toHaveLength(64);
-    expect(a).toBe('03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4');
+  });
+
+  it('produces different digests for different salts', async () => {
+    const a = await hashPin('1234', newSalt());
+    const b = await hashPin('1234', newSalt());
+    expect(a).not.toBe(b);
+  });
+
+  it('throws when salt is missing', async () => {
+    await expect(hashPin('1234', '')).rejects.toThrow();
   });
 });
 
@@ -66,6 +108,7 @@ describe('verifyPin', () => {
     const now = () => t;
     await verifyPin('0000', MANAGERS, now);
     await verifyPin('1234', MANAGERS, now);
-    expect(globalThis.localStorage.getItem(`ole:${_internals.LOCKOUT_KEY}`)).toBeNull();
+    const lockout = await idbStore.get(_internals.LOCKOUT_STORE, _internals.LOCKOUT_ID);
+    expect(lockout).toBeNull();
   });
 });
