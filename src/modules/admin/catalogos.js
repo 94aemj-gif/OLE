@@ -147,24 +147,23 @@ function renderRow(cfg, section, row) {
 
   const actionTd = document.createElement('td');
   actionTd.style.textAlign = 'right';
-  if (row.active !== false) {
-    const btn = createButton({
-      label: 'Desactivar',
-      kind: 'danger',
-      onClick: () =>
-        upsertList(
-          cfg,
-          section.listKey,
-          { [section.keyField]: row[section.keyField], active: false },
-          section.entityType,
-          row[section.keyField]
-        )
-    });
-    btn.style.minHeight = '32px';
-    btn.style.padding = '4px 12px';
-    btn.style.fontSize = 'var(--text-xs)';
-    actionTd.append(btn);
-  }
+  const isInactive = row.active === false;
+  const btn = createButton({
+    label: isInactive ? 'Activar' : 'Desactivar',
+    kind: isInactive ? 'primary' : 'danger',
+    onClick: () =>
+      upsertList(
+        cfg,
+        section.listKey,
+        { [section.keyField]: row[section.keyField], active: isInactive },
+        section.entityType,
+        row[section.keyField]
+      )
+  });
+  btn.style.minHeight = '32px';
+  btn.style.padding = '4px 12px';
+  btn.style.fontSize = 'var(--text-xs)';
+  actionTd.append(btn);
   tr.append(actionTd);
   return tr;
 }

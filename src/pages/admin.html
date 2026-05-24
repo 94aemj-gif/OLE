@@ -10,8 +10,16 @@
     <link rel="stylesheet" href="../styles/tokens.css" />
     <link rel="stylesheet" href="../styles/components.css" />
     <style>
+      body {
+        overflow-x: hidden;
+      }
       #tabContent {
         padding: var(--space-6);
+      }
+      @media (max-width: 720px) {
+        #tabContent {
+          padding: var(--space-3);
+        }
       }
     </style>
   </head>

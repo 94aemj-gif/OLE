@@ -1571,6 +1571,17 @@ table.data th {
   .kpi:nth-child(4) .gauge .val {
     color: #0ea5e9;
   }
+  /* Data tables: drop horizontal-scroll trick on phone, let them wrap */
+  .table-scroll {
+    overflow-x: visible;
+    background: none;
+  }
+  .table-scroll table.data th,
+  .table-scroll table.data td {
+    white-space: normal;
+    padding: 6px 10px;
+    font-size: var(--text-xs);
+  }
   .summary-strip {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-2);

@@ -97,12 +97,27 @@ const TAB_RENDERERS = {
     renderDatos({ container, client, getManager, timezone, manager })
 };
 
-function setActiveTab(tab) {
-  const safeTab = TABS.includes(tab) ? tab : 'resumen';
+function syncTabState(safeTab) {
   location.hash = `#${safeTab}`;
   document.querySelectorAll('[data-tab]').forEach((el) => {
     el.classList.toggle('is-active', el.getAttribute('data-tab') === safeTab);
   });
+}
+
+function showTabError(safeTab, err) {
+  if (!tabContent) return;
+  console.error('admin tab render failed', err);
+  tabContent.innerHTML =
+    '<div class="empty-state" style="margin: 16px">' +
+    '<span class="icon">⚠</span>' +
+    `<strong>Error al cargar ${safeTab}</strong>` +
+    `<span>${err instanceof Error ? err.message : String(err)}</span>` +
+    '</div>';
+}
+
+function setActiveTab(tab) {
+  const safeTab = TABS.includes(tab) ? tab : 'resumen';
+  syncTabState(safeTab);
   if (!tabContent) return;
   if (!client) {
     tabContent.textContent = 'Supabase no configurado — fija VITE_SUPABASE_URL.';
@@ -116,13 +131,7 @@ function setActiveTab(tab) {
   try {
     TAB_RENDERERS[safeTab]({ container: tabContent, client, getManager, timezone, manager });
   } catch (err) {
-    console.error('admin tab render failed', err);
-    tabContent.innerHTML =
-      '<div class="empty-state" style="margin: 16px">' +
-      '<span class="icon">⚠</span>' +
-      `<strong>Error al cargar ${safeTab}</strong>` +
-      `<span>${err instanceof Error ? err.message : String(err)}</span>` +
-      '</div>';
+    showTabError(safeTab, err);
   }
 }
 
