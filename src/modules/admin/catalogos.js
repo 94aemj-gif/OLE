@@ -96,9 +96,6 @@ function renderSection(cfg, section, rows) {
   const statusTh = document.createElement('th');
   statusTh.textContent = 'Estado';
   headRow.append(statusTh);
-  const actionsTh = document.createElement('th');
-  actionsTh.style.textAlign = 'right';
-  headRow.append(actionsTh);
   const thead = document.createElement('thead');
   thead.append(headRow);
   table.append(thead);
@@ -106,7 +103,7 @@ function renderSection(cfg, section, rows) {
   const body = document.createElement('tbody');
   if (rows.length === 0) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="${section.fields.length + 2}" style="color: var(--text-muted); text-align:center; padding: 24px">Sin entradas. Agrega la primera abajo.</td>`;
+    tr.innerHTML = `<td colspan="${section.fields.length + 1}" style="color: var(--text-muted); text-align:center; padding: 24px">Sin entradas. Agrega la primera abajo.</td>`;
     body.append(tr);
   } else {
     for (const row of rows) body.append(renderRow(cfg, section, row));
@@ -144,27 +141,6 @@ function renderRow(cfg, section, row) {
   }
   statusTd.append(statusPill);
   tr.append(statusTd);
-
-  const actionTd = document.createElement('td');
-  actionTd.style.textAlign = 'right';
-  const isInactive = row.active === false;
-  const btn = createButton({
-    label: isInactive ? 'Activar' : 'Desactivar',
-    kind: isInactive ? 'primary' : 'danger',
-    onClick: () =>
-      upsertList(
-        cfg,
-        section.listKey,
-        { [section.keyField]: row[section.keyField], active: isInactive },
-        section.entityType,
-        row[section.keyField]
-      )
-  });
-  btn.style.minHeight = '32px';
-  btn.style.padding = '4px 12px';
-  btn.style.fontSize = 'var(--text-xs)';
-  actionTd.append(btn);
-  tr.append(actionTd);
   return tr;
 }
 
