@@ -140,19 +140,19 @@ function renderDatos({ container, client, getManager, timezone, manager }) {
 
   // Reset Día Actual
   const resetSection = document.createElement('section');
-  resetSection.className = 'panel-section';
+  resetSection.className = 'panel-section reset-section';
   const resetHead = document.createElement('header');
-  resetHead.innerHTML =
-    '<h2>Reset Día Actual</h2><span class="count" style="background: var(--crit-soft); color: var(--crit)">Destructivo</span>';
+  const resetH2 = document.createElement('h2');
+  resetH2.textContent = 'Reset Día Actual';
+  const resetTag = document.createElement('span');
+  resetTag.className = 'count tag-crit';
+  resetTag.textContent = 'Destructivo';
+  resetHead.append(resetH2, resetTag);
   resetSection.append(resetHead);
   const resetBody = document.createElement('div');
-  resetBody.style.padding = 'var(--space-4) var(--space-5)';
-  resetBody.style.display = 'grid';
-  resetBody.style.gap = 'var(--space-3)';
+  resetBody.className = 'reset-body';
   const resetHelp = document.createElement('p');
-  resetHelp.style.margin = '0';
-  resetHelp.style.color = 'var(--text-muted)';
-  resetHelp.style.fontSize = 'var(--text-sm)';
+  resetHelp.className = 'help-text';
   resetHelp.textContent =
     'Elimina todas las capturas de hoy en todos los dispositivos y envía un broadcast para limpiar el estado local.';
   resetBody.append(

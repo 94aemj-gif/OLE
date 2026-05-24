@@ -673,6 +673,21 @@
   text-transform: uppercase;
   color: var(--text-muted);
 }
+.panel-section .reset-body {
+  padding: var(--space-4) var(--space-5);
+  display: grid;
+  gap: var(--space-3);
+}
+.panel-section .help-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.panel-section .tag-crit {
+  background: var(--crit-soft);
+  color: var(--crit);
+}
 table.data {
   width: 100%;
   border-collapse: collapse;
