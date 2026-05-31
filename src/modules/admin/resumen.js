@@ -1,5 +1,7 @@
 // @ts-check
 import { plantDayRange } from '../time/plant-day.js';
+import { downtimePareto } from '../analysis/history.js';
+import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
 
 /**
  * Render Resumen tab — weekstrip + session history + audit log (Worximity Dense).
@@ -20,12 +22,15 @@ export function renderResumen(cfg) {
   });
   cfg.container.append(weekstrip);
 
+  const catalog = loadOrSeedCatalog();
+
   const panels = document.createElement('div');
   panels.className = 'admin-panels';
 
   const sessions = makePanel('Historial de Sesiones', 'sessionsCount');
+  const pareto = makePanel('Paro por Causa (Pareto)', 'paretoCount');
   const audit = makePanel('Bitácora de Movimientos', 'auditCount');
-  panels.append(sessions.wrap, audit.wrap);
+  panels.append(sessions.wrap, pareto.wrap, audit.wrap);
   cfg.container.append(panels);
 
   async function refresh() {
@@ -43,6 +48,7 @@ export function renderResumen(cfg) {
       (c) => c.hour_bucket >= startIso && c.hour_bucket < endIso
     );
     renderSessionTable(sessions.slot, filtered, sessions.count);
+    renderParetoTable(pareto.slot, downtimePareto(filtered, catalog.downtime_reasons ?? []), pareto.count);
     renderAuditList(audit.slot, auditLog.body ?? [], audit.count);
   }
 
@@ -183,6 +189,40 @@ function renderAuditList(slot, rows, countEl) {
     list.append(li);
   }
   slot.append(list);
+}
+
+function renderParetoTable(slot, rows, countEl) {
+  if (rows.length === 0) {
+    countEl.textContent = '0';
+    emptyState(slot, 'Sin tiempo muerto en esta fecha.');
+    return;
+  }
+  const totalMin = rows.reduce((a, r) => a + r.minutes, 0);
+  countEl.textContent = `${totalMin} min`;
+  slot.innerHTML = '';
+  const table = document.createElement('table');
+  table.className = 'data';
+  table.innerHTML = `<thead><tr>
+    <th>Causa</th>
+    <th style="text-align:right">Minutos</th>
+    <th style="text-align:right">%</th>
+    <th style="text-align:right">% Acum.</th>
+  </tr></thead>`;
+  const body = document.createElement('tbody');
+  for (const r of rows) {
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td>${r.name}</td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums"><strong>${r.minutes}</strong></td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums">${r.pct.toFixed(0)}%</td>` +
+      `<td style="text-align:right; font-variant-numeric: tabular-nums; color: var(--text-muted)">${r.cumPct.toFixed(0)}%</td>`;
+    body.append(tr);
+  }
+  table.append(body);
+  const scroll = document.createElement('div');
+  scroll.className = 'table-scroll';
+  scroll.append(table);
+  slot.append(scroll);
 }
 
 function groupBy(arr, keyFn) {

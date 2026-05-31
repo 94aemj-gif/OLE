@@ -81,7 +81,12 @@ without discarding the capture/sync/audit work.
 - End-of-shift popup renders a per-SKU run table; CSV export gains a product_id
   column. Unblocks Acceptance #4.
 
-**P5 — History (§7.6)** — add SKU filter + trend-by-SKU. Downtime Pareto already has data.
+**P5 — History (§7.6)** — DONE (core analytics + Pareto wired)
+- `analysis/history.js`: `windowTotals`, `compareWindows` (shift/day/week side by
+  side), `trendBySku`, `downtimePareto` — all pure + unit-tested.
+- Resumen tab gains a historical "Paro por Causa (Pareto)" panel for the selected day.
+- Remaining UI (multi-window compare screen, SKU trend chart) can mount on these
+  functions; not yet rendered as dedicated screens.
 
 **P6 — Viewer role gating** — read-only session; block capture/config.
 
