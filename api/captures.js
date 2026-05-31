@@ -21,11 +21,11 @@ export default async function handler(req, res) {
       const p = await readBody(req);
       const rows = await sql`
         insert into public.captures
-          (line_id, operator_number, client_timestamp, shift_id, hour_bucket,
+          (line_id, operator_number, client_timestamp, shift_id, product_id, hour_bucket,
            units_produced, scrap_rows, downtime_rows, payload_hash, client_id)
         values
           (${p.line_id}, ${p.operator_number}, ${p.client_timestamp}, ${p.shift_id},
-           ${p.hour_bucket}, ${p.units_produced},
+           ${p.product_id ?? null}, ${p.hour_bucket}, ${p.units_produced},
            ${JSON.stringify(p.scrap_rows ?? [])}::jsonb,
            ${JSON.stringify(p.downtime_rows ?? [])}::jsonb,
            ${p.payload_hash}, ${p.client_id})

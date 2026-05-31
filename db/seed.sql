@@ -11,18 +11,27 @@ values (1, jsonb_build_object(
   'lines', jsonb_build_array(
     jsonb_build_object(
       'id', 'L-01',
-      'display_name', 'Línea #1 — Jeringa Neomed 60ml',
-      'hourly_target', 250,
+      'display_name', 'Línea #1 — 60ml',
+      'hourly_target', 250,                 -- legacy fallback; per-SKU target (products[]) wins once set
+      'product_ids', jsonb_build_array('SKU-PLACEHOLDER-A', 'SKU-PLACEHOLDER-B'),
       'assigned_tablet_id', null,
       'active', true
     ),
     jsonb_build_object(
       'id', 'L-02',
-      'display_name', 'Línea #2 — Jeringa Neomed 35ml',
+      'display_name', 'Línea #2 — 35ml',
       'hourly_target', 300,
+      'product_ids', jsonb_build_array('SKU-PLACEHOLDER-C'),
       'assigned_tablet_id', null,
       'active', true
     )
+  ),
+  -- PLACEHOLDER SKUs — replace with the real 16–50 catalog + per-SKU targets.
+  -- standard_target_per_hour is per SKU and identical across lines (PRD §6).
+  'products', jsonb_build_array(
+    jsonb_build_object('id','SKU-PLACEHOLDER-A','name','Placeholder 60ml A','sku_code','PH-60A','standard_target_per_hour',250,'active',true),
+    jsonb_build_object('id','SKU-PLACEHOLDER-B','name','Placeholder 60ml B','sku_code','PH-60B','standard_target_per_hour',220,'active',true),
+    jsonb_build_object('id','SKU-PLACEHOLDER-C','name','Placeholder 35ml C','sku_code','PH-35C','standard_target_per_hour',300,'active',true)
   ),
   'shifts', jsonb_build_array(
     jsonb_build_object(
@@ -50,12 +59,14 @@ values (1, jsonb_build_object(
       )
     )
   ),
+  -- role: 'capturist' (log) | 'viewer' (read-only). Admins live in managers[] (PIN-gated).
   'operators', jsonb_build_array(
-    jsonb_build_object('employee_number','12345','display_name','Ana López','active',true),
-    jsonb_build_object('employee_number','12346','display_name','Luis Torres','active',true),
-    jsonb_build_object('employee_number','12347','display_name','Marta García','active',true),
-    jsonb_build_object('employee_number','12348','display_name','Carlos Ruiz','active',true),
-    jsonb_build_object('employee_number','12349','display_name','Sofía Pérez','active',true)
+    jsonb_build_object('employee_number','12345','display_name','Ana López','role','capturist','active',true),
+    jsonb_build_object('employee_number','12346','display_name','Luis Torres','role','capturist','active',true),
+    jsonb_build_object('employee_number','12347','display_name','Marta García','role','capturist','active',true),
+    jsonb_build_object('employee_number','12348','display_name','Carlos Ruiz','role','capturist','active',true),
+    jsonb_build_object('employee_number','12349','display_name','Sofía Pérez','role','capturist','active',true),
+    jsonb_build_object('employee_number','12350','display_name','Supervisión (solo lectura)','role','viewer','active',true)
   ),
   'scrap_reasons', jsonb_build_array(
     jsonb_build_object('id','SR-01','name','Pistón roto','active',true,'sort_order',1),

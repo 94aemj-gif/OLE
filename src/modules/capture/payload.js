@@ -10,6 +10,7 @@ export async function buildCapturePayload(input) {
     operator_number: input.employee_number,
     client_timestamp: input.client_timestamp ?? new Date().toISOString(),
     shift_id: input.shift_id,
+    product_id: input.product_id ?? null,
     hour_bucket:
       input.hour_bucket ??
       hourBucket(new Date(input.client_timestamp ?? Date.now()), input.timezone),

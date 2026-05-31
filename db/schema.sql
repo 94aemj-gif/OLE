@@ -28,8 +28,9 @@ create table if not exists public.captures (
   client_timestamp   timestamptz not null,
   server_timestamp   timestamptz not null default now(),
   shift_id           text not null,
+  product_id         text,                                    -- active SKU at this hour (nullable: pre-SKU rows)
   hour_bucket        timestamptz not null,
-  units_produced     int  not null check (units_produced >= 0),
+  units_produced     int  not null check (units_produced >= 0),  -- actual_good (good pieces); scrap is separate
   scrap_rows         jsonb not null default '[]'::jsonb,
   downtime_rows      jsonb not null default '[]'::jsonb,
   payload_hash       text not null,
@@ -47,6 +48,9 @@ create index if not exists captures_updated_at_idx
 
 create index if not exists captures_hour_bucket_idx
   on public.captures (line_id, hour_bucket);
+
+create index if not exists captures_product_idx
+  on public.captures (product_id, hour_bucket);
 
 create or replace function public.touch_captures_updated_at()
 returns trigger language plpgsql as $$
