@@ -15,18 +15,26 @@ export const FALLBACK_CATALOG = {
   lines: [
     {
       id: 'L-01',
-      display_name: 'Línea #1 — Jeringa Neomed 60ml',
+      display_name: 'Línea #1 — 60ml',
       hourly_target: 250,
+      product_ids: ['SKU-PLACEHOLDER-A', 'SKU-PLACEHOLDER-B'],
       assigned_tablet_id: null,
       active: true
     },
     {
       id: 'L-02',
-      display_name: 'Línea #2 — Jeringa Neomed 35ml',
+      display_name: 'Línea #2 — 35ml',
       hourly_target: 300,
+      product_ids: ['SKU-PLACEHOLDER-C'],
       assigned_tablet_id: null,
       active: true
     }
+  ],
+  // PLACEHOLDER SKUs — mirror db/seed.sql; replace with the real catalog.
+  products: [
+    { id: 'SKU-PLACEHOLDER-A', name: 'Placeholder 60ml A', sku_code: 'PH-60A', standard_target_per_hour: 250, active: true },
+    { id: 'SKU-PLACEHOLDER-B', name: 'Placeholder 60ml B', sku_code: 'PH-60B', standard_target_per_hour: 220, active: true },
+    { id: 'SKU-PLACEHOLDER-C', name: 'Placeholder 35ml C', sku_code: 'PH-35C', standard_target_per_hour: 300, active: true }
   ],
   shifts: [
     {
@@ -52,11 +60,12 @@ export const FALLBACK_CATALOG = {
     }
   ],
   operators: [
-    { employee_number: '12345', display_name: 'Ana López', active: true },
-    { employee_number: '12346', display_name: 'Luis Torres', active: true },
-    { employee_number: '12347', display_name: 'Marta García', active: true },
-    { employee_number: '12348', display_name: 'Carlos Ruiz', active: true },
-    { employee_number: '12349', display_name: 'Sofía Pérez', active: true }
+    { employee_number: '12345', display_name: 'Ana López', role: 'capturist', active: true },
+    { employee_number: '12346', display_name: 'Luis Torres', role: 'capturist', active: true },
+    { employee_number: '12347', display_name: 'Marta García', role: 'capturist', active: true },
+    { employee_number: '12348', display_name: 'Carlos Ruiz', role: 'capturist', active: true },
+    { employee_number: '12349', display_name: 'Sofía Pérez', role: 'capturist', active: true },
+    { employee_number: '12350', display_name: 'Supervisión (solo lectura)', role: 'viewer', active: true }
   ],
   scrap_reasons: [
     { id: 'SR-01', name: 'Pistón roto', active: true, sort_order: 1 },

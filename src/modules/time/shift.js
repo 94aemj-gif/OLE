@@ -61,6 +61,24 @@ function parseHmm(hhmm) {
   return h * 60 + (m ?? 0);
 }
 
+/**
+ * Start of the current clock hour in plant-local time, as "HH:00".
+ * Used to pick the active HourSlot for break-adjusted target math.
+ * @param {Date} now
+ * @param {string} timezone
+ * @returns {string}
+ */
+export function currentSlotStart(now, timezone) {
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    hour: '2-digit',
+    hour12: false
+  });
+  const parts = Object.fromEntries(fmt.formatToParts(now).map((p) => [p.type, p.value]));
+  const h = parts.hour === '24' ? 0 : Number(parts.hour);
+  return String(h).padStart(2, '0') + ':00';
+}
+
 function minutesInPlantDay(now, timezone) {
   const fmt = new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone,

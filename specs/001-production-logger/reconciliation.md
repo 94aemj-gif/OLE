@@ -22,6 +22,8 @@ without discarding the capture/sync/audit work.
 3. **Break-proportional per-SKU target — impossible as built.** PRD §6
    `target = SKU.standard_target_per_hour × (productive_min/60)`. Code target is flat
    per-line; only whole-shift `plannedMinutes` exists, no per-slot productive minutes.
+3b. **Mandatory-cause-on-miss — NOT built.** PRD §6 forces a downtime code when an hour
+   saves below target. No such enforcement existed (corrected in P3).
 4. **`units_produced` semantics inverted (bug).** `kpi/snapshot.js` computes
    `goodUnits = units_produced − scrap`, treating the operator's number as TOTAL.
    PRD §6: operator enters GOOD; `total = good + scrap`. Breaks Acceptance #2.
@@ -66,10 +68,12 @@ without discarding the capture/sync/audit work.
   `total = good + scrap`. Patch `kpi/snapshot.js`.
 - `efficiency = good / calculated_target`.
 
-**P3 — Capture screen (§7.1)**
-- Header: active SKU + "Change SKU" action (sets active `product_id`).
-- Per-hour target shows `calculated_target`, not flat line target.
-- Wire mandatory-cause-on-miss (already built) to `calculated_target` threshold.
+**P3 — Capture screen (§7.1)** — DONE
+- Header: active SKU selector ("Change SKU" = pick a different SKU) sets `product_id`.
+- Per-hour target shows `calculated_target` (break-adjusted SKU target), not flat line ×8.
+- Mandatory-cause-on-miss BUILT here (`capture/miss.js`). It was NOT previously
+  implemented — the earlier "already built" note was wrong. Save is blocked when good
+  < hour target and no downtime cause is present.
 
 **P4 — Run grouping + shift-close summary (§7.5)**
 - Derive runs from `product_id` sequence; summary groups hours by run/SKU, shows both

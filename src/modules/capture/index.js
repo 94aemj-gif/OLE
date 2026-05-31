@@ -35,11 +35,15 @@ export function openCapture(ctx) {
   const modal = openCaptureModalWithSubmit({
     catalog: ctx.catalog,
     line,
-    shift,
+    shift: ctx.shift ?? shift,
+    products: ctx.products ?? [],
+    product_id: ctx.product_id ?? null,
+    hourTargetFor: ctx.hourTargetFor,
     onSubmit: async (input) => {
       const payload = await buildCapturePayload({
         line_id: ctx.line_id,
         shift_id: ctx.shift_id,
+        product_id: input.product_id ?? ctx.product_id ?? null,
         client_id: ctx.client_id,
         timezone: ctx.timezone,
         employee_number: input.employee_number,

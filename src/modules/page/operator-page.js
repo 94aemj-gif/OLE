@@ -8,7 +8,8 @@ import { readPendingUndo, applyUndo } from '../capture/undo.js';
 import { plantDayRange } from '../time/plant-day.js';
 import { showToast } from '../ui/toast.js';
 import { startHourAlert } from '../capture/hour-alert.js';
-import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
+import { findActiveShift, hoursElapsedInShift, currentSlotStart } from '../time/shift.js';
+import { hourSlotTarget } from '../kpi/target.js';
 import { computePace } from '../dashboard/pace.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
@@ -30,6 +31,17 @@ const shift = findActiveShift(new Date(), catalog.shifts, timezone) ?? catalog.s
 const targetForShift = line.hourly_target * 8;
 const plantDayIso = plantDayRange(new Date(), timezone).startIso;
 const lineCtx = { line_id: line.id, shift_id: shift.id, plantDayIso };
+
+// SKUs that run on this line; operator picks the active one in the capture modal.
+const lineProducts = (catalog.products ?? []).filter(
+  (p) => (line.product_ids ?? []).includes(p.id) && p.active !== false
+);
+
+/** Break-adjusted target for the active SKU in the current clock hour. */
+function hourTargetFor(product) {
+  if (!product) return line.hourly_target ?? 0; // fallback: legacy per-line target
+  return hourSlotTarget(product, currentSlotStart(new Date(), timezone), shift.breaks ?? []);
+}
 
 const lineNameEl = document.getElementById('lineName');
 if (lineNameEl) lineNameEl.textContent = line.display_name;
@@ -141,6 +153,10 @@ captureBtn?.addEventListener('click', () => {
     timezone,
     plantDayIso,
     target: targetForShift,
+    products: lineProducts,
+    product_id: lineProducts[0]?.id ?? null,
+    shift,
+    hourTargetFor,
     appendAudit: async () => {},
     onState: () => refreshState()
   });

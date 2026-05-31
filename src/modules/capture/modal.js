@@ -6,6 +6,7 @@ import { createScrapRowEditor } from './scrap-rows.js';
 import { createDowntimeRowEditor } from './downtime-rows.js';
 import { t } from '../i18n/index.js';
 import { validateCapture } from './validate.js';
+import { needsCause } from './miss.js';
 
 /**
  * Open the Worximity-Dense capture modal.
@@ -33,7 +34,7 @@ export function openCaptureModal(cfg) {
 
   modal.append(
     renderHead(modalRef, cfg),
-    renderContext(cfg),
+    renderContext(cfg, modalRef),
     renderBody(cfg, modalRef),
     renderFooter()
   );
@@ -68,22 +69,30 @@ function shiftLabel(shift) {
   return { value: name, sub: range };
 }
 
-function contextItems(cfg) {
-  const sl = shiftLabel(cfg.shift);
-  return [
-    { id: 'ctxOperator', cls: 'identity', label: 'Operadora', value: '—', sub: '' },
-    { id: 'ctxShift', label: 'Turno', value: sl.value, sub: sl.sub },
-    { id: 'ctxAccum', label: 'Acumulado del turno', value: '—', sub: '' },
-    {
-      id: 'ctxTarget',
-      label: 'Objetivo del turno',
-      value: String((cfg.line?.hourly_target ?? 0) * 8),
-      sub: ''
-    }
-  ];
+function hasProducts(cfg) {
+  return Array.isArray(cfg.products) && cfg.products.length > 0;
 }
 
-function renderContext(cfg) {
+function contextItems(cfg) {
+  const sl = shiftLabel(cfg.shift);
+  const items = [
+    { id: 'ctxOperator', cls: 'identity', label: 'Operadora', value: '—', sub: '' },
+    { id: 'ctxShift', label: 'Turno', value: sl.value, sub: sl.sub }
+  ];
+  if (hasProducts(cfg)) {
+    items.push({ id: 'ctxProduct', cls: 'sku', label: 'SKU activo', product: true });
+  }
+  items.push({ id: 'ctxAccum', label: 'Acumulado del turno', value: '—', sub: '' });
+  items.push({
+    id: 'ctxTarget',
+    label: hasProducts(cfg) ? 'Objetivo de la hora' : 'Objetivo del turno',
+    value: hasProducts(cfg) ? '—' : String((cfg.line?.hourly_target ?? 0) * 8),
+    sub: ''
+  });
+  return items;
+}
+
+function renderContext(cfg, modalRef) {
   const ctx = document.createElement('section');
   ctx.className = 'capture-context';
   ctx.id = 'captureContext';
@@ -91,11 +100,53 @@ function renderContext(cfg) {
     const div = document.createElement('div');
     div.className = 'item' + (item.cls ? ' ' + item.cls : '');
     div.id = item.id;
-    const subHtml = item.sub ? ` <small>${item.sub}</small>` : '';
-    div.innerHTML = `<div class="l">${item.label}</div><div class="v">${item.value}${subHtml}</div>`;
+    if (item.product) {
+      div.append(makeLabel(item.label));
+      div.append(makeSkuSelect(cfg, modalRef));
+    } else {
+      const subHtml = item.sub ? ` <small>${item.sub}</small>` : '';
+      div.innerHTML = `<div class="l">${item.label}</div><div class="v">${item.value}${subHtml}</div>`;
+    }
     ctx.append(div);
   }
+  // ctxTarget is appended after ctxProduct, so sync the initial hour target now.
+  if (modalRef._applyProduct) modalRef._applyProduct();
   return ctx;
+}
+
+function makeLabel(text) {
+  const l = document.createElement('div');
+  l.className = 'l';
+  l.textContent = text;
+  return l;
+}
+
+/** SKU picker — selecting a different SKU is the "Change SKU" action (opens a new run). */
+function makeSkuSelect(cfg, modalRef) {
+  const sel = document.createElement('select');
+  sel.id = 'ctxProductSelect';
+  sel.className = 'v sku-select';
+  for (const p of cfg.products) {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.name ?? p.sku_code ?? p.id;
+    sel.append(opt);
+  }
+  const initialId = cfg.products.some((p) => p.id === cfg.product_id)
+    ? cfg.product_id
+    : cfg.products[0].id;
+  sel.value = initialId;
+
+  modalRef._applyProduct = () => {
+    modalRef._productId = sel.value;
+    const product = cfg.products.find((p) => p.id === sel.value);
+    const tgt = cfg.hourTargetFor ? cfg.hourTargetFor(product) : 0;
+    modalRef._hourTarget = tgt;
+    const tEl = document.getElementById('ctxTarget');
+    if (tEl) tEl.innerHTML = `<div class="l">Objetivo de la hora</div><div class="v">${tgt}</div>`;
+  };
+  sel.addEventListener('change', modalRef._applyProduct);
+  return sel;
 }
 
 function renderBody(cfg, modalRef) {
@@ -266,10 +317,23 @@ function readModalInput(modalRef) {
   );
   return {
     employee_number: empInput?.value ?? '',
+    product_id: modalRef._productId ?? null,
     units_produced: Number(modalRef._unitsPad?.value) || 0,
     scrap_rows: modalRef._scrap?.rows ?? [],
     downtime_rows: modalRef._downtime?.rows ?? []
   };
+}
+
+function showMissError(errorSlot) {
+  if (!errorSlot) return;
+  errorSlot.innerHTML = '';
+  errorSlot.append(
+    createErrorBanner({
+      title: 'Hora por debajo del objetivo',
+      cause: 'Registra una causa (tiempo muerto: código + minutos) para guardar.',
+      action: ''
+    })
+  );
 }
 
 function showFirstError(errorSlot, errors) {
@@ -303,6 +367,11 @@ export function openCaptureModalWithSubmit(cfg) {
       const result = validateCapture(input, cfg.catalog);
       if (!result.ok) {
         showFirstError(errorSlot, result.errors);
+        return;
+      }
+      // Mandatory cause on miss (PRD §6): below-target hour needs a downtime cause.
+      if (needsCause(input.units_produced, modalRef._hourTarget ?? 0, input.downtime_rows)) {
+        showMissError(errorSlot);
         return;
       }
       await cfg.onSubmit(input);
