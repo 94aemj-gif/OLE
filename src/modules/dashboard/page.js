@@ -7,8 +7,11 @@ import { rolling } from './sparkline-data.js';
 import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
+import { startRemoteSync, SYNC_APPLIED_EVENT } from '../sync/bootstrap.js';
 
 applyTranslations();
+startRemoteSync();
+window.addEventListener(SYNC_APPLIED_EVENT, () => void refresh());
 document.getElementById('langToggle')?.addEventListener('click', () => {
   setLang(getLang() === 'es' ? 'en' : 'es');
   location.reload();

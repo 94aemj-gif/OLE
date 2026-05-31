@@ -31,7 +31,7 @@
 
 ## Notes
 
-- Tech details from the input description (Supabase, localStorage, vanilla
+- Tech details from the input description (Neon, localStorage, vanilla
   HTML/CSS/JS, Vercel, PWA) were intentionally omitted from spec.md per
   guideline "Avoid HOW to implement". They will reappear in plan.md as
   Technical Context.

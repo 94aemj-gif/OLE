@@ -2,7 +2,7 @@
 
 **Feature**: 001-production-logger
 **Date**: 2026-05-22
-**Backing store**: Supabase Postgres (managed). Tablets mirror via
+**Backing store**: Neon Postgres (managed). Tablets mirror via
 localStorage (hot state) + IndexedDB (push queue, dead-letter, applied
 events). All times are stored as `timestamptz` (UTC) and rendered in
 plant-local time.
@@ -269,7 +269,7 @@ create table public.tablet_health (
 
 ---
 
-## RLS policies (summary; full SQL under `supabase/migrations/`)
+## RLS policies (summary; full SQL under `db/schema.sql/`)
 
 | Table | anon SELECT | anon INSERT | anon UPDATE | anon DELETE |
 |-------|-------------|-------------|-------------|-------------|

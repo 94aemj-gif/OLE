@@ -30,8 +30,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
-      docker:
-        image: docker:24
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ole
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/ole
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -41,19 +52,28 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
       - run: pnpm install --frozen-lockfile
-      - run: supabase start
+      - run: psql "$DATABASE_URL" -f db/schema.sql
       - run: pnpm test:contract
-      - if: always()
-        run: supabase stop
 
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [contract]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ole
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/ole
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -63,15 +83,10 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
       - run: pnpm install --frozen-lockfile
       - run: pnpm playwright install --with-deps chromium
-      - run: supabase start
+      - run: psql "$DATABASE_URL" -f db/schema.sql
       - run: pnpm test:e2e
-      - if: always()
-        run: supabase stop
 
   lhci:
     runs-on: ubuntu-latest

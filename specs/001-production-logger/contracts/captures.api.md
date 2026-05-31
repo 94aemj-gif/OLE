@@ -1,7 +1,7 @@
 # Contract: `captures` REST API
 
-Exposed by Supabase PostgREST at `${SUPABASE_URL}/rest/v1/captures`.
-All requests carry `apikey: <SUPABASE_ANON_KEY>` and `Content-Type: application/json`.
+Exposed by Neon PostgREST at `${DATABASE_URL}/rest/v1/captures`.
+All requests carry `apikey: <DATABASE_URL>` and `Content-Type: application/json`.
 
 ## POST `/rest/v1/captures`
 
@@ -36,7 +36,7 @@ Create one capture. Idempotent under composite key
 | `400` | Missing required field, regex violation, JSON malformed | Move to dead-letter |
 | `409` | Idempotency conflict (already exists) | Treat as success (drop from queue) |
 | `422` | `units_produced + scrap > 0` violated, or scrap > units | Move to dead-letter |
-| `503` | Supabase temporary unavailability | Retry with backoff |
+| `503` | Neon temporary unavailability | Retry with backoff |
 | `5xx` (other) | Server error | Retry with backoff |
 
 **Idempotency**: A duplicate POST with the same composite key returns

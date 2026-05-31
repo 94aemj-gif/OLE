@@ -3,10 +3,10 @@ import { drainOnce } from './push-queue.js';
 import { pullCapturesOnce } from './pull.js';
 import { applyEventsOnce } from './events.js';
 
-const DEFAULT_INTERVAL_MS = 30_000;
+const DEFAULT_INTERVAL_MS = 120_000;
 
 /**
- * Orchestrates a 30s push → pull → events cycle.
+ * Orchestrates a push → pull → events cycle on a fixed interval (default 120s).
  *
  * @param {Object} deps
  * @param {any} deps.client

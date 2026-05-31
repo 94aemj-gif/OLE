@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 const RUN = !!process.env.E2E_BASE_URL;
 
 test.describe('US4 Admin catalogs', () => {
-  test.skip(!RUN, 'Set E2E_BASE_URL + seed Supabase + seed catalog');
+  test.skip(!RUN, 'Set E2E_BASE_URL + seed Neon + seed catalog');
 
   test('PIN gate then tab switch', async ({ page }) => {
     await page.goto('/pages/admin.html');

@@ -11,7 +11,7 @@ downtime) on a factory floor with two production lines (#1 60ml Neomed
 Syringe, #2 35ml Neomed Syringe). Operators capture; line leaders watch
 a live Tablero; plant managers review OEE/Availability/Performance/Quality
 KPIs and manage catalogs. localStorage is the source of truth on each
-tablet; Supabase (managed Postgres + REST + RLS) is the central store.
+tablet; Neon (managed Postgres + REST + RLS) is the central store.
 Push queue + paginated pull (30-second cycle, 5-minute watermark overlap)
 reconcile data across devices. Dead-letter resolution, per-manager PIN
 auth, and a Salud del Sistema panel make operational issues visible.
@@ -23,7 +23,7 @@ No frontend framework. Type-checking via TypeScript in `checkJs` mode
 over JSDoc annotations (`tsc --noEmit`).
 
 **Primary Dependencies**:
-- `@supabase/supabase-js` (REST + Realtime client)
+- `@neon/neon-js` (REST + Realtime client)
 - Charting: `chart.js` (KPI charts + sparklines)
 - i18n: lightweight in-house string table (no library)
 - Dev: Vite (build + dev server, framework-agnostic), Vitest (test
@@ -33,7 +33,7 @@ over JSDoc annotations (`tsc --noEmit`).
 **Storage**:
 - Tablet: `localStorage` (source of truth) + IndexedDB for the push
   queue and dead-letter (avoid 5MB localStorage cap as queue grows)
-- Central: Supabase Postgres with Row Level Security (anon
+- Central: Neon Postgres with Row Level Security (anon
   INSERT/SELECT on data tables; anon DELETE limited to last 36h)
 - Tables: `captures`, `dead_letter`, `events`, `config` (single-row
   catalog), `audit_log`, `tablet_health`
@@ -41,20 +41,20 @@ over JSDoc annotations (`tsc --noEmit`).
 **Testing**:
 - Unit: Vitest + jsdom (KPI math, validators, queue state machine,
   i18n, time/shift logic)
-- Contract: Vitest tests hitting a local Supabase (`supabase start`)
+- Contract: Vitest tests hitting a local Neon (`psql "$DATABASE_URL" -f db/schema.sql`)
   against the published SQL migrations and RLS policies
 - Integration: Vitest + jsdom simulating capture → local → sync →
   dashboard pull, including offline/online toggles and dead-letter
   paths
 - E2E: Playwright smoke for P1 stories (Operator capture, Tablero)
-  on tablet-class viewport against a seeded Supabase
+  on tablet-class viewport against a seeded Neon
 
 **Target Platform**:
 - Operator: tablet browser (Android Chrome / iPadOS Safari, last 2
   major versions), 1024×768 minimum
 - Line leader: laptop / phone browser
 - Plant manager: laptop browser
-- Deployment: Vercel static hosting, Supabase managed service
+- Deployment: Vercel static hosting, Neon managed service
 
 **Project Type**: Web app (static front end + managed BaaS)
 
@@ -78,7 +78,7 @@ over JSDoc annotations (`tsc --noEmit`).
 - Daylight-saving change crosses a shift boundary without
   miscategorizing hourly buckets
 - Anon RLS only — no per-user JWT for operators; manager PIN is a
-  catalog lookup, not Supabase auth
+  catalog lookup, not Neon auth
 - Tablet hardware is the bottleneck; budget JS execution accordingly
 - Spanish is the default UI; English toggle persists per device
 
@@ -87,7 +87,7 @@ over JSDoc annotations (`tsc --noEmit`).
   150 captures/hour aggregate** without architectural rework
 - ~50 captures per line per shift, 3 shifts/day → ~150 captures/day
   per line → ~3,750/day plant-wide at full scale (well under
-  Supabase free-tier limits)
+  Neon free-tier limits)
 - Historical retention: indefinite for v1; archival/purge handled
   manually by manager via Admin → Datos
 
@@ -115,7 +115,7 @@ Derived from `.specify/memory/constitution.md` v1.0.0.
 | ≥80% line coverage overall | PASS | Vitest `--coverage` threshold gate in CI |
 | ≥90% on critical modules | PASS | Critical: `modules/sync`, `modules/kpi`, `modules/audit`, RLS policies |
 | Test pyramid (unit > integration > e2e) | PASS | Targets: ~70% unit, ~25% integration/contract, ~5% e2e (P1 stories only) |
-| Determinism (no clock/network in unit) | PASS | `@sinonjs/fake-timers`; Supabase contract suite uses ephemeral local instance |
+| Determinism (no clock/network in unit) | PASS | `@sinonjs/fake-timers`; Neon contract suite uses ephemeral local instance |
 | Contract tests on every public boundary | PASS | REST contract suite per table; OpenAPI-style contracts under `contracts/` |
 | Flaky-test quarantine SLA (24h / 7d) | PASS | Documented in `quickstart.md` |
 
@@ -138,7 +138,7 @@ Derived from `.specify/memory/constitution.md` v1.0.0.
 | Initial JS payload ≤200KB gz/route | PASS | Vite chunk analyzer + size-limit CI gate; chart.js dynamic-imported on `graficas.html` only |
 | Sync visibility ≤30s p95 | PASS | Sync interval = 30s; integration test asserts |
 | Regression gate ±10% on tracked metrics | PASS | lighthouse-ci diff against main baseline |
-| Observability on every prod path | PASS | `tablet_health` table + `audit_log` + structured console logs piped to Supabase logs |
+| Observability on every prod path | PASS | `tablet_health` table + `audit_log` + structured console logs piped to Neon logs |
 
 **Result**: All gates PASS. No Complexity Tracking entries required.
 
@@ -188,7 +188,7 @@ src/
 │   ├── capture/                 # Capture popup, numpad, validation, undo window
 │   ├── sync/                    # Push queue (IndexedDB), paginated pull, dead-letter, watermark
 │   ├── storage/                 # localStorage + IndexedDB adapters
-│   ├── supabase/                # REST client wrapper, retry, idempotency
+│   ├── neon/                # REST client wrapper, retry, idempotency
 │   ├── kpi/                     # OEE / Availability / Performance / Quality math + shift accounting
 │   ├── audit/                   # Audit log writer
 │   ├── auth/                    # Per-manager PIN lookup + session
@@ -202,25 +202,25 @@ src/
 │   └── components.css
 └── public/                      # PWA manifest, icons, service worker (disabled during iteration)
 
-supabase/
+neon/
 ├── migrations/                  # SQL migrations for tables + RLS policies
 └── seed/                        # Catalog seed data for tests + onboarding
 
 tests/
 ├── unit/                        # Pure-function tests (KPI, validators, queue, time)
-├── contract/                    # Supabase REST + RLS contract tests against local supabase
-├── integration/                 # Capture → sync → dashboard flows (jsdom + fake supabase)
+├── contract/                    # /api Vercel Functions + RLS contract tests against local neon
+├── integration/                 # Capture → sync → dashboard flows (jsdom + fake neon)
 └── e2e/                         # Playwright smoke for P1 stories
 
 scripts/
-├── seed-supabase.mjs
+├── seed-neon.mjs
 ├── reset-day.mjs
 └── load-test-captures.mjs
 ```
 
 **Structure Decision**: Web-app variant of the single-project template
-(static front end + managed BaaS). The "backend" is Supabase schema +
-RLS policies versioned under `supabase/`. No separate backend service
+(static front end + managed BaaS). The "backend" is Neon schema +
+RLS policies versioned under `neon/`. No separate backend service
 exists in v1.
 
 ## Post-Design Constitution Re-check

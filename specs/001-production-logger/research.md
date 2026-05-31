@@ -54,11 +54,11 @@ during a multi-day outage.
   reconnect after a long offline window; idempotency (composite key
   `(line_id, operator_id, client_timestamp, payload_hash)`) prevents
   double-application.
-- Pagination ceiling 1000/req is well under Supabase REST defaults and
+- Pagination ceiling 1000/req is well under /api Vercel Functions defaults and
   bounds memory on a tablet.
 
 **Alternatives considered**:
-- *Supabase Realtime channels*: rejected for v1 — adds WebSocket
+- *Neon Realtime channels*: rejected for v1 — adds WebSocket
   failure modes on a flaky factory wifi, and 30s polling already
   meets SLO.
 - *Server-sent events from a custom edge function*: rejected — extra
@@ -145,7 +145,7 @@ captures + shift definitions:
 
 ---
 
-## R6. Per-manager PIN authentication (no Supabase Auth users)
+## R6. Per-manager PIN authentication (no Neon Auth users)
 
 **Decision**: Manager identities stored in `config.managers` as
 `{display_name, pin_hash, active, created_at}`. Tablet/laptop computes
@@ -156,14 +156,14 @@ include the resolved manager display name.
 
 **Rationale**:
 - Spec clarified: per-manager PIN, no full identity system.
-- Supabase Auth would require email/password per manager and is
+- Neon Auth would require email/password per manager and is
   overkill for a 2-line plant with ≤10 managers.
 - PIN hashing prevents trivial readback from the config table.
 
 **Alternatives considered**:
 - *Plain-text PIN*: rejected — config table is anon-readable; trivial
   exfiltration.
-- *Supabase Auth + magic link*: rejected — requires email per manager
+- *Neon Auth + magic link*: rejected — requires email per manager
   and complicates offline operation.
 
 **Security caveat documented in `quickstart.md`**: since RLS allows
@@ -220,7 +220,7 @@ under the 200KB gz budget.
 **Decision**:
 - **Vitest + jsdom** for unit + integration
 - **Vitest** also drives the contract suite against a locally started
-  `supabase` CLI instance (the `supabase start` Docker stack)
+  `neon` CLI instance (the `psql "$DATABASE_URL" -f db/schema.sql` Docker stack)
 - **Playwright** for e2e smoke on the P1 user stories only
 - **axe-core** invoked from Playwright for a11y assertions
 - **lighthouse-ci** for perf regression gating in CI

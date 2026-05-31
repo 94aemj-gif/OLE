@@ -12,8 +12,11 @@ import { plantDayRange } from '../time/plant-day.js';
 import { findActiveShift } from '../time/shift.js';
 import { localStore } from '../storage/local-store.js';
 import { openEosPopup } from './eos-popup.js';
+import { startRemoteSync, SYNC_APPLIED_EVENT } from '../sync/bootstrap.js';
 
 applyTranslations();
+startRemoteSync();
+window.addEventListener(SYNC_APPLIED_EVENT, () => void render());
 document.getElementById('langToggle')?.addEventListener('click', () => {
   setLang(getLang() === 'es' ? 'en' : 'es');
   location.reload();

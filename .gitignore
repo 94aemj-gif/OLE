@@ -14,7 +14,6 @@ test-results/
 .turbo/
 .vercel/
 .lighthouseci/
-supabase/.branches/
-supabase/.temp/
 .claude/settings.local.json
 .vercel
+.env*.local

@@ -7,7 +7,7 @@ description: "Task list for Production Logger feature"
 ## Implementation Status (2026-05-22)
 
 - ✅ **Phase 1 Setup (T001–T015)** — fully implemented
-- ✅ **Phase 2 Foundational (T016–T053)** — implemented except SQL was written but not executed against a live Supabase (no Docker available locally). Contract test suite is committed as `tests/contract/_skip.spec.js` and auto-runs when `SUPABASE_URL` + `SUPABASE_ANON_KEY` are set against a live local stack.
+- ✅ **Phase 2 Foundational (T016–T053)** — implemented except SQL was written but not executed against a live Neon (no Docker available locally). Contract test suite is committed as `tests/contract/_skip.spec.js` and auto-runs when `DATABASE_URL` + `DATABASE_URL` are set against a live local stack.
 - ✅ **Phase 3 US1 Operator capture (T054–T073)** — fully implemented; capture flow integration tests pass.
 - ✅ **Phase 4 US2 Tablero (T074–T086)** — fully implemented; pace/summary/sparkline/health-badge units pass.
 - ⏭ **Phase 5 US3 Gráficas**, **Phase 6 US4 Admin**, **Phase 7 US5 Day reset** — out of MVP scope per `/speckit-implement` answer (Phases 1–4 only). Stub pages exist for `admin.html` and `graficas.html`.
@@ -21,7 +21,7 @@ description: "Task list for Production Logger feature"
 - Vitest integration: 3 / 3 pass
 - Prettier: all formatted
 - Vite build: success; per-route gz: index 5.71KB / dashboard 2.36KB — far under 80KB / 120KB budgets
-- Supabase contract + Playwright e2e: **deferred** (require Docker / `supabase start`)
+- Neon contract + Playwright e2e: **deferred** (require Docker / `psql "$DATABASE_URL" -f db/schema.sql`)
 - Coverage threshold gate: not run this turn (focus on correctness; rerun via `pnpm test` when ready)
 
 ---
@@ -46,12 +46,12 @@ description: "Task list for Production Logger feature"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Bootstrap repo for vanilla JS + Vite + Supabase + test stack.
+**Purpose**: Bootstrap repo for vanilla JS + Vite + Neon + test stack.
 
-- [ ] T001 Create source layout `src/pages/`, `src/modules/`, `src/styles/`, `src/public/`, `supabase/migrations/`, `supabase/seed/`, `tests/{unit,contract,integration,e2e}/`, `scripts/` per plan.md
+- [ ] T001 Create source layout `src/pages/`, `src/modules/`, `src/styles/`, `src/public/`, `db/schema.sql/`, `db/seed.sql/`, `tests/{unit,contract,integration,e2e}/`, `scripts/` per plan.md
 - [ ] T002 Initialize `package.json` with `pnpm init`; pin Node ≥20 in `engines`; add scripts `dev`, `build`, `test`, `test:unit`, `test:contract`, `test:integration`, `test:e2e`, `typecheck`, `lint`, `format:check`, `size`, `lhci`
-- [ ] T003 [P] Install runtime deps `@supabase/supabase-js`, `chart.js` in package.json
-- [ ] T004 [P] Install dev deps `vite`, `vitest`, `@vitest/coverage-v8`, `jsdom`, `playwright`, `@playwright/test`, `eslint`, `prettier`, `typescript`, `axe-core`, `@axe-core/playwright`, `lighthouse-ci`, `size-limit`, `@sinonjs/fake-timers`, `supabase` (CLI dev dep)
+- [ ] T003 [P] Install runtime deps `@neon/neon-js`, `chart.js` in package.json
+- [ ] T004 [P] Install dev deps `vite`, `vitest`, `@vitest/coverage-v8`, `jsdom`, `playwright`, `@playwright/test`, `eslint`, `prettier`, `typescript`, `axe-core`, `@axe-core/playwright`, `lighthouse-ci`, `size-limit`, `@sinonjs/fake-timers`, `neon` (CLI dev dep)
 - [ ] T005 [P] Configure ESLint at `.eslintrc.cjs` with `complexity: 10`, `no-unused-vars: error`, `no-restricted-syntax` rule forbidding raw user-facing strings outside `src/modules/i18n/`
 - [ ] T006 [P] Configure Prettier at `.prettierrc` (single config; 2-space, semi, single-quote, print-width 100)
 - [ ] T007 [P] Configure TypeScript `tsconfig.json` with `allowJs: true`, `checkJs: true`, `noEmit: true`, strict
@@ -60,8 +60,8 @@ description: "Task list for Production Logger feature"
 - [ ] T010 [P] Configure Playwright at `playwright.config.js` with tablet viewport project (1024×768) and laptop viewport project
 - [ ] T011 [P] Configure size-limit at `.size-limit.js` with per-route 200KB gz budgets for `index.html`, `dashboard.html`, `admin.html`, `graficas.html`
 - [ ] T012 [P] Configure lighthouse-ci at `lighthouserc.cjs` with budgets: LCP ≤2500, INP ≤200, CLS ≤0.1; regression gate ±10%
-- [ ] T013 [P] Create `.env.example` with `SUPABASE_URL`, `SUPABASE_ANON_KEY` placeholders
-- [ ] T014 [P] Initialize `supabase init` and commit local stack config at `supabase/config.toml`
+- [ ] T013 [P] Create `.env.example` with `DATABASE_URL`, `DATABASE_URL` placeholders
+- [ ] T014 [P] Initialize `neon init` and commit local stack config at `neon/config.toml`
 - [ ] T015 [P] Create `.github/workflows/ci.yml` (lint → typecheck → unit → contract → integration → size → lhci → e2e); fail on any gate
 
 ---
@@ -72,16 +72,16 @@ description: "Task list for Production Logger feature"
 
 **⚠️ CRITICAL**: Blocks Phase 3+.
 
-### Supabase schema + RLS
+### Neon schema + RLS
 
-- [ ] T016 [P] Write migration `supabase/migrations/0001_config.sql`: `config` single-row table per data-model.md
-- [ ] T017 [P] Write migration `supabase/migrations/0002_captures.sql`: `captures` table + idempotency index + check constraints
-- [ ] T018 [P] Write migration `supabase/migrations/0003_audit_log.sql`: `audit_log` table + indexes
-- [ ] T019 [P] Write migration `supabase/migrations/0004_events.sql`: `events` table + index
-- [ ] T020 [P] Write migration `supabase/migrations/0005_dead_letter.sql`: `dead_letter` table + state check
-- [ ] T021 [P] Write migration `supabase/migrations/0006_tablet_health.sql`: `tablet_health` table
-- [ ] T022 Write migration `supabase/migrations/0010_rls.sql`: enable RLS on all six tables; anon policies per data-model.md (SELECT/INSERT/UPDATE/DELETE scoping; 36h DELETE window on captures; 10s undo window on captures UPDATE)
-- [ ] T023 [P] Seed file `supabase/seed/00_catalog.sql`: 2 lines, 3 shifts, 5 operators, 6 scrap reasons, 6 downtime reasons, 1 default manager (PIN hash for `1234`), default `health_thresholds`
+- [ ] T016 [P] Write migration `db/schema.sql`: `config` single-row table per data-model.md
+- [ ] T017 [P] Write migration `db/schema.sql`: `captures` table + idempotency index + check constraints
+- [ ] T018 [P] Write migration `db/schema.sql`: `audit_log` table + indexes
+- [ ] T019 [P] Write migration `db/schema.sql`: `events` table + index
+- [ ] T020 [P] Write migration `db/schema.sql`: `dead_letter` table + state check
+- [ ] T021 [P] Write migration `db/schema.sql`: `tablet_health` table
+- [ ] T022 Write migration `db/schema.sql`: enable RLS on all six tables; anon policies per data-model.md (SELECT/INSERT/UPDATE/DELETE scoping; 36h DELETE window on captures; 10s undo window on captures UPDATE)
+- [ ] T023 [P] Seed file `db/seed.sql`: 2 lines, 3 shifts, 5 operators, 6 scrap reasons, 6 downtime reasons, 1 default manager (PIN hash for `1234`), default `health_thresholds`
 
 ### Storage adapters
 
@@ -90,10 +90,10 @@ description: "Task list for Production Logger feature"
 - [ ] T026 Implement `src/modules/storage/local-store.js` to make T024 pass
 - [ ] T027 Implement `src/modules/storage/idb-store.js` to make T025 pass
 
-### Supabase client wrapper
+### Neon client wrapper
 
-- [ ] T028 Failing unit tests for `src/modules/supabase/client.js` at `tests/unit/supabase/client.spec.js`: REST headers, retry policy (1s/2s/5s/15s/60s capped), 4xx → dead-letter signal, 409 → success signal, 5xx → retry
-- [ ] T029 Implement `src/modules/supabase/client.js` to make T028 pass
+- [ ] T028 Failing unit tests for `src/modules/neon/client.js` at `tests/unit/neon/client.spec.js`: REST headers, retry policy (1s/2s/5s/15s/60s capped), 4xx → dead-letter signal, 409 → success signal, 5xx → retry
+- [ ] T029 Implement `src/modules/neon/client.js` to make T028 pass
 
 ### Time / shift / DST
 
@@ -123,7 +123,7 @@ description: "Task list for Production Logger feature"
 - [ ] T044 [P] Failing contract test `tests/contract/events.spec.js` per `contracts/events.api.md`
 - [ ] T045 [P] Failing contract test `tests/contract/dead_letter.spec.js` per `contracts/dead_letter.api.md`
 - [ ] T046 [P] Failing contract test `tests/contract/tablet_health.spec.js` per `contracts/tablet_health.api.md`
-- [ ] T047 Confirm T041–T046 fail against `supabase start` without migrations (red), then run `supabase db reset` and rerun to green
+- [ ] T047 Confirm T041–T046 fail against `psql "$DATABASE_URL" -f db/schema.sql` without migrations (red), then run `psql "$DATABASE_URL" -f db/schema.sql` and rerun to green
 
 ### Design system + i18n + UI primitives
 
@@ -142,7 +142,7 @@ description: "Task list for Production Logger feature"
 
 **Goal**: Operator at line tablet completes a capture (employee# + units + optional scrap + optional downtime) in under 20s with ≤200ms p95 confirmation, 10s undo, offline-capable.
 
-**Independent Test**: Run `pnpm test:e2e -- operator-capture` on a seeded local Supabase; verify SC-001 (complete capture in under 20s on tablet viewport), SC-001a (≤200ms p95 confirm), and capture appears in `captures` table.
+**Independent Test**: Run `pnpm test:e2e -- operator-capture` on a seeded local Neon; verify SC-001 (complete capture in under 20s on tablet viewport), SC-001a (≤200ms p95 confirm), and capture appears in `captures` table.
 
 ### Tests for US1 (write first, observe failing)
 
@@ -311,9 +311,9 @@ description: "Task list for Production Logger feature"
 - [ ] T140 [P] Add `tests/e2e/perf/cold-boot.spec.js` validating SC-007 (≤5s cold-boot to capture-ready)
 - [ ] T141 [P] Run `pnpm size` and confirm every route ≤200KB gz; if `graficas.html` breaches, verify chart.js is in a dynamic chunk
 - [ ] T142 [P] Run `pnpm lhci autorun` and confirm LCP/INP/CLS budgets met on `index.html` and `dashboard.html`
-- [ ] T143 [P] Add CSP + security headers in `vercel.json` (default-src self, supabase URL allowed for fetch)
+- [ ] T143 [P] Add CSP + security headers in `vercel.json` (default-src self, neon URL allowed for fetch)
 - [ ] T144 [P] `src/public/manifest.webmanifest` + icons for PWA-readiness (service worker stays disabled until cache strategy is signed off)
-- [ ] T145 [P] Verify `scripts/seed-supabase.mjs`, `scripts/reset-day.mjs`, `scripts/load-test-captures.mjs` run against a fresh local stack and produce reproducible state
+- [ ] T145 [P] Verify `scripts/seed-neon.mjs`, `scripts/reset-day.mjs`, `scripts/load-test-captures.mjs` run against a fresh local stack and produce reproducible state
 - [ ] T146 [P] Run quickstart.md §3 walkthrough on a clean clone; fix any drift between docs and reality
 - [ ] T147 [P] Refresh `CLAUDE.md` plan reference (already set) and add `docs/CHANGELOG.md` v1.0.0 entry referencing this feature
 - [ ] T148 Run full CI locally (`pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm size && pnpm lhci`); all gates green

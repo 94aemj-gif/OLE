@@ -12,10 +12,12 @@ import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
 import { computePace } from '../dashboard/pace.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
+import { startRemoteSync, SYNC_APPLIED_EVENT } from '../sync/bootstrap.js';
 
 const LINE_PARAM = new URLSearchParams(location.search).get('line') ?? 'L-01';
 
 applyTranslations();
+startRemoteSync();
 document.getElementById('langToggle')?.addEventListener('click', () => {
   setLang(getLang() === 'es' ? 'en' : 'es');
   location.reload();
@@ -154,6 +156,11 @@ function getTabletId() {
 }
 
 refreshState();
+
+window.addEventListener(SYNC_APPLIED_EVENT, () => refreshState());
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') refreshState();
+});
 
 startHourAlert({
   enabled: () => catalog.plant.hourly_alert_audio !== false,

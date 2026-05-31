@@ -10,12 +10,11 @@ export default [
       '.vite/**',
       'playwright-report/**',
       'test-results/**',
-      'supabase/.temp/**',
       '**/*.json'
     ]
   },
   {
-    files: ['src/**/*.js', 'tests/**/*.js', 'vite.config.js', 'vitest.config.js'],
+    files: ['src/**/*.js', 'api/**/*.js', 'tests/**/*.js', 'vite.config.js', 'vitest.config.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

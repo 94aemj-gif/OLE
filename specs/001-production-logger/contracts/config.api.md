@@ -1,6 +1,6 @@
 # Contract: `config` REST API
 
-Single-row catalog at `${SUPABASE_URL}/rest/v1/config?id=eq.1`.
+Single-row catalog at `${DATABASE_URL}/rest/v1/config?id=eq.1`.
 
 ## GET `/rest/v1/config?id=eq.1`
 

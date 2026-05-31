@@ -3,9 +3,9 @@ import { localStore } from '../storage/local-store.js';
 import { FALLBACK_CATALOG } from '../storage/fallback-catalog.js';
 
 /**
- * Drop-in replacement for makeSupabaseClient backed by localStorage.
+ * Drop-in replacement for makeDbClient backed by localStorage.
  * Lets the admin / operator / dashboard / graficas screens run with
- * no Supabase project — every read/write touches localStorage only.
+ * no remote DB — every read/write touches localStorage only.
  *
  * Data is per-device (no sync). Surviving a browser-data wipe is not
  * a goal.

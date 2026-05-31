@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -22,12 +23,11 @@
     "test:e2e": "playwright test",
     "size": "size-limit",
     "lhci": "lhci autorun",
-    "supabase:start": "supabase start",
-    "supabase:reset": "supabase db reset",
-    "supabase:push": "supabase db push --linked"
+    "db:push": "psql \"$DATABASE_URL\" -f db/schema.sql",
+    "db:seed": "psql \"$DATABASE_URL\" -f db/seed.sql"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.0",
+    "@neondatabase/serverless": "^0.10.4",
     "chart.js": "^4.4.0"
   },
   "pnpm": {

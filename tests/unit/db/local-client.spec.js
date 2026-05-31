@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { makeLocalClient } from '@/modules/supabase/local-client.js';
+import { makeLocalClient } from '@/modules/db/local-client.js';
 
 beforeEach(() => globalThis.localStorage.clear());
 

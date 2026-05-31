@@ -2,7 +2,8 @@
 import { applyTranslations, getLang, setLang } from '../i18n/index.js';
 import { verifyPin } from '../auth/pin.js';
 import { openSession, readSession, closeSession } from '../auth/session.js';
-import { makeLocalClient } from '../supabase/local-client.js';
+import { makeDbClient } from '../db/client.js';
+import { startRemoteSync } from '../sync/bootstrap.js';
 import { readLocalCatalog } from './catalog-store.js';
 import { showToast } from '../ui/toast.js';
 import { createButton } from '../ui/button.js';
@@ -14,6 +15,7 @@ import { renderDeadLetterView } from './dead-letter-view.js';
 import { destructiveConfirm } from '../ui/destructive-confirm.js';
 import { triggerDayReset } from '../reset/sequence.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
+import { wipeLocalDeviceCache } from '../storage/local-wipe.js';
 
 loadOrSeedCatalog();
 
@@ -24,7 +26,8 @@ document.getElementById('langToggle')?.addEventListener('click', () => {
 });
 
 const TABS = ['resumen', 'catalogos', 'configuracion', 'datos'];
-const client = makeLocalClient();
+const client = makeDbClient();
+startRemoteSync();
 
 const root = document.getElementById('adminRoot');
 const gate = document.getElementById('pinGate');
@@ -153,6 +156,32 @@ function renderDatos({ container, client, getManager, timezone, manager }) {
       label: 'Reset Día Actual',
       kind: 'danger',
       onClick: () => openResetFlow({ client, getManager, timezone })
+    })
+  );
+
+  const wipeHelp = document.createElement('p');
+  wipeHelp.className = 'help-text';
+  wipeHelp.style.marginTop = 'var(--space-3)';
+  wipeHelp.textContent =
+    'Limpia el caché local (contadores, push-queue, capturas recientes) solo en este dispositivo. No afecta Neon ni otros dispositivos.';
+  resetBody.append(
+    wipeHelp,
+    createButton({
+      label: 'Limpiar caché local',
+      kind: 'secondary',
+      onClick: () =>
+        destructiveConfirm({
+          title: 'Limpiar caché de este dispositivo',
+          body:
+            'Se borrarán las capturas locales, contadores y cola de envío sin enviar. ' +
+            'Las capturas ya sincronizadas en Neon NO se borran. Esta acción no se puede deshacer en este dispositivo.',
+          confirmKeyword: 'LIMPIAR',
+          onConfirm: async () => {
+            const { removedKeys, idbDropped } = await wipeLocalDeviceCache();
+            showToast(`Caché borrado (${removedKeys} llaves, idb=${idbDropped ? 'sí' : 'no'})`);
+            setTimeout(() => location.reload(), 600);
+          }
+        })
     })
   );
   resetSection.append(resetBody);

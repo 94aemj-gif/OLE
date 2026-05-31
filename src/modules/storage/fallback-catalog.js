@@ -2,9 +2,9 @@
 import { localStore } from './local-store.js';
 
 /**
- * In-memory seeded catalog used when Supabase env vars are not set on the
- * deployment. Mirrors `supabase/seed/00_catalog.sql` so testing without a
- * Supabase project still surfaces all roles, including the manager PIN flow.
+ * In-memory seeded catalog used when DATABASE_URL is not set on the
+ * deployment. Mirrors `db/seed.sql` so testing without a
+ * Neon project still surfaces all roles, including the manager PIN flow.
  */
 export const FALLBACK_CATALOG = {
   plant: {

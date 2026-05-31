@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const RUN = !!process.env.E2E_BASE_URL;
 
 test.describe('US3 Gráficas', () => {
-  test.skip(!RUN, 'Set E2E_BASE_URL and seed Supabase to run');
+  test.skip(!RUN, 'Set E2E_BASE_URL and seed Neon to run');
 
   test('renders KPI ribbon + four chart sections', async ({ page }) => {
     await page.goto('/pages/graficas.html');

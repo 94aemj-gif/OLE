@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 const RUN = !!process.env.E2E_BASE_URL;
 
 test.describe('US5 day reset', () => {
-  test.skip(!RUN, 'Set E2E_BASE_URL + seed Supabase to run');
+  test.skip(!RUN, 'Set E2E_BASE_URL + seed Neon to run');
 
   test('reset wipes today on a second device within 30s', async ({ browser }) => {
     const tablet = await browser.newContext();

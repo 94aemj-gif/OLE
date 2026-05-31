@@ -10,12 +10,12 @@ clone` to a working capture on a local tablet emulator in under
 |------|---------|---------|
 | Node.js | ≥ 20 LTS | Vite, Vitest, Playwright |
 | pnpm | ≥ 9 | Package manager |
-| Docker Desktop | latest | Local Supabase stack |
-| Supabase CLI | ≥ 1.180 | `supabase start`, migrations |
+| Docker Desktop | latest | Local Neon stack |
+| Neon CLI | ≥ 1.180 | `psql "$DATABASE_URL" -f db/schema.sql`, migrations |
 | Playwright browsers | latest | E2E tests |
 
 ```bash
-brew install node@20 pnpm docker supabase/tap/supabase
+brew install node@20 pnpm docker neon/tap/neon
 pnpm dlx playwright install
 ```
 
@@ -26,9 +26,9 @@ git clone <repo>
 cd OLE
 git checkout 001-production-logger
 pnpm install
-cp .env.example .env.local        # populate SUPABASE_URL + SUPABASE_ANON_KEY for local stack
-supabase start                     # spins up local Supabase
-supabase db reset                  # applies migrations + seed
+cp .env.example .env.local        # populate DATABASE_URL for local stack
+psql "$DATABASE_URL" -f db/schema.sql                     # spins up local Neon
+psql "$DATABASE_URL" -f db/schema.sql                  # applies migrations + seed
 pnpm dev                           # opens Vite on http://localhost:5173
 ```
 
@@ -54,7 +54,7 @@ Pages:
 
 ```bash
 pnpm test:unit            # Vitest unit only
-pnpm test:contract        # Vitest contract suite (requires supabase start)
+pnpm test:contract        # Vitest contract suite (requires psql "$DATABASE_URL" -f db/schema.sql)
 pnpm test:integration     # capture → sync → dashboard flows
 pnpm test:e2e             # Playwright P1 smoke
 pnpm test                 # all of the above + coverage
@@ -117,8 +117,8 @@ Coverage thresholds (per constitution Principle II):
 
 ```bash
 pnpm build                # vite build → dist/
-vercel deploy --prod       # Vercel CLI; SUPABASE_URL + SUPABASE_ANON_KEY in Vercel env
-supabase db push --linked  # apply migrations to managed Supabase
+vercel deploy --prod       # Vercel CLI; DATABASE_URL in Vercel env
+psql "$DATABASE_URL" -f db/schema.sql  # apply migrations to managed Neon
 ```
 
 Service worker stays disabled (`public/sw.js` is a no-op) during
