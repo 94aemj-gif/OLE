@@ -34,19 +34,20 @@ const captures = [
 describe('buildSnapshot', () => {
   it('aggregates units, scrap, downtime and computes KPIs', () => {
     const s = buildSnapshot({ captures, shift: SHIFT, hourlyTarget: 250 });
-    expect(s.unitsProduced).toBe(470);
+    // units_produced = good (470); total_produced = good + scrap (478)
+    expect(s.goodUnits).toBe(470);
     expect(s.scrapUnits).toBe(8);
+    expect(s.unitsProduced).toBe(478);
     expect(s.downtimeMinutes).toBe(15);
     expect(s.plannedMinutes).toBe(450); // 480 - 30 break
-    expect(s.goodUnits).toBe(462);
     expect(s.oee).toBeGreaterThan(0);
     expect(s.oee).toBeLessThanOrEqual(1);
   });
 
   it('excludes undone captures from totals', () => {
     const s = buildSnapshot({ captures, shift: SHIFT, hourlyTarget: 250 });
-    expect(s.unitsProduced).not.toContain(999);
-    expect(s.unitsProduced).toBe(470);
+    expect(s.goodUnits).toBe(470); // 999 undone row excluded
+    expect(s.unitsProduced).toBe(478);
   });
 });
 

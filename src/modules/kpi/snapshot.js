@@ -17,11 +17,13 @@ const CACHE_TTL_MS = 60_000;
  */
 export function buildSnapshot(input) {
   const captures = input.captures.filter((c) => !c.undone);
-  const unitsProduced = captures.reduce((acc, c) => acc + (c.units_produced || 0), 0);
+  // units_produced is actual_good (operator enters good pieces); scrap is separate (PRD §6).
+  const goodUnits = captures.reduce((acc, c) => acc + (c.units_produced || 0), 0);
   const scrapUnits = captures.reduce(
     (acc, c) => acc + (c.scrap_rows ?? []).reduce((a, r) => a + (r.pieces || 0), 0),
     0
   );
+  const unitsProduced = goodUnits + scrapUnits; // total_produced = good + scrap (informational)
   const downtimeMinutes = captures.reduce(
     (acc, c) => acc + (c.downtime_rows ?? []).reduce((a, r) => a + (r.minutes || 0), 0),
     0
@@ -31,10 +33,9 @@ export function buildSnapshot(input) {
     plannedMinutes: planned,
     downtimeMinutes,
     hourlyTarget: input.hourlyTarget,
-    actualOutput: unitsProduced,
+    actualOutput: unitsProduced, // OEE performance uses total count; quality strips scrap
     scrapUnits
   });
-  const goodUnits = Math.max(unitsProduced - scrapUnits, 0);
   return {
     window: input.window ?? {},
     plannedMinutes: planned,
