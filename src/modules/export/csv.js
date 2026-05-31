@@ -18,6 +18,7 @@ export function buildCaptureCsv(input) {
     'line_id',
     'operator_number',
     'shift_id',
+    'product_id',
     'units_produced',
     'scrap_pieces',
     'downtime_minutes'
@@ -29,6 +30,7 @@ export function buildCaptureCsv(input) {
       c.line_id,
       c.operator_number,
       c.shift_id,
+      c.product_id ?? '',
       c.units_produced,
       (c.scrap_rows ?? []).reduce((a, r) => a + (r.pieces || 0), 0),
       (c.downtime_rows ?? []).reduce((a, r) => a + (r.minutes || 0), 0)

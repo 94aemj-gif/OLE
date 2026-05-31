@@ -2,9 +2,11 @@
 import { openModal } from '../ui/modal.js';
 import { createButton } from '../ui/button.js';
 import { buildCaptureCsv, downloadCsv } from '../export/csv.js';
+import { summarizeRuns } from '../capture/runs.js';
 
 /**
- * @param {{snapshot:any, captures:any[], lineId:string, shiftId:string}} cfg
+ * @param {{snapshot:any, captures:any[], lineId:string, shiftId:string,
+ *          products?:any[], shift?:any, timezone?:string}} cfg
  */
 export function openEosPopup(cfg) {
   const body = document.createElement('div');
@@ -37,6 +39,18 @@ export function openEosPopup(cfg) {
   );
   body.append(grid);
 
+  // Per-run / per-SKU breakdown (PRD §7.5). Shows each SKU run when the SKU
+  // changed mid-shift; hidden when no SKU data is available.
+  const runs = summarizeRuns({
+    captures: cfg.captures,
+    products: cfg.products ?? [],
+    shift: cfg.shift,
+    timezone: cfg.timezone
+  });
+  if (runs.length && runs.some((r) => r.product_id)) {
+    body.append(renderRunTable(runs));
+  }
+
   const footer = document.createElement('div');
   footer.style.display = 'flex';
   footer.style.justifyContent = 'flex-end';
@@ -59,4 +73,36 @@ export function openEosPopup(cfg) {
   const modal = openModal({ title: 'Resumen de fin de turno', body, footer });
   modalRef.close = modal.close;
   return modal;
+}
+
+function renderRunTable(runs) {
+  const wrap = document.createElement('div');
+  wrap.className = 'run-summary';
+  const title = document.createElement('h3');
+  title.textContent = 'Corridas por SKU';
+  wrap.append(title);
+
+  const table = document.createElement('table');
+  table.className = 'run-table';
+  const head = document.createElement('tr');
+  for (const h of ['SKU', 'Horas', 'Buenas', 'Merma', 'T. muerto', 'Objetivo', 'Efic.']) {
+    const th = document.createElement('th');
+    th.textContent = h;
+    head.append(th);
+  }
+  table.append(head);
+
+  for (const r of runs) {
+    const tr = document.createElement('tr');
+    const eff = r.efficiency === null ? '—' : `${r.efficiency.toFixed(0)}%`;
+    const cells = [r.product_name, r.hours, r.good, r.scrap, `${r.downtime} min`, r.target || '—', eff];
+    for (const c of cells) {
+      const td = document.createElement('td');
+      td.textContent = String(c);
+      tr.append(td);
+    }
+    table.append(tr);
+  }
+  wrap.append(table);
+  return wrap;
 }

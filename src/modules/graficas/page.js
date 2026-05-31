@@ -139,7 +139,18 @@ async function render(opts = {}) {
   paintHeatmap(data.heat, ctx.startIso);
 
   if (opts.openEos) {
-    openEosPopup({ snapshot, captures: todayCaps, lineId: ctx.lineId, shiftId: ctx.shift.id });
+    const lineProducts = (catalog.products ?? []).filter((p) =>
+      (ctx.line?.product_ids ?? []).includes(p.id)
+    );
+    openEosPopup({
+      snapshot,
+      captures: todayCaps,
+      lineId: ctx.lineId,
+      shiftId: ctx.shift.id,
+      products: lineProducts,
+      shift: ctx.shift,
+      timezone
+    });
   }
 }
 

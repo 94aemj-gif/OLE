@@ -75,9 +75,11 @@ without discarding the capture/sync/audit work.
   implemented — the earlier "already built" note was wrong. Save is blocked when good
   < hour target and no downtime cause is present.
 
-**P4 — Run grouping + shift-close summary (§7.5)**
-- Derive runs from `product_id` sequence; summary groups hours by run/SKU, shows both
-  SKUs when changed mid-shift. Unblocks Acceptance #4.
+**P4 — Run grouping + shift-close summary (§7.5)** — DONE
+- `capture/runs.js`: `deriveRuns` (contiguous-by-product_id) + `summarizeRuns`
+  (per-run good/scrap/downtime + break-adjusted target + efficiency).
+- End-of-shift popup renders a per-SKU run table; CSV export gains a product_id
+  column. Unblocks Acceptance #4.
 
 **P5 — History (§7.6)** — add SKU filter + trend-by-SKU. Downtime Pareto already has data.
 
