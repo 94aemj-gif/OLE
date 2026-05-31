@@ -69,6 +69,11 @@ export function readShiftState(ctx) {
   return localStore.get(shiftStateKey(ctx), fallback);
 }
 
+/** All locally-known captures (newest first), used for live cumulatives. */
+export function readRecentCaptures() {
+  return localStore.get(RECENT_CAPTURES_KEY, []);
+}
+
 export function resetShiftState() {
   const ls = globalThis.localStorage;
   if (ls) {

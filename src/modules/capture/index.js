@@ -1,12 +1,13 @@
 // @ts-check
 import { openCaptureModalWithSubmit } from './modal.js';
 import { buildCapturePayload } from './payload.js';
-import { persistCaptureLocally, readShiftState } from './local.js';
+import { persistCaptureLocally, readRecentCaptures } from './local.js';
 import { openUndoWindow } from './undo.js';
 import { showToast } from '../ui/toast.js';
 import { t } from '../i18n/index.js';
 import { buildAuditEntry } from '../audit/writer.js';
 import { celebrateEndOfShift } from './end-of-shift.js';
+import { computeCumulatives } from './cumulatives.js';
 
 /**
  * @param {Object} ctx
@@ -24,12 +25,33 @@ export function openCapture(ctx) {
   const line = ctx.catalog.lines.find((l) => l.id === ctx.line_id) ?? ctx.catalog.lines[0];
   const shift = ctx.catalog.shifts.find((s) => s.id === ctx.shift_id) ?? ctx.catalog.shifts[0];
   const lineCtx = { line_id: ctx.line_id, shift_id: ctx.shift_id, plantDayIso: ctx.plantDayIso };
-  const accumEl = () => document.getElementById('ctxAccum');
-  const setAccum = () => {
-    const el = accumEl();
+  const productsById = new Map((ctx.catalog.products ?? []).map((p) => [p.id, p]));
+  const shiftsById = new Map((ctx.catalog.shifts ?? []).map((s) => [s.id, s]));
+
+  const renderCum = (id, label, c) => {
+    const el = document.getElementById(id);
     if (!el) return;
-    const state = readShiftState(lineCtx);
-    el.innerHTML = `<div class="l">Acumulado del turno</div><div class="v">${state.count} <small>/ ${ctx.target}</small></div>`;
+    const sign = c.delta >= 0 ? '+' : '';
+    const cls = c.delta >= 0 ? 'ok' : 'crit';
+    const tgt = c.target > 0 ? c.target : '—';
+    el.innerHTML =
+      `<div class="l">${label}</div>` +
+      `<div class="v">${c.actual} <small>/ ${tgt}</small> ` +
+      `<small class="${cls}">(${sign}${c.delta})</small></div>`;
+  };
+  const setAccum = () => {
+    const cum = computeCumulatives({
+      captures: readRecentCaptures(),
+      lineId: ctx.line_id,
+      shiftId: ctx.shift_id,
+      dayStartIso: ctx.plantDayIso,
+      dayEndIso: ctx.plantDayEndIso ?? ctx.plantDayIso,
+      productsById,
+      shiftsById,
+      timezone: ctx.timezone
+    });
+    renderCum('ctxAccum', 'Acumulado del turno', cum.shift);
+    renderCum('ctxDayAccum', 'Acumulado del día', cum.day);
   };
 
   const modal = openCaptureModalWithSubmit({

@@ -83,6 +83,7 @@ function contextItems(cfg) {
     items.push({ id: 'ctxProduct', cls: 'sku', label: 'SKU activo', product: true });
   }
   items.push({ id: 'ctxAccum', label: 'Acumulado del turno', value: '—', sub: '' });
+  items.push({ id: 'ctxDayAccum', label: 'Acumulado del día', value: '—', sub: '' });
   items.push({
     id: 'ctxTarget',
     label: hasProducts(cfg) ? 'Objetivo de la hora' : 'Objetivo del turno',

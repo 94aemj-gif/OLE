@@ -29,7 +29,9 @@ const line = catalog.lines.find((l) => l.id === LINE_PARAM) ?? catalog.lines[0];
 const timezone = catalog.plant.timezone;
 const shift = findActiveShift(new Date(), catalog.shifts, timezone) ?? catalog.shifts[0];
 const targetForShift = line.hourly_target * 8;
-const plantDayIso = plantDayRange(new Date(), timezone).startIso;
+const plantDay = plantDayRange(new Date(), timezone);
+const plantDayIso = plantDay.startIso;
+const plantDayEndIso = plantDay.endIso;
 const lineCtx = { line_id: line.id, shift_id: shift.id, plantDayIso };
 
 // SKUs that run on this line; operator picks the active one in the capture modal.
@@ -152,6 +154,7 @@ captureBtn?.addEventListener('click', () => {
     client_id: getTabletId(),
     timezone,
     plantDayIso,
+    plantDayEndIso,
     target: targetForShift,
     products: lineProducts,
     product_id: lineProducts[0]?.id ?? null,
