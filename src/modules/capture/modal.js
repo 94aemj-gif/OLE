@@ -168,43 +168,38 @@ function renderHero(cfg, modalRef) {
 
   const empWrap = document.createElement('div');
   empWrap.className = 'employee-input';
-  const empInput = document.createElement('input');
-  empInput.type = 'text';
-  empInput.inputMode = 'numeric';
-  empInput.maxLength = 5;
-  empInput.placeholder = '• • • • •';
-  empInput.autocomplete = 'off';
+  // Operator is chosen from a dropdown (no PIN). Capturists only; viewers are
+  // read-only and excluded from the list.
+  const empInput = document.createElement('select');
   empInput.id = 'captureEmployeeInput';
+  empInput.className = 'employee-select';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = t('capture.employee.label');
+  empInput.append(placeholder);
+  for (const o of cfg.catalog.operators ?? []) {
+    if (!o.active || o.role === 'viewer') continue;
+    const opt = document.createElement('option');
+    opt.value = o.employee_number;
+    opt.textContent = o.display_name;
+    empInput.append(opt);
+  }
   const empName = document.createElement('div');
   empName.className = 'resolved-name';
   empName.id = 'captureResolvedName';
   empWrap.append(empInput, empName);
   hero.append(empWrap);
 
-  empInput.addEventListener('input', () => {
-    empInput.value = empInput.value.replace(/\D/g, '').slice(0, 5);
-    if (empInput.value.length !== 5) {
-      empInput.classList.remove('invalid');
-      empName.classList.remove('error');
-      empName.textContent = '';
-      updateContextOperator(null);
-      return;
-    }
+  empInput.addEventListener('change', () => {
     const op = cfg.catalog.operators?.find((o) => o.employee_number === empInput.value && o.active);
-    if (op && op.role === 'viewer') {
-      empInput.classList.add('invalid');
-      empName.classList.add('error');
-      empName.textContent = '⊘ Solo lectura — no puede capturar';
-      updateContextOperator(null);
-    } else if (op) {
+    if (op) {
       empInput.classList.remove('invalid');
       empName.classList.remove('error');
       empName.textContent = `✓ ${op.display_name}`;
       updateContextOperator(op);
     } else {
-      empInput.classList.add('invalid');
-      empName.classList.add('error');
-      empName.textContent = t('error.employee.unknown');
+      empName.classList.remove('error');
+      empName.textContent = '';
       updateContextOperator(null);
     }
   });

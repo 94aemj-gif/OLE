@@ -1,7 +1,5 @@
 // @ts-check
 import { applyTranslations, getLang, setLang } from '../i18n/index.js';
-import { verifyPin } from '../auth/pin.js';
-import { openSession, readSession, closeSession } from '../auth/session.js';
 import { makeDbClient } from '../db/client.js';
 import { startRemoteSync } from '../sync/bootstrap.js';
 import { readLocalCatalog } from './catalog-store.js';
@@ -29,54 +27,21 @@ const TABS = ['resumen', 'catalogos', 'configuracion', 'datos'];
 const client = makeDbClient();
 startRemoteSync();
 
+// Admin is open access (no PIN). Actions that record an actor use this default.
+const DEFAULT_MANAGER = { id: 'ADMIN', display_name: 'Administrador' };
+
 const root = document.getElementById('adminRoot');
 const gate = document.getElementById('pinGate');
 const tabbar = document.getElementById('tabbar');
 const tabContent = document.getElementById('tabContent');
 const logoutBtn = document.getElementById('logoutBtn');
-const session = readSession();
-if (session) showAdmin();
-else showPinGate();
-
-logoutBtn?.addEventListener('click', () => {
-  closeSession();
-  location.reload();
-});
-
-function showPinGate() {
-  if (!gate) return;
-  gate.style.display = 'grid';
-  if (root) root.style.display = 'none';
-  const input = /** @type {HTMLInputElement|null} */ (document.getElementById('pinInput'));
-  const submit = document.getElementById('pinSubmit');
-  const errorSlot = document.getElementById('pinError');
-  submit?.addEventListener('click', async () => {
-    if (!input || !errorSlot) return;
-    const catalog = readLocalCatalog();
-    if (!catalog) {
-      errorSlot.textContent = 'Catálogo no disponible — abre la app en una tablet primero.';
-      return;
-    }
-    const result = await verifyPin(input.value, catalog.managers ?? []);
-    if (result.ok === false) {
-      const map = {
-        invalid: 'PIN inválido',
-        locked: 'Bloqueado temporalmente — intenta más tarde',
-        deactivated: 'Manager desactivado'
-      };
-      errorSlot.textContent = map[result.code];
-      return;
-    }
-    openSession(result.manager);
-    showAdmin();
-  });
-}
+if (logoutBtn) logoutBtn.style.display = 'none';
+showAdmin();
 
 function showAdmin() {
-  if (!root || !gate || !tabbar || !tabContent) return;
-  gate.style.display = 'none';
+  if (!root || !tabbar || !tabContent) return;
+  if (gate) gate.style.display = 'none';
   root.style.display = 'block';
-  if (logoutBtn) logoutBtn.style.display = 'inline-flex';
   setActiveTab(location.hash.replace('#', '') || 'resumen');
   for (const tab of TABS) {
     const btn = document.querySelector(`[data-tab="${tab}"]`);
@@ -118,8 +83,8 @@ function setActiveTab(tab) {
   const safeTab = TABS.includes(tab) ? tab : 'resumen';
   syncTabState(safeTab);
   if (!tabContent) return;
-  const manager = readSession()?.manager ?? null;
-  const getManager = () => readSession()?.manager ?? null;
+  const manager = DEFAULT_MANAGER;
+  const getManager = () => DEFAULT_MANAGER;
   const catalog = readLocalCatalog();
   const timezone = catalog?.plant?.timezone ?? 'America/Mexico_City';
   tabContent.innerHTML = '';
