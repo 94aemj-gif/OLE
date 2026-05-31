@@ -17,10 +17,17 @@ function validateEmployee(input, catalog, errors) {
     errors.push({ field: 'employee_number', code: 'invalid_format' });
     return;
   }
-  const known = catalog.operators.some(
+  const op = catalog.operators.find(
     (o) => o.employee_number === input.employee_number && o.active
   );
-  if (!known) errors.push({ field: 'employee_number', code: 'unknown' });
+  if (!op) {
+    errors.push({ field: 'employee_number', code: 'unknown' });
+    return;
+  }
+  // Viewer role is read-only (PRD §11): cannot log captures.
+  if (op.role === 'viewer') {
+    errors.push({ field: 'employee_number', code: 'viewer_readonly' });
+  }
 }
 
 function validateTotals(input, errors) {

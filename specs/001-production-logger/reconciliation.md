@@ -88,7 +88,13 @@ without discarding the capture/sync/audit work.
 - Remaining UI (multi-window compare screen, SKU trend chart) can mount on these
   functions; not yet rendered as dedicated screens.
 
-**P6 — Viewer role gating** — read-only session; block capture/config.
+**P6 — Viewer role gating** — DONE
+- `validateCapture` rejects an operator whose role is `viewer` (`viewer_readonly`);
+  the capture modal shows "Solo lectura — no puede capturar" on PIN entry.
+- Config/admin remain PIN-gated (managers only), so capturists already cannot open
+  config (Acceptance #7).
+- NOTE: enforcement is client-side. The captures API keys on operator_number only
+  and does not know roles; server-side role enforcement is future work.
 
 ### Acceptance coverage
 - P2 → #1, #2 · P3 → #2 (UI) · P4 → #4 · P1+P6 → #7 · P5 → #8 · rest already pass-ish.

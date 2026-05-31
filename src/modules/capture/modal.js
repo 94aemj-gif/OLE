@@ -190,7 +190,12 @@ function renderHero(cfg, modalRef) {
       return;
     }
     const op = cfg.catalog.operators?.find((o) => o.employee_number === empInput.value && o.active);
-    if (op) {
+    if (op && op.role === 'viewer') {
+      empInput.classList.add('invalid');
+      empName.classList.add('error');
+      empName.textContent = '⊘ Solo lectura — no puede capturar';
+      updateContextOperator(null);
+    } else if (op) {
       empInput.classList.remove('invalid');
       empName.classList.remove('error');
       empName.textContent = `✓ ${op.display_name}`;
@@ -386,6 +391,7 @@ function codeLabel(err) {
   if (err.field === 'employee_number' && err.code === 'invalid_format')
     return t('error.employee.invalid');
   if (err.field === 'employee_number' && err.code === 'unknown') return t('error.employee.unknown');
+  if (err.code === 'viewer_readonly') return 'Usuario de solo lectura: no puede capturar.';
   if (err.code === 'empty_capture') return t('error.units.zero');
   if (err.code === 'exceeds_units') return t('error.scrap.exceeds');
   return err.code;

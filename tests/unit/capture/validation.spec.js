@@ -3,8 +3,9 @@ import { validateCapture } from '@/modules/capture/validate.js';
 
 const CATALOG = {
   operators: [
-    { employee_number: '12345', display_name: 'Ana', active: true },
-    { employee_number: '12346', display_name: 'Luis', active: false }
+    { employee_number: '12345', display_name: 'Ana', role: 'capturist', active: true },
+    { employee_number: '12346', display_name: 'Luis', active: false },
+    { employee_number: '12350', display_name: 'Supervisión', role: 'viewer', active: true }
   ],
   scrap_reasons: [
     { id: 'SR-01', name: 'Pistón roto', active: true },
@@ -43,6 +44,15 @@ describe('validateCapture', () => {
       CATALOG
     );
     expect(r2.errors[0].code).toBe('unknown');
+  });
+
+  it('rejects a viewer (read-only role) from capturing', () => {
+    const r = validateCapture(
+      { employee_number: '12350', units_produced: 240, scrap_rows: [], downtime_rows: [] },
+      CATALOG
+    );
+    expect(r.ok).toBe(false);
+    expect(r.errors.some((e) => e.code === 'viewer_readonly')).toBe(true);
   });
 
   it('rejects zero-everything capture', () => {
