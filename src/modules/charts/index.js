@@ -166,3 +166,47 @@ function makeCell(text, header) {
   if (header) el.style.color = 'var(--text-muted)';
   return el;
 }
+
+const SERIES_PALETTE = ['#2563eb', '#16a34a', '#dc2626', '#d97706', '#7c3aed', '#0891b2', '#db2777'];
+
+/**
+ * Multi-line trend, one line per SKU over time.
+ * @param {HTMLCanvasElement} canvas
+ * @param {{labels:string[], series:Array<{name:string, data:Array<number|null>}>}} cfg
+ */
+export async function renderSkuTrend(canvas, cfg) {
+  return mount(canvas, {
+    type: 'line',
+    data: {
+      labels: cfg.labels,
+      datasets: cfg.series.map((s, i) => ({
+        label: s.name,
+        data: s.data,
+        borderColor: SERIES_PALETTE[i % SERIES_PALETTE.length],
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        spanGaps: true
+      }))
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
+  });
+}
+
+/**
+ * Grouped bars comparing good vs target across windows (shifts/days/weeks).
+ * @param {HTMLCanvasElement} canvas
+ * @param {{labels:string[], good:number[], target:number[]}} cfg
+ */
+export async function renderCompareBars(canvas, cfg) {
+  return mount(canvas, {
+    type: 'bar',
+    data: {
+      labels: cfg.labels,
+      datasets: [
+        { label: 'Bueno', data: cfg.good, backgroundColor: '#2563eb' },
+        { label: 'Objetivo', data: cfg.target, backgroundColor: '#cbd5e1' }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
+  });
+}

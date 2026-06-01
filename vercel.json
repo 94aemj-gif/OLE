@@ -9,7 +9,8 @@
     { "source": "/", "destination": "/pages/index.html" },
     { "source": "/dashboard", "destination": "/pages/dashboard.html" },
     { "source": "/admin", "destination": "/pages/admin.html" },
-    { "source": "/graficas", "destination": "/pages/graficas.html" }
+    { "source": "/graficas", "destination": "/pages/graficas.html" },
+    { "source": "/historial", "destination": "/pages/historial.html" }
   ],
   "headers": [
     {

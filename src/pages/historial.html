@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OLE — Historial / Análisis</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <span class="brand">OLE</span>
+      <h1>Historial · Análisis</h1>
+      <div class="right">
+        <button id="refreshBtn" class="btn-ghost-dark" aria-label="Refrescar">⟳</button>
+        <button
+          id="langToggle"
+          class="lang"
+          aria-label="Cambiar idioma"
+          data-i18n="language.toggle"
+        >
+          ES | EN
+        </button>
+      </div>
+    </header>
+
+    <nav class="app-nav" aria-label="Navegación entre pantallas">
+      <a href="/">Operador</a>
+      <a href="/dashboard">Tablero</a>
+      <a href="/graficas">Gráficas</a>
+      <a href="/historial" aria-current="page">Historial</a>
+      <a href="/admin">Admin</a>
+    </nav>
+
+    <div class="subband">
+      <select id="lineSelect" aria-label="Línea seleccionada"></select>
+      <select id="groupSelect" aria-label="Agrupar por">
+        <option value="day">Por día</option>
+        <option value="shift">Por turno</option>
+        <option value="week">Por semana</option>
+      </select>
+    </div>
+
+    <main class="page-pad" style="display: grid; gap: var(--space-5); padding: var(--space-5)">
+      <section class="panel-section">
+        <header><h2>Comparar ventanas</h2></header>
+        <div class="chart-box" style="height: 280px; padding: var(--space-3)">
+          <canvas id="compareChart"></canvas>
+        </div>
+        <div id="compareTable"></div>
+      </section>
+
+      <section class="panel-section">
+        <header><h2>Tendencia por SKU</h2></header>
+        <div class="chart-box" style="height: 280px; padding: var(--space-3)">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="../modules/historial/page.js"></script>
+  </body>
+</html>

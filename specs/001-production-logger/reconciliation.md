@@ -85,8 +85,9 @@ without discarding the capture/sync/audit work.
 - `analysis/history.js`: `windowTotals`, `compareWindows` (shift/day/week side by
   side), `trendBySku`, `downtimePareto` — all pure + unit-tested.
 - Resumen tab gains a historical "Paro por Causa (Pareto)" panel for the selected day.
-- Remaining UI (multi-window compare screen, SKU trend chart) can mount on these
-  functions; not yet rendered as dedicated screens.
+- Dedicated `/historial` screen: compare windows (by día/turno/semana) as a table +
+  grouped bar chart, plus a per-SKU trend line chart. `analysis/windows.js`
+  (`buildWindows`) groups captures into comparison windows.
 
 **P6 — Viewer role gating** — DONE
 - `validateCapture` rejects an operator whose role is `viewer` (`viewer_readonly`);

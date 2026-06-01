@@ -7,7 +7,8 @@ const realPages = {
   index: r('src/pages/index.html'),
   dashboard: r('src/pages/dashboard.html'),
   admin: r('src/pages/admin.html'),
-  graficas: r('src/pages/graficas.html')
+  graficas: r('src/pages/graficas.html'),
+  historial: r('src/pages/historial.html')
 };
 
 const mockupPages = {
