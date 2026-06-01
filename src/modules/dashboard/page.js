@@ -5,6 +5,7 @@ import { computePace } from './pace.js';
 import { computeSummary } from './summary.js';
 import { rolling } from './sparkline-data.js';
 import { findActiveShift, hoursElapsedInShift } from '../time/shift.js';
+import { plantDayRange } from '../time/plant-day.js';
 import { localStore } from '../storage/local-store.js';
 import { loadOrSeedCatalog } from '../storage/fallback-catalog.js';
 import { startRemoteSync, SYNC_APPLIED_EVENT } from '../sync/bootstrap.js';
@@ -91,9 +92,12 @@ async function refresh() {
   if (!firstRefreshDone) {
     for (const card of cards.values()) card.el.classList.add('is-loading');
   }
-  const captures = await fetchCaptures();
+  const all = await fetchCaptures();
   for (const card of cards.values()) card.el.classList.remove('is-loading');
   firstRefreshDone = true;
+  // Tablero is a live board: only the current plant day's captures.
+  const { startIso, endIso } = plantDayRange(now, timezone);
+  const captures = all.filter((c) => c.hour_bucket >= startIso && c.hour_bucket < endIso);
   showOrHidePlantEmpty(captures.length === 0);
   const byLine = groupByLine(captures);
   const lineSummaries = [];
