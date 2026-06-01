@@ -102,10 +102,31 @@ function mergeCapturesIntoLocal(rows) {
  * @param {(event:any)=>void|Promise<void>} [opts.applyEvent]
  * @param {number} [opts.intervalMs]
  */
+/**
+ * Best-effort pull of the catalog from /api/config into localStorage. Pages read
+ * the cached catalog via loadOrSeedCatalog; this keeps it in sync with the DB on
+ * the next render/reload. Falls back silently to the seeded catalog when offline.
+ * @param {{getConfig:()=>Promise<{body:any}>}} client
+ */
+async function refreshCatalogFromApi(client) {
+  try {
+    const res = await client.getConfig();
+    const rows = res?.body;
+    const data = Array.isArray(rows) ? rows[0]?.data : rows?.data;
+    if (data && Array.isArray(data.lines)) {
+      localStore.set('catalog', data);
+      dispatchSyncApplied({ catalog: true });
+    }
+  } catch {
+    /* offline or API down — keep the cached/fallback catalog */
+  }
+}
+
 export function startRemoteSync(opts = {}) {
   const client = makeDbClient();
   const applyCaptures = opts.applyCaptures ?? mergeCapturesIntoLocal;
   const applyEvent = opts.applyEvent ?? handleEventLocally;
+  void refreshCatalogFromApi(client);
   const loop = createSyncLoop({
     client,
     applyCaptures,

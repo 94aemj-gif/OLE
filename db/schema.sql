@@ -40,6 +40,9 @@ create table if not exists public.captures (
   updated_at         timestamptz not null default now()
 );
 
+-- Migration-safe: add product_id to pre-existing captures tables.
+alter table public.captures add column if not exists product_id text;
+
 create unique index if not exists captures_idempotency
   on public.captures (line_id, operator_number, client_timestamp, payload_hash);
 

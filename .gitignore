@@ -18,3 +18,5 @@ test-results/
 .vercel
 .env*.local
 design.pen
+
+db/config-backup-*.json

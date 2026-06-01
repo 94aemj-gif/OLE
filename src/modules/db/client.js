@@ -133,6 +133,9 @@ export function makeDbClient(cfg = {}) {
     },
     listTabletHealth() {
       return requestWithRetry('/api/tablet-health', { method: 'GET' });
+    },
+    getConfig() {
+      return requestWithRetry('/api/config', { method: 'GET' });
     }
   };
 }
