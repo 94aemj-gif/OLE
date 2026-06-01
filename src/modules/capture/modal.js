@@ -39,6 +39,9 @@ export function openCaptureModal(cfg) {
     renderFooter()
   );
 
+  // Now that the context is in the DOM, set the initial SKU hour target.
+  if (modalRef._applyProduct) modalRef._applyProduct();
+
   return modalRef;
 }
 
@@ -110,8 +113,6 @@ function renderContext(cfg, modalRef) {
     }
     ctx.append(div);
   }
-  // ctxTarget is appended after ctxProduct, so sync the initial hour target now.
-  if (modalRef._applyProduct) modalRef._applyProduct();
   return ctx;
 }
 
@@ -175,7 +176,7 @@ function renderHero(cfg, modalRef) {
   empInput.className = 'employee-select';
   const placeholder = document.createElement('option');
   placeholder.value = '';
-  placeholder.textContent = t('capture.employee.label');
+  placeholder.textContent = t('capture.employee.placeholder');
   empInput.append(placeholder);
   for (const o of cfg.catalog.operators ?? []) {
     if (!o.active || o.role === 'viewer') continue;

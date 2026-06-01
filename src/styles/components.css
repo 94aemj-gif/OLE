@@ -925,6 +925,80 @@ table.data th {
   color: var(--crit);
 }
 
+/* Operator dropdown — match the designed form controls (no raw native select) */
+.employee-input select.employee-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  padding: 12px 42px 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) 55%,
+    calc(100% - 17px) 55%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+.employee-input select.employee-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* SKU picker inside the context strip — styled like the value, not a raw select */
+.capture-context .item.sku {
+  display: grid;
+  align-content: start;
+}
+.capture-context .item select.sku-select {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-top: 4px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 7px 30px 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  font-family: inherit;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) 55%,
+    calc(100% - 10px) 55%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+.capture-context .item select.sku-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+@media (max-width: 720px) {
+  .capture-context .item select.sku-select {
+    width: auto;
+    min-width: 130px;
+    font-size: var(--text-sm);
+    padding: 5px 26px 5px 8px;
+    margin-top: 0;
+  }
+}
+
 .units-display {
   background: linear-gradient(140deg, var(--header), #1e293b);
   color: white;
