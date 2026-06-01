@@ -7,6 +7,7 @@ import { createDowntimeRowEditor } from './downtime-rows.js';
 import { t } from '../i18n/index.js';
 import { validateCapture } from './validate.js';
 import { needsCause } from './miss.js';
+import { efficiencyPct } from '../kpi/target.js';
 
 /**
  * Open the Worximity-Dense capture modal.
@@ -146,6 +147,7 @@ function makeSkuSelect(cfg, modalRef) {
     modalRef._hourTarget = tgt;
     const tEl = document.getElementById('ctxTarget');
     if (tEl) tEl.innerHTML = `<div class="l">Objetivo de la hora</div><div class="v">${tgt}</div>`;
+    modalRef._updateHourProgress?.(Number(modalRef._unitsPad?.value) || 0);
   };
   sel.addEventListener('change', modalRef._applyProduct);
   return sel;
@@ -219,6 +221,7 @@ function renderHero(cfg, modalRef) {
     maxLength: 6,
     onChange: (v) => {
       unitsDisplay.textContent = v || '0';
+      modalRef._updateHourProgress?.(Number(v) || 0);
     }
   });
   // remove numpad's own internal display since we have units-display above
@@ -237,9 +240,47 @@ function renderHero(cfg, modalRef) {
   return hero;
 }
 
+function progressStatus(eff) {
+  if (eff === null) return '';
+  if (eff >= 100) return 'ok';
+  if (eff >= 90) return 'warn';
+  return 'crit';
+}
+
+function setElText(id, text, className) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  if (className) el.className = className;
+}
+
 function renderRail(cfg, modalRef) {
   const rail = document.createElement('aside');
   rail.className = 'capture-rail';
+
+  // Live hour progress — fills the rail and gives instant target feedback.
+  const prog = document.createElement('section');
+  prog.className = 'rail-section hour-progress';
+  prog.innerHTML =
+    '<div class="head"><h3>Avance de la hora</h3><span class="eff" id="railEff">—</span></div>' +
+    '<div class="hp-figures"><span class="hp-units" id="railUnits">0</span>' +
+    '<span class="hp-target" id="railTarget">/ —</span></div>' +
+    '<div class="hp-bar"><div class="hp-fill" id="railFill"></div></div>';
+  rail.append(prog);
+
+  modalRef._updateHourProgress = (units) => {
+    const target = modalRef._hourTarget ?? 0;
+    const eff = efficiencyPct(units, target);
+    const status = progressStatus(eff);
+    setElText('railUnits', String(units));
+    setElText('railTarget', `/ ${target > 0 ? target : '—'}`);
+    setElText('railEff', eff === null ? '—' : `${Math.round(eff)}%`, 'eff ' + status);
+    const fill = document.getElementById('railFill');
+    if (fill) {
+      fill.style.width = `${Math.min(eff ?? 0, 100)}%`;
+      fill.className = 'hp-fill ' + status;
+    }
+  };
 
   // Downtime section
   const dtSection = document.createElement('section');
