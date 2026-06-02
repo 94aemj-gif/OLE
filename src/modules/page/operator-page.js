@@ -28,22 +28,49 @@ const catalog = loadOrSeedCatalog();
 const line = catalog.lines.find((l) => l.id === LINE_PARAM) ?? catalog.lines[0];
 const timezone = catalog.plant.timezone;
 const shift = findActiveShift(new Date(), catalog.shifts, timezone) ?? catalog.shifts[0];
-const targetForShift = line.hourly_target * 8;
 const plantDay = plantDayRange(new Date(), timezone);
 const plantDayIso = plantDay.startIso;
 const plantDayEndIso = plantDay.endIso;
 const lineCtx = { line_id: line.id, shift_id: shift.id, plantDayIso };
 
-// SKUs that run on this line; operator picks the active one in the capture modal.
+// SKUs that run on this line; operator picks the active one (here and in capture).
 const lineProducts = (catalog.products ?? []).filter(
   (p) => (line.product_ids ?? []).includes(p.id) && p.active !== false
 );
+let activeProductId = lineProducts[0]?.id ?? null;
+const activeProduct = () => lineProducts.find((p) => p.id === activeProductId) ?? null;
+
+function parseHmm(hhmm) {
+  const [h, m] = String(hhmm).split(':').map(Number);
+  return h * 60 + (m || 0);
+}
+
+/** Hour-slot start labels ("HH:00") spanning the shift, overnight-aware. */
+function shiftSlots(s) {
+  const start = parseHmm(s.start);
+  const end = parseHmm(s.end);
+  const total = end > start ? end - start : 24 * 60 - start + end;
+  const slots = [];
+  for (let m = 0; m < total; m += 60) {
+    const mins = (start + m) % (24 * 60);
+    slots.push(`${String(Math.floor(mins / 60)).padStart(2, '0')}:00`);
+  }
+  return slots;
+}
+
+/** Per-SKU shift objetivo = Σ break-adjusted target over the shift's hour slots. */
+function shiftTargetFor(product) {
+  if (!product) return (line.hourly_target ?? 0) * 8; // legacy fallback
+  return shiftSlots(shift).reduce((sum, slot) => sum + hourSlotTarget(product, slot, shift.breaks ?? []), 0);
+}
 
 /** Break-adjusted target for the active SKU in the current clock hour. */
 function hourTargetFor(product) {
   if (!product) return line.hourly_target ?? 0; // fallback: legacy per-line target
   return hourSlotTarget(product, currentSlotStart(new Date(), timezone), shift.breaks ?? []);
 }
+
+let targetForShift = shiftTargetFor(activeProduct());
 
 const lineNameEl = document.getElementById('lineName');
 if (lineNameEl) lineNameEl.textContent = line.display_name;
@@ -62,6 +89,29 @@ if (counterSlot) {
 setTileText('targetTile', String(targetForShift));
 setTileText('shiftTile', shift.name ?? shift.id);
 setTileText('shiftTileSub', `${shift.start}–${shift.end}`);
+
+// SKU picker on the landing — drives objetivo, pace, and the default capture SKU.
+const skuTileSelect = /** @type {HTMLSelectElement|null} */ (
+  document.getElementById('skuTileSelect')
+);
+const skuTile = document.getElementById('skuTileSelect')?.closest('.sku-tile');
+if (skuTileSelect && lineProducts.length) {
+  for (const p of lineProducts) {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.name ?? p.sku_code ?? p.id;
+    skuTileSelect.append(opt);
+  }
+  skuTileSelect.value = activeProductId ?? '';
+  skuTileSelect.addEventListener('change', () => {
+    activeProductId = skuTileSelect.value;
+    targetForShift = shiftTargetFor(activeProduct());
+    setTileText('targetTile', String(targetForShift));
+    refreshState();
+  });
+} else if (skuTile) {
+  skuTile.remove(); // no SKUs configured for this line
+}
 
 function setTileText(id, value) {
   const el = document.getElementById(id);
@@ -109,9 +159,10 @@ function renderPace(state) {
   const paceTile = document.getElementById('paceTile');
   if (!paceTile) return;
   const hours = hoursElapsedInShift(new Date(), shift, timezone);
+  const targetPerHour = activeProduct()?.standard_target_per_hour ?? line.hourly_target;
   const { percent } = computePace({
     actual: state.count,
-    targetPerHour: line.hourly_target,
+    targetPerHour,
     hoursElapsed: hours
   });
   paceTile.textContent = `${Math.round(percent)}%`;
@@ -157,7 +208,7 @@ captureBtn?.addEventListener('click', () => {
     plantDayEndIso,
     target: targetForShift,
     products: lineProducts,
-    product_id: lineProducts[0]?.id ?? null,
+    product_id: activeProductId,
     shift,
     hourTargetFor,
     appendAudit: async () => {},
